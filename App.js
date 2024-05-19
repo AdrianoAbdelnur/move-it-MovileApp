@@ -1,22 +1,25 @@
+import 'react-native-gesture-handler'
 import { StatusBar } from 'expo-status-bar';
-import { StyleSheet, Text, View } from 'react-native';
+import { SafeAreaView, StyleSheet,} from 'react-native';
 import { Home } from './src/screens/users/Home';
+import { Stacknavigators } from './src/navigations/Stacknavigators';
+import { NavigationContainer } from '@react-navigation/native';
 
 export default function App() {
   return (
-    <View style={styles.container}>
-      <Text>HOLA Fonolaaaa</Text>
-      <Home/>
-      <StatusBar style="auto" backgroundColor='gray'/>
-    </View>
+    <NavigationContainer>
+        <Stacknavigators/>
+    </NavigationContainer>
   );
 }
 
+
+
+
 const styles = StyleSheet.create({
-  container: {
-    flex: 1,
-    backgroundColor: '#fff',
-    alignItems: 'center',
-    justifyContent: 'center',
+    general_container: {
+      flex: 1,
+      justifyContent: 'center',
+      alignItems: 'center'
   },
 });
