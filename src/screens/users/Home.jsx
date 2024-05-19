@@ -1,5 +1,8 @@
+import { useNavigation } from "@react-navigation/native";
+import { StatusBar } from "expo-status-bar";
 import React from "react";
 import {
+  SafeAreaView,
   ScrollView,
   StyleSheet,
   Text,
@@ -8,65 +11,74 @@ import {
 } from "react-native";
 
 export const Home = () => {
+  const navigation = useNavigation();
   return (
-    <View style={styles.container}>
-      <TouchableOpacity
-        style={styles.OptionsButton}
-        onPress={() => console.log("first")}
-      >
-        <Text style={styles.buttonText}>Publish a transport</Text>
-      </TouchableOpacity>
-      <View style={styles.services_container}>
-        <Text style={styles.servicesTitle}>Your Services:</Text>
-        <ScrollView style={styles.services}>
-          <View>
-            <Text style={styles.text}>¡Hola, mundo!</Text>
-            <Text style={styles.text}>¡Hola, mundo!</Text>
-            <Text style={styles.text}>¡Hola, mundo!</Text>
-            <Text style={styles.text}>¡Hola, mundo!</Text>
-            <Text style={styles.text}>¡Hola, mundo!</Text>
-            <Text style={styles.text}>¡Hola, mundo!</Text>
-            <Text style={styles.text}>¡Hola, mundo!</Text>
-            <Text style={styles.text}>¡Hola, mundo!</Text>
-            <Text style={styles.text}>¡Hola, mundo!</Text>
-            <Text style={styles.text}>¡Hola, mundo!</Text>
-            <Text style={styles.text}>¡Hola, mundo!</Text>
-            <Text style={styles.text}>¡Hola, mundo!</Text>
-            <Text style={styles.text}>¡Hola, mundo!</Text>
-            <Text style={styles.text}>¡Hola, mundo!</Text>
-            <Text style={styles.text}>¡Hola, mundo!</Text>
-            <Text style={styles.text}>¡Hola, mundo!</Text>
-            <Text style={styles.text}>¡Hola, mundo!</Text>
-            <Text style={styles.text}>¡Hola, mundo!</Text>
-            <Text style={styles.text}>¡Hola, mundo!</Text>
-            <Text style={styles.text}>¡Hola, mundo!</Text>
-            <Text style={styles.text}>¡Hola, mundo!</Text>
-            <Text style={styles.text}>¡Hola, mundo!</Text>
-            <Text style={styles.text}>¡Hola, mundo!</Text>
-            <Text style={styles.text}>¡Hola, mundo!</Text>
-            <Text style={styles.text}>¡Hola, mundo!</Text>
-            <Text style={styles.text}>¡Hola, mundo!</Text>
-            <Text style={styles.text}>¡Hola, mundo!</Text>
-            <Text style={styles.text}>¡Hola, mundo!</Text>
-            <Text style={styles.text}>¡Hola, mundo!</Text>
-            <Text style={styles.text}>¡Hola, mundo!</Text>
-            <Text style={styles.text}>¡Hola, mundo!</Text>
-            <Text style={styles.text}>¡Hola, mundo!</Text>
-            <Text style={styles.text}>¡Hola, mundo!</Text>
-            <Text style={styles.text}>¡Hola, mundo!</Text>
-            <Text style={styles.text}>¡Hola, mundo!</Text>
-            <Text style={styles.text}>¡Hola, mundo!</Text>
-            <Text style={styles.text}>¡Hola, mundo!</Text>
-            <Text style={styles.text}>¡Hola, mundo!</Text>
-            <Text style={styles.text}>¡Hola, mundo!</Text>
-          </View>
-        </ScrollView>
+    <SafeAreaView style={styles.general_container}>
+      <View style={styles.container}>
+        <StatusBar style="auto" backgroundColor="gray" translucent={false} />
+        <TouchableOpacity
+          style={styles.OptionsButton}
+          onPress={() => navigation.navigate("Type")}
+        >
+          <Text style={styles.buttonText}>Publish a transport</Text>
+        </TouchableOpacity>
+        <View style={styles.services_container}>
+          <Text style={styles.servicesTitle}>Your Services:</Text>
+          <ScrollView style={styles.services}>
+            <View>
+              <Text style={styles.text}>¡Hola, mundo!</Text>
+              <Text style={styles.text}>¡Hola, mundo!</Text>
+              <Text style={styles.text}>¡Hola, mundo!</Text>
+              <Text style={styles.text}>¡Hola, mundo!</Text>
+              <Text style={styles.text}>¡Hola, mundo!</Text>
+              <Text style={styles.text}>¡Hola, mundo!</Text>
+              <Text style={styles.text}>¡Hola, mundo!</Text>
+              <Text style={styles.text}>¡Hola, mundo!</Text>
+              <Text style={styles.text}>¡Hola, mundo!</Text>
+              <Text style={styles.text}>¡Hola, mundo!</Text>
+              <Text style={styles.text}>¡Hola, mundo!</Text>
+              <Text style={styles.text}>¡Hola, mundo!</Text>
+              <Text style={styles.text}>¡Hola, mundo!</Text>
+              <Text style={styles.text}>¡Hola, mundo!</Text>
+              <Text style={styles.text}>¡Hola, mundo!</Text>
+              <Text style={styles.text}>¡Hola, mundo!</Text>
+              <Text style={styles.text}>¡Hola, mundo!</Text>
+              <Text style={styles.text}>¡Hola, mundo!</Text>
+              <Text style={styles.text}>¡Hola, mundo!</Text>
+              <Text style={styles.text}>¡Hola, mundo!</Text>
+              <Text style={styles.text}>¡Hola, mundo!</Text>
+              <Text style={styles.text}>¡Hola, mundo!</Text>
+              <Text style={styles.text}>¡Hola, mundo!</Text>
+              <Text style={styles.text}>¡Hola, mundo!</Text>
+              <Text style={styles.text}>¡Hola, mundo!</Text>
+              <Text style={styles.text}>¡Hola, mundo!</Text>
+              <Text style={styles.text}>¡Hola, mundo!</Text>
+              <Text style={styles.text}>¡Hola, mundo!</Text>
+              <Text style={styles.text}>¡Hola, mundo!</Text>
+              <Text style={styles.text}>¡Hola, mundo!</Text>
+              <Text style={styles.text}>¡Hola, mundo!</Text>
+              <Text style={styles.text}>¡Hola, mundo!</Text>
+              <Text style={styles.text}>¡Hola, mundo!</Text>
+              <Text style={styles.text}>¡Hola, mundo!</Text>
+              <Text style={styles.text}>¡Hola, mundo!</Text>
+              <Text style={styles.text}>¡Hola, mundo!</Text>
+              <Text style={styles.text}>¡Hola, mundo!</Text>
+              <Text style={styles.text}>¡Hola, mundo!</Text>
+              <Text style={styles.text}>¡Hola, mundo!</Text>
+            </View>
+          </ScrollView>
+        </View>
       </View>
-    </View>
+    </SafeAreaView>
   );
 };
 
 const styles = StyleSheet.create({
+  general_container: {
+    flex: 1,
+    justifyContent: "center",
+    alignItems: "center",
+  },
   container: {
     flex: 1,
     width: "100%",
