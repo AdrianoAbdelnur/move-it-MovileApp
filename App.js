@@ -1,25 +1,26 @@
 import 'react-native-gesture-handler'
-import { StatusBar } from 'expo-status-bar';
-import { SafeAreaView, StyleSheet,} from 'react-native';
-import { Home } from './src/screens/users/Home';
 import { Stacknavigators } from './src/navigations/Stacknavigators';
 import { NavigationContainer } from '@react-navigation/native';
+import FormUserProvider from './src/contexts/FormUserContext';
+import AuthProvider from './src/contexts/AuthContext';
+import PostsProvider from './src/contexts/PostsContext';
+import OfferProvider from './src/contexts/OffersContext';
 
 export default function App() {
   return (
-    <NavigationContainer>
-        <Stacknavigators/>
-    </NavigationContainer>
+        
+   <AuthProvider>
+    <FormUserProvider>
+      <PostsProvider>
+        <OfferProvider>
+          <NavigationContainer>
+              <Stacknavigators/>
+          </NavigationContainer>
+        </OfferProvider>
+      </PostsProvider>
+    </FormUserProvider>
+   </AuthProvider>
+       
+  
   );
 }
-
-
-
-
-const styles = StyleSheet.create({
-    general_container: {
-      flex: 1,
-      justifyContent: 'center',
-      alignItems: 'center'
-  },
-});
