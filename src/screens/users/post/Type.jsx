@@ -1,5 +1,6 @@
 import { useNavigation } from "@react-navigation/native";
-import React from "react";
+import globalStyles from "../../../styles/globalStyles";
+import React, { useContext } from "react";
 import {
   KeyboardAvoidingView,
   StyleSheet,
@@ -8,44 +9,42 @@ import {
   TouchableOpacity,
   View,
 } from "react-native";
+import { FormUserContext } from "../../../contexts/FormUserContext";
+import { AuthContext } from "../../../contexts/AuthContext";
+
 export const Type = () => {
   const navigation = useNavigation();
+  const { formData, setFormData } = useContext(FormUserContext);
+  const { state: user } = useContext(AuthContext);
+
   return (
-    <View style={styles.container}>
-      <KeyboardAvoidingView>
-        <Text>Tipe of goods (furniture, appliances)</Text>
+    <KeyboardAvoidingView style={globalStyles.KeyboardAvoidingView}>
+      <View style={globalStyles.container}>
+        <Text style={globalStyles.generalText}>
+          Type of goods (furniture, appliances)
+        </Text>
         <TextInput
           placeholder="Type of goods"
-          placeholderTextColor="white"
           keyboardType="default"
           inputMode="text"
-          style={styles.textInput}
+          style={globalStyles.input}
+          onChangeText={(value) =>
+            setFormData({ ...formData, goodsType: value, owner: user.user.id })
+          }
         />
-        <TouchableOpacity onPress={() => navigation.navigate("Dim")}>
-          <Text>Next</Text>
-        </TouchableOpacity>
-      </KeyboardAvoidingView>
-    </View>
+        <View style={globalStyles.nextButtonContainer}>
+          <TouchableOpacity
+            style={globalStyles.nextButton}
+            onPress={() => {
+              navigation.navigate("Dimensions");
+            }}
+          >
+            <Text style={globalStyles.textButtons}>Next</Text>
+          </TouchableOpacity>
+        </View>
+      </View>
+    </KeyboardAvoidingView>
   );
 };
 
-const styles = StyleSheet.create({
-  container: {
-    flex: 1,
-    width: "100%",
-    backgroundColor: "#34495e",
-    alignItems: "center",
-    justifyContent: "space-evenly",
-  },
-  textInput: {
-    minWidth: "90%",
-    margin: 10,
-    paddingHorizontal: 5,
-    height: 60,
-    borderRadius: 15,
-    paddingHorizontal: 20,
-    backgroundColor: "#3c3c3c",
-    color: "white",
-    fontSize: 25,
-  },
-});
+const styles = StyleSheet.create({});
