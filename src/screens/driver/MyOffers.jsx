@@ -1,24 +1,31 @@
-import { useNavigation } from "@react-navigation/native";
-import { StatusBar } from "expo-status-bar";
 import React, { useContext, useEffect } from "react";
 import {
   ScrollView,
+  StatusBar,
   StyleSheet,
   Text,
   TouchableOpacity,
-  TouchableOpacityBase,
   View,
 } from "react-native";
 import globalStyles from "../../styles/globalStyles";
-import { PostContext } from "../../contexts/PostsContext";
-import { AuthContext } from "../../contexts/AuthContext";
+import { OfferContext } from "../../contexts/OffersContext";
 import colors from "../../styles/colors";
+import { AuthContext } from "../../contexts/AuthContext";
 
-export const Home = () => {
-  const navigation = useNavigation();
+export const MyOffers = () => {
+  const { state: offerState, getMyOffers } = useContext(OfferContext);
   const { state: userState } = useContext(AuthContext);
-  const { state: postsState, getMyPosts } = useContext(PostContext);
-  /* const { formatDate, fDate, fTime } = useFormatDate(); */
+
+  useEffect(() => {
+    if (offerState.offers.length === 0) {
+      getMyOffers(userState.user.id);
+    }
+  }, []);
+
+  useEffect(() => {
+    console.log("offers", offerState);
+  }, [offerState]);
+
   let fDate = "";
   let fTime = "";
 
@@ -36,33 +43,21 @@ export const Home = () => {
     fTime = `${hours}:${minutes.toString().padStart(2, "0")} ${ampm}`;
   };
 
-  useEffect(() => {
-    if (postsState.posts.length === 0) {
-      getMyPosts(userState.user.id);
-    }
-  }, []);
-
   return (
     <View style={globalStyles.container}>
       <StatusBar style="auto" backgroundColor="gray" translucent={false} />
-      <TouchableOpacity
-        style={globalStyles.OptionsButton}
-        onPress={() => navigation.navigate("Type")}
-      >
-        <Text style={styles.buttonText}>Publish a transport</Text>
-      </TouchableOpacity>
-      <TouchableOpacity
-        style={globalStyles.OptionsButton}
-        onPress={() => navigation.navigate("Maps")}
-      >
-        <Text style={styles.buttonText}>maps</Text>
-      </TouchableOpacity>
+      {/*   <TouchableOpacity
+      style={globalStyles.OptionsButton}
+      onPress={() => navigation.navigate("MyOffers")}
+    >
+      <Text style={styles.buttonText}>See My offers</Text>
+    </TouchableOpacity> */}
       <View style={styles.services_container}>
-        <Text style={styles.servicesTitle}>Your Services:</Text>
+        <Text style={styles.servicesTitle}>Requested services:</Text>
         <ScrollView style={styles.services}>
           <View>
-            {postsState &&
-              postsState.posts.map((item, index) => (
+            {offerState &&
+              offerState?.offers?.map((item, index) => (
                 <TouchableOpacity
                   key={index}
                   style={[
@@ -71,25 +66,29 @@ export const Home = () => {
                       ? { backgroundColor: "green" }
                       : { backgroundColor: "#37474F" },
                   ]}
-                  onPress={() => {
+                  /*  onPress={() => {
                     navigation.navigate("Details", { data: item });
-                  }}
+                  }} */
                 >
-                  {formatDate(item.date)}
+                  {formatDate(item.post.date)}
+                  {console.log(item)}
                   <Text style={globalStyles.generalText}>
-                    Type of goods: {item.goodsType}
+                    Your offer: {item?.price}
                   </Text>
                   <Text style={globalStyles.generalText}>
-                    from: {item.directions.from}
+                    Type of goods: {item?.post.goodsType}
                   </Text>
                   <Text style={globalStyles.generalText}>
-                    to: {item.directions.to}
+                    from: {item?.post.directions?.from}
+                  </Text>
+                  <Text style={globalStyles.generalText}>
+                    to: {item?.post.directions?.to}
                   </Text>
                   <Text style={globalStyles.generalText}>
                     Date: {fDate} at {fTime}
                   </Text>
                   <Text style={globalStyles.generalText}>
-                    status: {item.status}
+                    status: {item?.post.status}
                   </Text>
                   <Text style={{ alignSelf: "flex-end", color: "black" }}>
                     Press here for more information
