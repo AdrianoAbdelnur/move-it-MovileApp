@@ -1,17 +1,19 @@
+import { TYPES } from "../actions/PostActions"
+
 
 const PostReducer = (state={}, action) => {
     switch (action.type) {
-        case "ADDNEWPOST":
+        case TYPES.ADDNEWPOST:
             return{
                 ...state,
                 posts: [...state.posts, action.payload]
                 }   
-        case "GETPOSTS":
+        case TYPES.GETPOSTS:
             return{
                 ...state,
                 posts: action.payload.myPost
             }   
-        case "GETPENDINGPOSTS":
+        case TYPES.GETPENDINGPOSTS:
             return{
                 ...state,
                 posts: action.payload.pendingPost

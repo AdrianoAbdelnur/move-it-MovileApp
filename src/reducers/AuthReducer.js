@@ -1,7 +1,9 @@
+import { TYPES } from "../actions/AuthActions"
+
 
 const AuthReducer = (state={}, action) => {
     switch (action.type) {
-       case 'LOGIN':
+       case TYPES.LOGIN:
            return {
                ...state,
                user: action.payload.user,
@@ -10,7 +12,7 @@ const AuthReducer = (state={}, action) => {
                message: action.payload.message,
                isLoading: false
            }
-       case 'LOGOUT':
+       case TYPES.LOGOUT:
            return {
                ...state,
                user: null,
@@ -19,7 +21,7 @@ const AuthReducer = (state={}, action) => {
                message: action.payload.message,
                isLoading: false
            }
-           case 'LOADING' :
+           case TYPES.LOADING :
             return {
                 ...state,
                 isLoading: action.payload.isLoading
