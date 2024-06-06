@@ -1,11 +1,13 @@
+import { TYPES } from "../actions/OfferActions"
+
 const OfferReducer = (state={}, action) => {
  switch (action.type) {
-    case "ADDNEWOFFER":
+    case TYPES.ADDNEWOFFER:
         return{
             ...state,
             offers: [...state.offers, action.payload]
             }
-    case "GETOFFERS":
+    case TYPES.GETOFFERS:
     return{
         ...state,
         offers: action.payload.myOffers

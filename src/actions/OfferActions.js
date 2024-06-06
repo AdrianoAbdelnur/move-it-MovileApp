@@ -1,0 +1,4 @@
+export const TYPES = {
+    ADDNEWOFFER: "ADDNEWOFFER",
+    GETOFFERS: "GETOFFERS"
+}
