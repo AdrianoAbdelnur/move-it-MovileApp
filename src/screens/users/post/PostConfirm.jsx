@@ -43,10 +43,10 @@ export const PostConfirm = () => {
       </Text>
       <Text style={globalStyles.generalInformationText}>Directions:</Text>
       <Text style={[globalStyles.generalInformationText, { marginLeft: 20 }]}>
-        From: {formData.directions.from}
+        From: {formData.directions.from.description}
       </Text>
       <Text style={[globalStyles.generalInformationText, { marginLeft: 20 }]}>
-        To: {formData.directions.to}
+        To: {formData.directions.to.description}
       </Text>
       <Text style={globalStyles.generalInformationText}>date : {fDate}</Text>
       <Text style={globalStyles.generalInformationText}>time : {fTime}</Text>
