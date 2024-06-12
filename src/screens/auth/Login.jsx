@@ -11,8 +11,10 @@ import globalStyles from "../../styles/globalStyles";
 import { AuthContext } from "../../contexts/AuthContext";
 import { useForm } from "../../hooks/useForm";
 import colors from "../../styles/colors";
+import { useNavigation } from "@react-navigation/native";
 
 export const Login = () => {
+  const navigation = useNavigation();
   const { login, state } = useContext(AuthContext);
   const { formState, getInput } = useForm();
 
@@ -45,6 +47,16 @@ export const Login = () => {
           <TouchableOpacity style={styles.button} onPress={() => onSubmit()}>
             <Text style={styles.buttonText}>Login</Text>
           </TouchableOpacity>
+          <View style={styles.otherOptionsContainer}>
+            <TouchableOpacity onPress={() => {}}>
+              <Text style={styles.buttonText}>Forgot your password?</Text>
+            </TouchableOpacity>
+            <TouchableOpacity
+              onPress={() => navigation.navigate("SelectRegister")}
+            >
+              <Text style={styles.buttonText}>Register</Text>
+            </TouchableOpacity>
+          </View>
         </View>
       </View>
     </KeyboardAvoidingView>
@@ -100,5 +112,11 @@ const styles = StyleSheet.create({
     color: colors.primary,
     fontSize: 14,
     fontWeight: "bold",
+  },
+  otherOptionsContainer: {
+    width: "100%",
+    borderRadius: 22,
+    flexDirection: "row",
+    justifyContent: "space-between",
   },
 });
