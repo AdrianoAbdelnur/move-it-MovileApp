@@ -10,6 +10,7 @@ import {
 } from "react-native";
 import { useNavigation } from "@react-navigation/native";
 import { FormUserContext } from "../../../contexts/FormUserContext";
+import { NextButton } from "../../../components/ui/NextButton";
 
 export const Dimen = () => {
   const navigation = useNavigation();
@@ -21,7 +22,6 @@ export const Dimen = () => {
           <Text style={globalStyles.generalInformationText}>length(m)</Text>
           <TextInput
             placeholder="length"
-            placeholderTextColor="white"
             keyboardType="number-pad"
             inputMode="numeric"
             style={[globalStyles.input, { flex: 1, marginLeft: 20 }]}
@@ -37,7 +37,6 @@ export const Dimen = () => {
           <Text style={globalStyles.generalInformationText}>width(m)</Text>
           <TextInput
             placeholder="width"
-            placeholderTextColor="white"
             keyboardType="number-pad"
             inputMode="numeric"
             style={[globalStyles.input, { flex: 1, marginLeft: 20 }]}
@@ -53,7 +52,6 @@ export const Dimen = () => {
           <Text style={globalStyles.generalInformationText}>height(m)</Text>
           <TextInput
             placeholder="Height"
-            placeholderTextColor="white"
             keyboardType="number-pad"
             inputMode="numeric"
             style={[globalStyles.input, { flex: 1, marginLeft: 20 }]}
@@ -69,7 +67,6 @@ export const Dimen = () => {
           <Text style={globalStyles.generalInformationText}>weight(Kg)</Text>
           <TextInput
             placeholder="weight"
-            placeholderTextColor="white"
             keyboardType="number-pad"
             inputMode="numeric"
             style={[globalStyles.input, { flex: 1, marginLeft: 20 }]}
@@ -81,14 +78,7 @@ export const Dimen = () => {
             }
           />
         </View>
-        <View style={globalStyles.nextButtonContainer}>
-          <TouchableOpacity
-            style={globalStyles.nextButton}
-            onPress={() => navigation.navigate("Directions")}
-          >
-            <Text style={globalStyles.textButtons}>Next</Text>
-          </TouchableOpacity>
-        </View>
+        <NextButton navigateTo={"Date"} />
       </View>
     </KeyboardAvoidingView>
   );

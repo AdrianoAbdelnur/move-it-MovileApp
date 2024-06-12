@@ -5,6 +5,8 @@ import RNDateTimePicker from "@react-native-community/datetimepicker";
 import { useNavigation } from "@react-navigation/native";
 import { FormUserContext } from "../../../contexts/FormUserContext";
 import { useFormatDate } from "../../../hooks/useFormatDate";
+import { GeneralButton } from "../../../components/ui/GeneralButton";
+import { NextButton } from "../../../components/ui/NextButton";
 
 export const DateSelect = () => {
   const [date, setDate] = useState(new Date());
@@ -50,29 +52,18 @@ export const DateSelect = () => {
   return (
     <View style={globalStyles.container}>
       <Text style={globalStyles.generalInformationText}>Select the date</Text>
-      <TouchableOpacity
-        style={globalStyles.OptionsButton}
-        onPress={() => showMode("date")}
-      >
-        <Text style={globalStyles.textButtons}>Select the date</Text>
-      </TouchableOpacity>
-      <TouchableOpacity
-        style={globalStyles.OptionsButton}
-        onPress={() => showMode("time")}
-      >
-        <Text style={globalStyles.textButtons}>Select the time</Text>
-      </TouchableOpacity>
+      <GeneralButton
+        text={"Select the date"}
+        onPressFunction={() => showMode("date")}
+      />
+      <GeneralButton
+        text={"Select the time"}
+        onPressFunction={() => showMode("time")}
+      />
       <Text style={globalStyles.generalInformationText}>
         Date for your transport: {"\n"} {info}
       </Text>
-      <View style={globalStyles.nextButtonContainer}>
-        <TouchableOpacity
-          style={globalStyles.nextButton}
-          onPress={() => navigation.navigate("Confirmation")}
-        >
-          <Text style={globalStyles.textButtons}>Next</Text>
-        </TouchableOpacity>
-      </View>
+      <NextButton navigateTo={"Directions"} />
       {show && (
         <RNDateTimePicker
           testID="dateTimePicker"

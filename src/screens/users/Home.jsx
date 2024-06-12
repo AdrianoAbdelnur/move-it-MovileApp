@@ -6,13 +6,13 @@ import {
   StyleSheet,
   Text,
   TouchableOpacity,
-  TouchableOpacityBase,
   View,
 } from "react-native";
 import globalStyles from "../../styles/globalStyles";
 import { PostContext } from "../../contexts/PostsContext";
 import { AuthContext } from "../../contexts/AuthContext";
 import colors from "../../styles/colors";
+import { GeneralButton } from "../../components/ui/GeneralButton";
 
 export const Home = () => {
   const navigation = useNavigation();
@@ -45,18 +45,10 @@ export const Home = () => {
   return (
     <View style={globalStyles.container}>
       <StatusBar style="auto" backgroundColor="gray" translucent={false} />
-      <TouchableOpacity
-        style={globalStyles.OptionsButton}
-        onPress={() => navigation.navigate("Type")}
-      >
-        <Text style={styles.buttonText}>Publish a transport</Text>
-      </TouchableOpacity>
-      <TouchableOpacity
-        style={globalStyles.OptionsButton}
-        onPress={() => navigation.navigate("Maps")}
-      >
-        <Text style={styles.buttonText}>maps</Text>
-      </TouchableOpacity>
+      <GeneralButton
+        text={"Publish a transport"}
+        onPressFunction={() => navigation.navigate("Type")}
+      />
       <View style={styles.services_container}>
         <Text style={styles.servicesTitle}>Your Services:</Text>
         <ScrollView style={styles.services}>
