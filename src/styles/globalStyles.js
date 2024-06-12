@@ -36,15 +36,6 @@ const globalStyles = StyleSheet.create({
     color: "white",
     fontSize: 22,
   },
-  OptionsButton: {
-    width: 350,
-    height: 75,
-    backgroundColor: colors.primary,
-    borderRadius: 15,
-    alignItems: "center",
-    justifyContent: "center",
-    marginBottom: 10
-  },
   input: {
     width: "100%",
     height: 50,
