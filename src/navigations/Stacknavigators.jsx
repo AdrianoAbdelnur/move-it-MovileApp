@@ -19,6 +19,9 @@ import { Maps } from "../components/ui/Maps";
 import { Offer } from "../screens/driver/Offer";
 import { MyOffers } from "../screens/driver/MyOffers";
 import { OffersList } from "../screens/users/OffersList";
+import { SelectRegisterType } from "../screens/auth/register/SelectRegisterType";
+import { PersonalInf } from "../screens/auth/register/transport/PersonalInf";
+import { TransportInfo } from "../screens/auth/register/transport/TransportInfo";
 
 const Stack = createStackNavigator();
 
@@ -36,6 +39,9 @@ export const Stacknavigators = () => {
     return (
       <Stack.Navigator>
         <Stack.Screen name="login" component={Login} />
+        <Stack.Screen name="SelectRegister" component={SelectRegisterType} />
+        <Stack.Screen name="PersonalTransport" component={PersonalInf} />
+        <Stack.Screen name="TransportInfo" component={TransportInfo} />
       </Stack.Navigator>
     );
   }
