@@ -37,7 +37,7 @@ export const Directions = () => {
   }, [destination]);
 
   useEffect(() => {
-    setDate(Math.floor(formData.date.getTime() / 1000));
+    setDate(Math.floor(formData?.date?.getTime() / 1000));
   }, [formData]);
 
   const getDirections = async () => {
