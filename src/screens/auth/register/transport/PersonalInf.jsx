@@ -1,38 +1,43 @@
-import React, { useContext, useEffect } from "react";
+import React from "react";
 import {
   KeyboardAvoidingView,
   StyleSheet,
   Text,
-  TouchableOpacity,
+  TextInput,
   View,
 } from "react-native";
-import { TextInput } from "react-native-gesture-handler";
-import globalStyles from "../../styles/globalStyles";
-import { AuthContext } from "../../contexts/AuthContext";
-import { useForm } from "../../hooks/useForm";
-import colors from "../../styles/colors";
-import { useNavigation } from "@react-navigation/native";
+import globalStyles from "../../../../styles/globalStyles";
+import colors from "../../../../styles/colors";
+import { NextButton } from "../../../../components/ui/NextButton";
 
-export const Login = () => {
-  const navigation = useNavigation();
-  const { login, state } = useContext(AuthContext);
-  const { formState, getInput } = useForm();
-
-  const onSubmit = () => {
-    login(formState?.email, formState?.password);
-  };
-
+export const PersonalInf = () => {
   return (
     <KeyboardAvoidingView style={globalStyles.KeyboardAvoidingView}>
       <View style={globalStyles.container}>
-        <Text style={styles.text}>LOGIN</Text>
+        <TextInput
+          placeholder="Name"
+          keyboardType="ascii-capable"
+          textContentType="username"
+          inputMode="text"
+          style={[globalStyles.input, { marginTop: 15 }]}
+          /* onChangeText={(value) => getInput("email", value)} */
+        />
+        <TextInput
+          placeholder="Last Name"
+          keyboardType="ascii-capable"
+          textContentType="username"
+          inputMode="text"
+          style={globalStyles.input}
+          /* onChangeText={(value) => getInput("email", value)} */
+        />
+
         <TextInput
           placeholder="email"
           keyboardType="email-address"
-          textContentType="username"
+          textContentType="emailAddress"
           inputMode="email"
           style={globalStyles.input}
-          onChangeText={(value) => getInput("email", value)}
+          /* onChangeText={(value) => getInput("email", value)} */
         />
         <TextInput
           placeholder="password"
@@ -41,23 +46,18 @@ export const Login = () => {
           secureTextEntry={true}
           inputMode="text"
           style={globalStyles.input}
-          onChangeText={(value) => getInput("password", value)}
+          /* onChangeText={(value) => getInput("password", value)} */
         />
-        <View style={styles.buttonContainer}>
-          <TouchableOpacity style={styles.button} onPress={() => onSubmit()}>
-            <Text style={styles.buttonText}>Login</Text>
-          </TouchableOpacity>
-          <View style={styles.otherOptionsContainer}>
-            <TouchableOpacity onPress={() => {}}>
-              <Text style={styles.buttonText}>Forgot your password?</Text>
-            </TouchableOpacity>
-            <TouchableOpacity
-              onPress={() => navigation.navigate("SelectRegister")}
-            >
-              <Text style={styles.buttonText}>Register</Text>
-            </TouchableOpacity>
-          </View>
-        </View>
+        <TextInput
+          placeholder="confirm password"
+          keyboardType="default"
+          textContentType="password"
+          secureTextEntry={true}
+          inputMode="text"
+          style={globalStyles.input}
+          /* onChangeText={(value) => getInput("password", value)} */
+        />
+        <NextButton navigateTo={"TransportInfo"} />
       </View>
     </KeyboardAvoidingView>
   );
