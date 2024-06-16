@@ -19,7 +19,7 @@ export const PersonalInf = () => {
           keyboardType="ascii-capable"
           textContentType="username"
           inputMode="text"
-          style={globalStyles.input}
+          style={[globalStyles.input, { marginTop: 15 }]}
           /* onChangeText={(value) => getInput("email", value)} */
         />
         <TextInput
