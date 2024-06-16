@@ -12,7 +12,7 @@ export const GeneralButton = ({ text, onPressFunction }) => {
 
 const styles = StyleSheet.create({
   GeneralButton: {
-    width: 350,
+    width: "90%",
     height: 75,
     backgroundColor: colors.primary,
     borderRadius: 15,
@@ -22,7 +22,7 @@ const styles = StyleSheet.create({
   },
   buttonText: {
     color: "white",
-    fontSize: 25,
+    fontSize: 20,
     margin: 10,
   },
 });
