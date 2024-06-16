@@ -12,22 +12,6 @@ const globalStyles = StyleSheet.create({
     backgroundColor: colors.background,
     padding: 20,
   },
-  nextButton: {
-    backgroundColor: colors.primary,
-    minWidth: 85,
-    height: 50,
-    justifyContent: "center",
-    alignItems: "center",
-    borderRadius: 15,
-    marginTop: 25,
-    padding: 5       
-  },
-  nextButtonContainer: {
-    flexDirection: "row",
-    width:"100%",   
-    justifyContent: "flex-end",
-    marginHorizontal: 10 
-  },
   textButtons: {
     color: "white",
     fontSize: 25,

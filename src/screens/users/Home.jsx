@@ -72,10 +72,10 @@ export const Home = () => {
                     Type of goods: {item.goodsType}
                   </Text>
                   <Text style={globalStyles.generalText}>
-                    from: {item.directions.from}
+                    from: {item.directions?.from?.description}
                   </Text>
                   <Text style={globalStyles.generalText}>
-                    to: {item.directions.to}
+                    to: {item.directions?.to?.description}
                   </Text>
                   <Text style={globalStyles.generalText}>
                     Date: {fDate} at {fTime}

@@ -1,4 +1,3 @@
-import { useNavigation } from "@react-navigation/native";
 import globalStyles from "../../../styles/globalStyles";
 import React, { useContext } from "react";
 import {
@@ -6,14 +5,13 @@ import {
   StyleSheet,
   Text,
   TextInput,
-  TouchableOpacity,
   View,
 } from "react-native";
 import { FormUserContext } from "../../../contexts/FormUserContext";
 import { AuthContext } from "../../../contexts/AuthContext";
+import { NextButton } from "../../../components/ui/NextButton";
 
 export const Type = () => {
-  const navigation = useNavigation();
   const { formData, setFormData } = useContext(FormUserContext);
   const { state: user } = useContext(AuthContext);
 
@@ -32,16 +30,7 @@ export const Type = () => {
             setFormData({ ...formData, goodsType: value, owner: user.user.id })
           }
         />
-        <View style={globalStyles.nextButtonContainer}>
-          <TouchableOpacity
-            style={globalStyles.nextButton}
-            onPress={() => {
-              navigation.navigate("Dimensions");
-            }}
-          >
-            <Text style={globalStyles.textButtons}>Next</Text>
-          </TouchableOpacity>
-        </View>
+        <NextButton navigateTo={"Dimensions"} />
       </View>
     </KeyboardAvoidingView>
   );

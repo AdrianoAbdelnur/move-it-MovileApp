@@ -34,29 +34,29 @@ export const PostDetails = ({ route }) => {
   return (
     <View style={[globalStyles.container, { alignItems: "flex-start" }]}>
       <Text style={globalStyles.generalInformationText}>
-        Goods type : {data.goodsType}
+        Goods type : {data?.goodsType}
       </Text>
       <Text style={globalStyles.generalInformationText}>Load Dimensions:</Text>
       <Text style={[globalStyles.generalInformationText, { marginLeft: 20 }]}>
-        height : {data.dimensions.height} m
+        height : {data?.dimensions?.height} m
       </Text>
       <Text style={[globalStyles.generalInformationText, { marginLeft: 20 }]}>
-        length : {data.dimensions.length} m
+        length : {data?.dimensions?.length} m
       </Text>
       <Text style={[globalStyles.generalInformationText, { marginLeft: 20 }]}>
-        width : {data.dimensions.width} m
+        width : {data?.dimensions?.width} m
       </Text>
       <Text style={[globalStyles.generalInformationText, { marginLeft: 20 }]}>
-        weight : {data.dimensions.weight} Kg
+        weight : {data?.dimensions?.weight} Kg
       </Text>
       <Text style={globalStyles.generalInformationText}>Directions:</Text>
       <Text style={[globalStyles.generalInformationText, { marginLeft: 20 }]}>
-        From: {data.directions.from}
+        From: {data.directions?.from?.description}
       </Text>
       <Text style={[globalStyles.generalInformationText, { marginLeft: 20 }]}>
-        To: {data.directions.to}
+        To: {data.directions?.to?.description}
       </Text>
-      {formatDate(data.date)}
+      {formatDate(data?.date)}
       <Text style={globalStyles.generalInformationText}>date : {fDate}</Text>
       <Text style={globalStyles.generalInformationText}>time : {fTime}</Text>
       <View style={globalStyles.nextButtonContainer}></View>
