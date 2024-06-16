@@ -5,10 +5,11 @@ export const PostContext = createContext();
 import React from "react";
 import PostReducer from "../reducers/PostReducer";
 import { clientAxios } from "../api/ClientAxios";
+import { TYPES } from "../actions/PostActions";
 
 const PostsProvider = ({ children }) => {
   const initialValues = {
-    alerMsg: "",
+    alertMsg: "",
     posts: [],
   };
 
@@ -36,7 +37,7 @@ const PostsProvider = ({ children }) => {
 
       if (myPost) {
         dispatch({
-          type: "GETPOSTS",
+          type: TYPES.GETPOSTS,
           payload: { myPost },
         });
       }
@@ -51,7 +52,7 @@ const PostsProvider = ({ children }) => {
       const { pendingPost } = data;
       if (pendingPost) {
         dispatch({
-          type: "GETPENDINGPOSTS",
+          type: TYPES.GETPENDINGPOSTS,
           payload: { pendingPost },
         });
       }
@@ -66,21 +67,32 @@ const PostsProvider = ({ children }) => {
       const { newPost } = data;
       if (newPost) {
         dispatch({
-          type: "ADDNEWPOST",
-          payload: newPost,
+          type: TYPES.ADDNEWPOST,
+          payload: { alertMsg: "New Post added", newPost },
         });
       }
     } catch (error) {
-      if (error.response.data.message) {
-        console.log(error.response.data.clientFound._id);
-      }
       console.log(error);
     }
   };
 
+  const clearAlertMsg = () => {
+    dispatch({
+      type: TYPES.CLEARALERTMSG,
+      payload: { alertMsg: "" },
+    });
+  };
+
   return (
     <PostContext.Provider
-      value={{ state, addPost, getAllPosts, getMyPosts, getPendingPosts }}
+      value={{
+        state,
+        addPost,
+        getAllPosts,
+        getMyPosts,
+        getPendingPosts,
+        clearAlertMsg,
+      }}
     >
       {children}
     </PostContext.Provider>
