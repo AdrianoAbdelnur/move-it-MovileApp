@@ -4,7 +4,7 @@ import AsyncStorage from '@react-native-async-storage/async-storage';
 export const clientAxios = axios.create(
     {
         baseURL: "https://move-it-backend-3.onrender.com/api",
-        timeout: 20000,
+     /*    timeout: 20000, */
         headers: {
             "Content-Type": "application/json",
             /* "Access-Control-Allow-Origin" : "*" */
