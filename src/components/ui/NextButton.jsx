@@ -1,14 +1,15 @@
 import React from "react";
 import globalStyles from "../../styles/globalStyles";
 import { useNavigation } from "@react-navigation/native";
-import { Text, TouchableOpacity, View } from "react-native";
+import { StyleSheet, Text, TouchableOpacity, View } from "react-native";
+import colors from "../../styles/colors";
 
 export const NextButton = ({ navigateTo }) => {
   const navigation = useNavigation();
   return (
-    <View style={globalStyles.nextButtonContainer}>
+    <View style={styles.nextButtonContainer}>
       <TouchableOpacity
-        style={globalStyles.nextButton}
+        style={styles.nextButton}
         onPress={() => navigation.navigate(navigateTo)}
       >
         <Text style={globalStyles.textButtons}>Next</Text>
@@ -16,3 +17,22 @@ export const NextButton = ({ navigateTo }) => {
     </View>
   );
 };
+
+styles = StyleSheet.create({
+  nextButton: {
+    backgroundColor: colors.primary,
+    minWidth: 85,
+    height: 50,
+    justifyContent: "center",
+    alignItems: "center",
+    borderRadius: 15,
+    marginTop: 25,
+    padding: 5,
+  },
+  nextButtonContainer: {
+    flexDirection: "row",
+    width: "100%",
+    justifyContent: "flex-end",
+    marginHorizontal: 10,
+  },
+});
