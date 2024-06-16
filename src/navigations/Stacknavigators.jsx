@@ -22,6 +22,7 @@ import { OffersList } from "../screens/users/OffersList";
 import { SelectRegisterType } from "../screens/auth/register/SelectRegisterType";
 import { PersonalInf } from "../screens/auth/register/transport/PersonalInf";
 import { TransportInfo } from "../screens/auth/register/transport/TransportInfo";
+import { CameraManager } from "../components/camera/CameraManager";
 
 const Stack = createStackNavigator();
 
@@ -42,6 +43,7 @@ export const Stacknavigators = () => {
         <Stack.Screen name="SelectRegister" component={SelectRegisterType} />
         <Stack.Screen name="PersonalTransport" component={PersonalInf} />
         <Stack.Screen name="TransportInfo" component={TransportInfo} />
+        <Stack.Screen name="Camera" component={CameraManager} />
       </Stack.Navigator>
     );
   }
