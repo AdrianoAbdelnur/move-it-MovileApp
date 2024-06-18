@@ -1,4 +1,4 @@
-import React from "react";
+import React, { useContext, useState } from "react";
 import {
   KeyboardAvoidingView,
   StyleSheet,
@@ -9,8 +9,21 @@ import {
 import globalStyles from "../../../../styles/globalStyles";
 import colors from "../../../../styles/colors";
 import { NextButton } from "../../../../components/ui/NextButton";
+import { FormContext } from "../../../../contexts/FormContext";
 
 export const PersonalInf = () => {
+  const { formData, setFormData } = useContext(FormContext);
+  const [confirmPassword, setConfirmPassword] = useState("");
+  const [passConfirmation, setPassConfirmation] = useState(false);
+
+  const comparePass = () => {
+    if (confirmPassword === formData.password) {
+      setPassConfirmation(true);
+      console.log("son iguales");
+    } else {
+      alert("Passwords must to be equals");
+    }
+  };
   return (
     <KeyboardAvoidingView style={globalStyles.KeyboardAvoidingView}>
       <View style={globalStyles.container}>
@@ -20,7 +33,9 @@ export const PersonalInf = () => {
           textContentType="username"
           inputMode="text"
           style={[globalStyles.input, { marginTop: 15 }]}
-          /* onChangeText={(value) => getInput("email", value)} */
+          onChangeText={(value) =>
+            setFormData({ ...formData, given_name: value, role: "transport" })
+          }
         />
         <TextInput
           placeholder="Last Name"
@@ -28,7 +43,9 @@ export const PersonalInf = () => {
           textContentType="username"
           inputMode="text"
           style={globalStyles.input}
-          /* onChangeText={(value) => getInput("email", value)} */
+          onChangeText={(value) =>
+            setFormData({ ...formData, family_name: value })
+          }
         />
 
         <TextInput
@@ -37,7 +54,7 @@ export const PersonalInf = () => {
           textContentType="emailAddress"
           inputMode="email"
           style={globalStyles.input}
-          /* onChangeText={(value) => getInput("email", value)} */
+          onChangeText={(value) => setFormData({ ...formData, email: value })}
         />
         <TextInput
           placeholder="password"
@@ -46,7 +63,9 @@ export const PersonalInf = () => {
           secureTextEntry={true}
           inputMode="text"
           style={globalStyles.input}
-          /* onChangeText={(value) => getInput("password", value)} */
+          onChangeText={(value) =>
+            setFormData({ ...formData, password: value })
+          }
         />
         <TextInput
           placeholder="confirm password"
@@ -55,7 +74,8 @@ export const PersonalInf = () => {
           secureTextEntry={true}
           inputMode="text"
           style={globalStyles.input}
-          /* onChangeText={(value) => getInput("password", value)} */
+          onChangeText={(value) => setConfirmPassword(value)}
+          onBlur={comparePass}
         />
         <NextButton navigateTo={"TransportInfo"} />
       </View>

@@ -3,10 +3,10 @@ import { Button, Text, TouchableOpacity, View } from "react-native";
 import globalStyles from "../../../styles/globalStyles";
 import RNDateTimePicker from "@react-native-community/datetimepicker";
 import { useNavigation } from "@react-navigation/native";
-import { FormUserContext } from "../../../contexts/FormUserContext";
 import { useFormatDate } from "../../../hooks/useFormatDate";
 import { GeneralButton } from "../../../components/ui/GeneralButton";
 import { NextButton } from "../../../components/ui/NextButton";
+import { FormContext } from "../../../contexts/FormContext";
 
 export const DateSelect = () => {
   const [date, setDate] = useState(new Date());
@@ -15,7 +15,7 @@ export const DateSelect = () => {
   const [info, setInfo] = useState("Empty");
   const navigation = useNavigation();
   const { formatDate, fDate, fTime } = useFormatDate();
-  const { formData, setFormData } = useContext(FormUserContext);
+  const { formData, setFormData } = useContext(FormContext);
 
   useEffect(() => {
     setInfo(fDate + " at " + fTime);

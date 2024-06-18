@@ -1,29 +1,18 @@
-import React, { useEffect, useState } from "react";
-import {
-  KeyboardAvoidingView,
-  StyleSheet,
-  Text,
-  TextInput,
-  TouchableOpacity,
-  View,
-} from "react-native";
+import React, { useContext, useEffect, useState } from "react";
+import { KeyboardAvoidingView, TextInput, View } from "react-native";
 import globalStyles from "../../../../styles/globalStyles";
-import colors from "../../../../styles/colors";
 import { NextButton } from "../../../../components/ui/NextButton";
 import { useNavigation } from "@react-navigation/native";
 import { GeneralButton } from "../../../../components/ui/GeneralButton";
+import { FormContext } from "../../../../contexts/FormContext";
 
 export const TransportInfo = () => {
   const navigation = useNavigation();
-  const [licensePhoto, setLicensePhoto] = useState("");
-
-  const newLicensePhoto = (newPhoto) => {
-    setLicensePhoto(newPhoto);
-  };
+  const { formData, setFormData } = useContext(FormContext);
 
   useEffect(() => {
-    console.log("Es este?", licensePhoto);
-  }, [licensePhoto]);
+    console.log("Es este?", formData);
+  }, [formData]);
 
   return (
     <KeyboardAvoidingView style={globalStyles.KeyboardAvoidingView}>
@@ -34,15 +23,16 @@ export const TransportInfo = () => {
           textContentType="username"
           inputMode="text"
           style={globalStyles.input}
-          /* onChangeText={(value) => getInput("email", value)} */
+          onChangeText={(value) => setFormData({ ...formData, vehicle: value })}
         />
         <TextInput
           placeholder="registration plate"
           keyboardType="phone-pad"
-          textContentType="username"
           inputMode="text"
           style={globalStyles.input}
-          /* onChangeText={(value) => getInput("email", value)} */
+          onChangeText={(value) =>
+            setFormData({ ...formData, registrationPlate: value })
+          }
         />
 
         <TextInput
@@ -51,7 +41,9 @@ export const TransportInfo = () => {
           textContentType="emailAddress"
           inputMode="email"
           style={globalStyles.input}
-          /* onChangeText={(value) => getInput("email", value)} */
+          onChangeText={(value) =>
+            setFormData({ ...formData, password: value })
+          }
         />
         <TextInput
           placeholder="password"
@@ -60,21 +52,16 @@ export const TransportInfo = () => {
           secureTextEntry={true}
           inputMode="text"
           style={globalStyles.input}
-          /* onChangeText={(value) => getInput("password", value)} */
+          /* onChangeText={(value) =>
+            setFormData({ ...formData, password: value })
+          } */
         />
         <GeneralButton
           text={"Photo of your license"}
           onPressFunction={() =>
-            navigation.navigate("Camera", { newLicensePhoto })
+            navigation.navigate("Camera", { saveAs: "licenseImage" })
           }
         />
-        <TouchableOpacity
-          onPress={() => navigation.navigate("Camera", { hola: "hola" })}
-        >
-          <Text style={globalStyles.generalText}>
-            Take photo of your license
-          </Text>
-        </TouchableOpacity>
         <NextButton navigateTo={"TransportInfo"} />
       </View>
     </KeyboardAvoidingView>

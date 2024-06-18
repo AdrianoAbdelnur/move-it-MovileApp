@@ -1,10 +1,11 @@
-import React, { useState, useEffect, useRef } from "react";
+import React, { useState, useEffect, useRef, useContext } from "react";
 import { Text, View, StyleSheet, TouchableOpacity, Image } from "react-native";
 import Constants from "expo-constants";
 import { Camera, CameraView } from "expo-camera";
 import * as MediaLibrary from "expo-media-library";
 import { CameraButton } from "../ui/CameraButton";
 import { useNavigation } from "@react-navigation/native";
+import { FormContext } from "../../contexts/FormContext";
 
 export const CameraManager = ({ route }) => {
   const navigation = useNavigation();
@@ -13,7 +14,9 @@ export const CameraManager = ({ route }) => {
   const [type, setType] = useState("back");
   const [flash, setFlash] = useState("off");
   const cameraRef = useRef(null);
-  const { newLicensePhoto } = route.params;
+  const { formData, setFormData } = useContext(FormContext);
+
+  const { saveAs } = route.params;
 
   useEffect(() => {
     (async () => {
@@ -30,7 +33,7 @@ export const CameraManager = ({ route }) => {
           base64: true,
           quality: 0.1,
         });
-        newLicensePhoto(data.base64);
+        setFormData({ ...formData, [saveAs]: data.base64 });
         setImage(data.uri);
       } catch (error) {
         console.log(error);
@@ -43,7 +46,6 @@ export const CameraManager = ({ route }) => {
       try {
         const asset = await MediaLibrary.createAssetAsync(image);
         alert("Picture saved!");
-        newLicensePhoto(data.base64);
         setImage(null);
         navigation.navigate("TransportInfo");
       } catch (error) {

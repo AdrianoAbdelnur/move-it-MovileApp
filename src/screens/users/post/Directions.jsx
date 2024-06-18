@@ -9,17 +9,17 @@ import {
 } from "react-native";
 import globalStyles from "../../../styles/globalStyles";
 import { useNavigation } from "@react-navigation/native";
-import { FormUserContext } from "../../../contexts/FormUserContext";
 import { EXPO_PUBLIC_GOOGLE_MAP_KEY } from "@env";
 import { GooglePlacesAutocomplete } from "react-native-google-places-autocomplete";
 import { InputAutocomplete } from "../../../components/InputAutocomplete";
 import colors from "../../../styles/colors";
 import axios from "axios";
 import { NextButton } from "../../../components/ui/NextButton";
+import { FormContext } from "../../../contexts/FormContext";
 
 export const Directions = () => {
   const navigation = useNavigation();
-  const { formData, setFormData } = useContext(FormUserContext);
+  const { formData, setFormData } = useContext(FormContext);
   const [origin, setOrigin] = useState();
   const [destination, setDestination] = useState();
   const [distance, setDistance] = useState(null);

@@ -1,14 +1,14 @@
 import React, { useContext, useEffect } from "react";
 import { Alert, Text, TouchableOpacity, View } from "react-native";
-import { FormUserContext } from "../../../contexts/FormUserContext";
 import globalStyles from "../../../styles/globalStyles";
 import { useFormatDate } from "../../../hooks/useFormatDate";
 import { PostContext } from "../../../contexts/PostsContext";
 import { useNavigation } from "@react-navigation/native";
+import { FormContext } from "../../../contexts/FormContext";
 
 export const PostConfirm = () => {
   const navigation = useNavigation();
-  const { formData, setFormData } = useContext(FormUserContext);
+  const { formData, setFormData } = useContext(FormContext);
   const { addPost, state: postsState, clearAlertMsg } = useContext(PostContext);
   const { formatDate, fDate, fTime } = useFormatDate();
 
