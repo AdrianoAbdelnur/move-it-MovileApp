@@ -22,7 +22,6 @@ export const DateSelect = () => {
   }, [fDate, fTime]);
 
   const onChange = (e, selectedDate) => {
-    console.log(selectedDate);
     setDate(selectedDate);
     setShow(false);
     formatDate(selectedDate);

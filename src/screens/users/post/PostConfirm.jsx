@@ -33,7 +33,6 @@ export const PostConfirm = () => {
     clearAlertMsg();
     setFormData({});
     navigation.navigate("home");
-    console.log("hola");
   };
 
   const onSubmit = () => {
