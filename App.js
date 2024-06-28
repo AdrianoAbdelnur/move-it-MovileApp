@@ -1,7 +1,7 @@
 import 'react-native-gesture-handler'
 import { Stacknavigators } from './src/navigations/Stacknavigators';
 import { NavigationContainer } from '@react-navigation/native';
-import FormUserProvider from './src/contexts/FormUserContext';
+import FormProvider from './src/contexts/FormContext';
 import AuthProvider from './src/contexts/AuthContext';
 import PostsProvider from './src/contexts/PostsContext';
 import OfferProvider from './src/contexts/OffersContext';
@@ -9,8 +9,8 @@ import OfferProvider from './src/contexts/OffersContext';
 export default function App() {
   return (
         
-   <AuthProvider>
-    <FormUserProvider>
+  <FormProvider>
+    <AuthProvider>
       <PostsProvider>
         <OfferProvider>
           <NavigationContainer>
@@ -18,8 +18,8 @@ export default function App() {
           </NavigationContainer>
         </OfferProvider>
       </PostsProvider>
-    </FormUserProvider>
-   </AuthProvider>
+    </AuthProvider>
+  </FormProvider>
        
   
   );

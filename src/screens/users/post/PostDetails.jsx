@@ -13,7 +13,6 @@ export const PostDetails = ({ route }) => {
   const navigation = useNavigation();
   const { state: userState } = useContext(AuthContext);
   const { data } = route.params;
-  console.log(data);
   let fDate = "";
   let fTime = "";
 

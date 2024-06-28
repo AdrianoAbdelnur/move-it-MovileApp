@@ -1,81 +1,73 @@
-import React, { useEffect, useState } from "react";
-import {
-  KeyboardAvoidingView,
-  StyleSheet,
-  Text,
-  TextInput,
-  TouchableOpacity,
-  View,
-} from "react-native";
+import React, { useContext, useEffect, useState } from "react";
+import { KeyboardAvoidingView, TextInput, View } from "react-native";
 import globalStyles from "../../../../styles/globalStyles";
-import colors from "../../../../styles/colors";
 import { NextButton } from "../../../../components/ui/NextButton";
 import { useNavigation } from "@react-navigation/native";
-import { GeneralButton } from "../../../../components/ui/GeneralButton";
+import { FormContext } from "../../../../contexts/FormContext";
+import { AuthContext } from "../../../../contexts/AuthContext";
+import { PhotoButton } from "../../../../components/ui/PhotoButton";
 
 export const TransportInfo = () => {
   const navigation = useNavigation();
-  const [licensePhoto, setLicensePhoto] = useState("");
-
-  const newLicensePhoto = (newPhoto) => {
-    setLicensePhoto(newPhoto);
-  };
-
-  useEffect(() => {
-    console.log("Es este?", licensePhoto);
-  }, [licensePhoto]);
+  const { formData, setFormData } = useContext(FormContext);
+  const { state: user } = useContext(AuthContext);
 
   return (
     <KeyboardAvoidingView style={globalStyles.KeyboardAvoidingView}>
       <View style={globalStyles.container}>
         <TextInput
-          placeholder="type of vehicle"
+          placeholder={
+            user.user.transportInfo.vehicle
+              ? user.user.transportInfo.vehicle
+              : "type of vehicle"
+          }
           keyboardType="ascii-capable"
           textContentType="username"
           inputMode="text"
           style={globalStyles.input}
-          /* onChangeText={(value) => getInput("email", value)} */
-        />
-        <TextInput
-          placeholder="registration plate"
-          keyboardType="phone-pad"
-          textContentType="username"
-          inputMode="text"
-          style={globalStyles.input}
-          /* onChangeText={(value) => getInput("email", value)} */
-        />
-
-        <TextInput
-          placeholder="email"
-          keyboardType="email-address"
-          textContentType="emailAddress"
-          inputMode="email"
-          style={globalStyles.input}
-          /* onChangeText={(value) => getInput("email", value)} */
-        />
-        <TextInput
-          placeholder="password"
-          keyboardType="default"
-          textContentType="password"
-          secureTextEntry={true}
-          inputMode="text"
-          style={globalStyles.input}
-          /* onChangeText={(value) => getInput("password", value)} */
-        />
-        <GeneralButton
-          text={"Photo of your license"}
-          onPressFunction={() =>
-            navigation.navigate("Camera", { newLicensePhoto })
+          onChangeText={(value) =>
+            setFormData({
+              transportInfo: { ...formData.transportInfo, vehicle: value },
+            })
           }
         />
-        <TouchableOpacity
-          onPress={() => navigation.navigate("Camera", { hola: "hola" })}
-        >
-          <Text style={globalStyles.generalText}>
-            Take photo of your license
-          </Text>
-        </TouchableOpacity>
-        <NextButton navigateTo={"TransportInfo"} />
+        <TextInput
+          placeholder={
+            user.user.transportInfo.registrationPlate
+              ? user.user.transportInfo.registrationPlate
+              : "registration plate"
+          }
+          keyboardType="phone-pad"
+          inputMode="text"
+          style={globalStyles.input}
+          onChangeText={(value) =>
+            setFormData({
+              transportInfo: {
+                ...formData.transportInfo,
+                registrationPlate: value,
+              },
+            })
+          }
+        />
+        <PhotoButton
+          primaryText={"Vehicle Photo"}
+          secondaryText={"(General)"}
+          icon={"camera"}
+          fileName={"generalImg"}
+          onPressFunction={() =>
+            navigation.navigate("Camera", { saveAs: "generalImg" })
+          }
+        />
+        <PhotoButton
+          primaryText={"Vehicle Photo"}
+          secondaryText={"(Cargo Area)"}
+          icon={"camera"}
+          fileName={"cargoAreaImg"}
+          onPressFunction={() =>
+            navigation.navigate("Camera", { saveAs: "cargoAreaImg" })
+          }
+        />
+        <NextButton navigateTo={"DriverInfo"} />
       </View>
     </KeyboardAvoidingView>
   );

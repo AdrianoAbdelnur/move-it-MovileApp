@@ -7,12 +7,12 @@ import {
   TextInput,
   View,
 } from "react-native";
-import { FormUserContext } from "../../../contexts/FormUserContext";
 import { AuthContext } from "../../../contexts/AuthContext";
 import { NextButton } from "../../../components/ui/NextButton";
+import { FormContext } from "../../../contexts/FormContext";
 
 export const Type = () => {
-  const { formData, setFormData } = useContext(FormUserContext);
+  const { formData, setFormData } = useContext(FormContext);
   const { state: user } = useContext(AuthContext);
 
   return (

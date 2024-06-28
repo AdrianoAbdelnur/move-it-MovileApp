@@ -4,7 +4,6 @@ import { TYPES } from "../actions/PostActions"
 const PostReducer = (state={}, action) => {
     switch (action.type) {
         case TYPES.ADDNEWPOST:
-            console.log(action.payload.newPost)
             return{
                 ...state,
                 alertMsg: action.payload.alertMsg,

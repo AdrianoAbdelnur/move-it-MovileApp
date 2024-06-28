@@ -24,10 +24,6 @@ export const DriverHome = () => {
     }
   }, []);
 
-  useEffect(() => {
-    console.log(postsState);
-  }, [postsState]);
-
   let fDate = "";
   let fTime = "";
 
@@ -73,7 +69,6 @@ export const DriverHome = () => {
                   }}
                 >
                   {formatDate(item.date)}
-                  {console.log(item)}
                   <Text style={globalStyles.generalText}>
                     Requested by: {item?.owner?.name}
                   </Text>
@@ -81,10 +76,10 @@ export const DriverHome = () => {
                     Type of goods: {item?.goodsType}
                   </Text>
                   <Text style={globalStyles.generalText}>
-                    from: {item?.directions?.from}
+                    from: {item?.directions?.from.description}
                   </Text>
                   <Text style={globalStyles.generalText}>
-                    to: {item?.directions?.to}
+                    to: {item?.directions?.to.description}
                   </Text>
                   <Text style={globalStyles.generalText}>
                     Date: {fDate} at {fTime}

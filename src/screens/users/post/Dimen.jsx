@@ -9,12 +9,12 @@ import {
   View,
 } from "react-native";
 import { useNavigation } from "@react-navigation/native";
-import { FormUserContext } from "../../../contexts/FormUserContext";
 import { NextButton } from "../../../components/ui/NextButton";
+import { FormContext } from "../../../contexts/FormContext";
 
 export const Dimen = () => {
   const navigation = useNavigation();
-  const { formData, setFormData } = useContext(FormUserContext);
+  const { formData, setFormData } = useContext(FormContext);
   return (
     <KeyboardAvoidingView style={globalStyles.KeyboardAvoidingView}>
       <View style={globalStyles.container}>
