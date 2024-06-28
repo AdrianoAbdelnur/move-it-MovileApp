@@ -9,8 +9,8 @@ import OfferProvider from './src/contexts/OffersContext';
 export default function App() {
   return (
         
-   <AuthProvider>
-    <FormProvider>
+  <FormProvider>
+    <AuthProvider>
       <PostsProvider>
         <OfferProvider>
           <NavigationContainer>
@@ -18,8 +18,8 @@ export default function App() {
           </NavigationContainer>
         </OfferProvider>
       </PostsProvider>
-    </FormProvider>
-   </AuthProvider>
+    </AuthProvider>
+  </FormProvider>
        
   
   );
