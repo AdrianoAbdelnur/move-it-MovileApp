@@ -91,7 +91,7 @@ export const PersonalInf = () => {
             placeholder="password"
             keyboardType="default"
             textContentType="password"
-            secureTextEntry={showPassword}
+            secureTextEntry={!showPassword}
             inputMode="text"
             style={[globalStyles.input, { paddingRight: 45 }]}
             onChangeText={(value) =>
@@ -114,7 +114,7 @@ export const PersonalInf = () => {
             placeholder="confirm password"
             keyboardType="default"
             textContentType="password"
-            secureTextEntry={showConfirmPassword}
+            secureTextEntry={!showConfirmPassword}
             inputMode="text"
             style={[globalStyles.input, { paddingRight: 45 }]}
             onChangeText={(value) => {

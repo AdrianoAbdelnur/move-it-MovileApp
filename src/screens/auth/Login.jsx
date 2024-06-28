@@ -13,6 +13,7 @@ import { useForm } from "../../hooks/useForm";
 import colors from "../../styles/colors";
 import { useNavigation } from "@react-navigation/native";
 import { MaterialIcons } from "@expo/vector-icons";
+import { CustomModal } from "../../components/ui/CustomModal";
 
 export const Login = () => {
   const navigation = useNavigation();
@@ -41,7 +42,7 @@ export const Login = () => {
             placeholder="password"
             keyboardType="default"
             textContentType="password"
-            secureTextEntry={showPassword}
+            secureTextEntry={!showPassword}
             inputMode="text"
             style={[globalStyles.input, { paddingRight: 45 }]}
             onChangeText={(value) => getInput("password", value)}
@@ -73,6 +74,7 @@ export const Login = () => {
           </View>
         </View>
       </View>
+      <CustomModal />
     </KeyboardAvoidingView>
   );
 };
