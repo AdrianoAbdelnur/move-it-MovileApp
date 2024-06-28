@@ -2,8 +2,8 @@ import React, { useContext, useEffect, useState } from "react";
 import {
   KeyboardAvoidingView,
   StyleSheet,
-  Text,
   TextInput,
+  TouchableOpacity,
   View,
 } from "react-native";
 import globalStyles from "../../../../styles/globalStyles";
@@ -12,6 +12,7 @@ import { NextButton } from "../../../../components/ui/NextButton";
 import { FormContext } from "../../../../contexts/FormContext";
 import { useNavigation } from "@react-navigation/native";
 import { AuthContext } from "../../../../contexts/AuthContext";
+import { MaterialIcons } from "@expo/vector-icons";
 
 export const PersonalInf = () => {
   const { register } = useContext(AuthContext);
@@ -19,20 +20,22 @@ export const PersonalInf = () => {
   const [confirmPassword, setConfirmPassword] = useState("");
   const [passConfirmation, setPassConfirmation] = useState(false);
   const navigation = useNavigation();
+  const [showPassword, setShowPassword] = useState(false);
+  const [showConfirmPassword, setShowConfirmPassword] = useState(false);
 
-  const comparePass = () => {
+  useEffect(() => {
     if (confirmPassword === formData.password) {
       setPassConfirmation(true);
     } else {
-      setConfirmPassword(false);
+      setPassConfirmation(false);
     }
-  };
+  }, [confirmPassword, formData.password]);
 
   const checkFields = () => {
     if (formData?.given_name?.length > 2) {
       if (formData.family_name?.length > 2) {
         if (validateEmail(formData.email)) {
-          if (confirmPassword) {
+          if (passConfirmation) {
             register();
             navigation.navigate("TransportInfo");
           } else alert("Passwords must match");
@@ -83,28 +86,52 @@ export const PersonalInf = () => {
           style={globalStyles.input}
           onChangeText={(value) => setFormData({ ...formData, email: value })}
         />
-        <TextInput
-          placeholder="password"
-          keyboardType="default"
-          textContentType="password"
-          secureTextEntry={true}
-          inputMode="text"
-          style={globalStyles.input}
-          onBlur={comparePass}
-          onChangeText={(value) =>
-            setFormData({ ...formData, password: value })
-          }
-        />
-        <TextInput
-          placeholder="confirm password"
-          keyboardType="default"
-          textContentType="password"
-          secureTextEntry={true}
-          inputMode="text"
-          style={globalStyles.input}
-          onChangeText={(value) => setConfirmPassword(value)}
-          onBlur={comparePass}
-        />
+        <View style={styles.passwordContainer}>
+          <TextInput
+            placeholder="password"
+            keyboardType="default"
+            textContentType="password"
+            secureTextEntry={showPassword}
+            inputMode="text"
+            style={[globalStyles.input, { paddingRight: 45 }]}
+            onChangeText={(value) =>
+              setFormData({ ...formData, password: value })
+            }
+          />
+          <TouchableOpacity
+            style={styles.eyeButton}
+            onPress={() => setShowPassword(!showPassword)}
+          >
+            <MaterialIcons
+              name={showPassword ? "visibility" : "visibility-off"}
+              size={24}
+              color={colors.textSecondary}
+            />
+          </TouchableOpacity>
+        </View>
+        <View style={styles.passwordContainer}>
+          <TextInput
+            placeholder="confirm password"
+            keyboardType="default"
+            textContentType="password"
+            secureTextEntry={showConfirmPassword}
+            inputMode="text"
+            style={[globalStyles.input, { paddingRight: 45 }]}
+            onChangeText={(value) => {
+              setConfirmPassword(value);
+            }}
+          />
+          <TouchableOpacity
+            style={styles.eyeButton}
+            onPress={() => setShowConfirmPassword(!showConfirmPassword)}
+          >
+            <MaterialIcons
+              name={showConfirmPassword ? "visibility" : "visibility-off"}
+              size={24}
+              color={colors.textSecondary}
+            />
+          </TouchableOpacity>
+        </View>
         <NextButton toDo={checkFields} />
       </View>
     </KeyboardAvoidingView>
@@ -166,5 +193,14 @@ const styles = StyleSheet.create({
     borderRadius: 22,
     flexDirection: "row",
     justifyContent: "space-between",
+  },
+  passwordContainer: {
+    position: "relative",
+    width: "100%",
+  },
+  eyeButton: {
+    position: "absolute",
+    right: 10,
+    top: 15,
   },
 });
