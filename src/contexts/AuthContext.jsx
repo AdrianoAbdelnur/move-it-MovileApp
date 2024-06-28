@@ -62,15 +62,17 @@ const AuthProvider = ({ children }) => {
             },
             isLogged: true,
             token: dataToken.token,
-            message: "User Logged successfully",
+            /*  message: { message: "User Logged successfully", type: "Success" }, */
           },
         });
       }
     } catch (error) {
+      console.log(error.response.data);
       dispatch({
         type: TYPES.LOGOUT,
         payload: {
-          message: "Logout",
+          message: error.response.data.message || "Login failed !",
+          type: "Error",
         },
       });
     }
@@ -82,7 +84,8 @@ const AuthProvider = ({ children }) => {
       dispatch({
         type: TYPES.LOGOUT,
         payload: {
-          message: "Logout",
+          message: "Incorrect Token. Logout !",
+          type: "Error",
         },
       });
     } else {
@@ -112,7 +115,6 @@ const AuthProvider = ({ children }) => {
               },
               isLogged: true,
               token: dataToken.token,
-              message: "User Logged successfully",
             },
           });
         }
@@ -128,6 +130,7 @@ const AuthProvider = ({ children }) => {
       type: TYPES.LOGOUT,
       payload: {
         message: "Logout success",
+        type: "Success",
       },
     });
   };
