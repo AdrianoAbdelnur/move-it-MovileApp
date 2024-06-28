@@ -1,5 +1,7 @@
 export const TYPES = {
     LOGIN: 'LOGIN',
     LOGOUT: 'LOGOUT',
-    LOADING: 'LOADING'
+    LOADING: 'LOADING',
+    UPDATE: "UPDATE",
+    CHANGESTATUS: "CHANGESTATUS"
 }
