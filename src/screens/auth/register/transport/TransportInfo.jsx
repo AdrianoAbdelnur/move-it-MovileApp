@@ -3,66 +3,71 @@ import { KeyboardAvoidingView, TextInput, View } from "react-native";
 import globalStyles from "../../../../styles/globalStyles";
 import { NextButton } from "../../../../components/ui/NextButton";
 import { useNavigation } from "@react-navigation/native";
-import { GeneralButton } from "../../../../components/ui/GeneralButton";
 import { FormContext } from "../../../../contexts/FormContext";
+import { AuthContext } from "../../../../contexts/AuthContext";
+import { PhotoButton } from "../../../../components/ui/PhotoButton";
 
 export const TransportInfo = () => {
   const navigation = useNavigation();
   const { formData, setFormData } = useContext(FormContext);
-
-  useEffect(() => {
-    console.log("Es este?", formData);
-  }, [formData]);
+  const { state: user } = useContext(AuthContext);
 
   return (
     <KeyboardAvoidingView style={globalStyles.KeyboardAvoidingView}>
       <View style={globalStyles.container}>
         <TextInput
-          placeholder="type of vehicle"
+          placeholder={
+            user.user.transportInfo.vehicle
+              ? user.user.transportInfo.vehicle
+              : "type of vehicle"
+          }
           keyboardType="ascii-capable"
           textContentType="username"
           inputMode="text"
           style={globalStyles.input}
-          onChangeText={(value) => setFormData({ ...formData, vehicle: value })}
+          onChangeText={(value) =>
+            setFormData({
+              transportInfo: { ...formData.transportInfo, vehicle: value },
+            })
+          }
         />
         <TextInput
-          placeholder="registration plate"
+          placeholder={
+            user.user.transportInfo.registrationPlate
+              ? user.user.transportInfo.registrationPlate
+              : "registration plate"
+          }
           keyboardType="phone-pad"
           inputMode="text"
           style={globalStyles.input}
           onChangeText={(value) =>
-            setFormData({ ...formData, registrationPlate: value })
+            setFormData({
+              transportInfo: {
+                ...formData.transportInfo,
+                registrationPlate: value,
+              },
+            })
           }
         />
-
-        <TextInput
-          placeholder="email"
-          keyboardType="email-address"
-          textContentType="emailAddress"
-          inputMode="email"
-          style={globalStyles.input}
-          onChangeText={(value) =>
-            setFormData({ ...formData, password: value })
-          }
-        />
-        <TextInput
-          placeholder="password"
-          keyboardType="default"
-          textContentType="password"
-          secureTextEntry={true}
-          inputMode="text"
-          style={globalStyles.input}
-          /* onChangeText={(value) =>
-            setFormData({ ...formData, password: value })
-          } */
-        />
-        <GeneralButton
-          text={"Photo of your license"}
+        <PhotoButton
+          primaryText={"Vehicle Photo"}
+          secondaryText={"(General)"}
+          icon={"camera"}
+          fileName={"generalImg"}
           onPressFunction={() =>
-            navigation.navigate("Camera", { saveAs: "licenseImage" })
+            navigation.navigate("Camera", { saveAs: "generalImg" })
           }
         />
-        <NextButton navigateTo={"TransportInfo"} />
+        <PhotoButton
+          primaryText={"Vehicle Photo"}
+          secondaryText={"(Cargo Area)"}
+          icon={"camera"}
+          fileName={"cargoAreaImg"}
+          onPressFunction={() =>
+            navigation.navigate("Camera", { saveAs: "cargoAreaImg" })
+          }
+        />
+        <NextButton navigateTo={"DriverInfo"} />
       </View>
     </KeyboardAvoidingView>
   );
