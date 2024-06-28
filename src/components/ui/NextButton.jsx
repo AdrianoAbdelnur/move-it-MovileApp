@@ -4,13 +4,16 @@ import { useNavigation } from "@react-navigation/native";
 import { StyleSheet, Text, TouchableOpacity, View } from "react-native";
 import colors from "../../styles/colors";
 
-export const NextButton = ({ navigateTo }) => {
+export const NextButton = ({ toDo, navigateTo = null, isDisabled = false }) => {
   const navigation = useNavigation();
   return (
     <View style={styles.nextButtonContainer}>
       <TouchableOpacity
         style={styles.nextButton}
-        onPress={() => navigation.navigate(navigateTo)}
+        onPress={
+          navigateTo ? () => navigation.navigate(navigateTo) : () => toDo()
+        }
+        disabled={isDisabled}
       >
         <Text style={globalStyles.textButtons}>Next</Text>
       </TouchableOpacity>
