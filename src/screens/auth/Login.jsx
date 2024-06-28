@@ -1,4 +1,4 @@
-import React, { useContext, useEffect } from "react";
+import React, { useContext, useEffect, useState } from "react";
 import {
   KeyboardAvoidingView,
   StyleSheet,
@@ -12,11 +12,13 @@ import { AuthContext } from "../../contexts/AuthContext";
 import { useForm } from "../../hooks/useForm";
 import colors from "../../styles/colors";
 import { useNavigation } from "@react-navigation/native";
+import { MaterialIcons } from "@expo/vector-icons";
 
 export const Login = () => {
   const navigation = useNavigation();
   const { login, state } = useContext(AuthContext);
   const { formState, getInput } = useForm();
+  const [showPassword, setShowPassword] = useState(false);
 
   const onSubmit = () => {
     login(formState?.email, formState?.password);
@@ -34,15 +36,27 @@ export const Login = () => {
           style={globalStyles.input}
           onChangeText={(value) => getInput("email", value)}
         />
-        <TextInput
-          placeholder="password"
-          keyboardType="default"
-          textContentType="password"
-          secureTextEntry={true}
-          inputMode="text"
-          style={globalStyles.input}
-          onChangeText={(value) => getInput("password", value)}
-        />
+        <View style={styles.passwordContainer}>
+          <TextInput
+            placeholder="password"
+            keyboardType="default"
+            textContentType="password"
+            secureTextEntry={showPassword}
+            inputMode="text"
+            style={[globalStyles.input, { paddingRight: 45 }]}
+            onChangeText={(value) => getInput("password", value)}
+          />
+          <TouchableOpacity
+            style={styles.eyeButton}
+            onPress={() => setShowPassword(!showPassword)}
+          >
+            <MaterialIcons
+              name={showPassword ? "visibility" : "visibility-off"}
+              size={24}
+              color={colors.textSecondary}
+            />
+          </TouchableOpacity>
+        </View>
         <View style={styles.buttonContainer}>
           <TouchableOpacity style={styles.button} onPress={() => onSubmit()}>
             <Text style={styles.buttonText}>Login</Text>
@@ -118,5 +132,15 @@ const styles = StyleSheet.create({
     borderRadius: 22,
     flexDirection: "row",
     justifyContent: "space-between",
+  },
+  passwordContainer: {
+    position: "relative",
+    width: "100%",
+    marginBottom: 15,
+  },
+  eyeButton: {
+    position: "absolute",
+    right: 10,
+    top: 15,
   },
 });
