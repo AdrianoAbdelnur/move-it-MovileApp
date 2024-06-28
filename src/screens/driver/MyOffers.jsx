@@ -22,10 +22,6 @@ export const MyOffers = () => {
     }
   }, []);
 
-  useEffect(() => {
-    console.log("offers", offerState);
-  }, [offerState]);
-
   let fDate = "";
   let fTime = "";
 
@@ -71,7 +67,6 @@ export const MyOffers = () => {
                   }} */
                 >
                   {formatDate(item.post.date)}
-                  {console.log(item)}
                   <Text style={globalStyles.generalText}>
                     Your offer: {item?.price}
                   </Text>
