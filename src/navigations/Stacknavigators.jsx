@@ -23,6 +23,9 @@ import { SelectRegisterType } from "../screens/auth/register/SelectRegisterType"
 import { PersonalInf } from "../screens/auth/register/transport/PersonalInf";
 import { TransportInfo } from "../screens/auth/register/transport/TransportInfo";
 import { CameraManager } from "../components/camera/CameraManager";
+import { DriverInfo } from "../screens/auth/register/transport/DriverInfo";
+import { CompleteProfile } from "../screens/auth/register/transport/CompleteProfile";
+import { WaitForAuth } from "../screens/auth/register/transport/WaitForAuth";
 
 const Stack = createStackNavigator();
 
@@ -31,6 +34,8 @@ export const Stacknavigators = () => {
 
   const isLogged = state.isLogged;
   const role = state?.user?.role;
+  const infoCompletedFlag = state?.user?.infoCompletedFlag;
+  const authorizedTransport = state?.user?.authorizedTransport;
 
   if (state.isLoading) {
     return <LoadingComponent />;
@@ -43,7 +48,6 @@ export const Stacknavigators = () => {
         <Stack.Screen name="SelectRegister" component={SelectRegisterType} />
         <Stack.Screen name="PersonalTransport" component={PersonalInf} />
         <Stack.Screen name="TransportInfo" component={TransportInfo} />
-        <Stack.Screen name="Camera" component={CameraManager} />
       </Stack.Navigator>
     );
   }
@@ -66,7 +70,7 @@ export const Stacknavigators = () => {
     );
   }
 
-  if (isLogged && role === "transport") {
+  if (isLogged && role === "transport" && authorizedTransport) {
     return (
       <Stack.Navigator>
         <Stack.Screen
@@ -83,6 +87,30 @@ export const Stacknavigators = () => {
         <Stack.Screen name="Details" component={PostDetails} />
         <Stack.Screen name="Offer" component={Offer} />
         <Stack.Screen name="MyOffers" component={MyOffers} />
+      </Stack.Navigator>
+    );
+  }
+
+  if (isLogged && role === "transport" && !infoCompletedFlag) {
+    return (
+      <Stack.Navigator>
+        <Stack.Screen name="CompleteProfile" component={CompleteProfile} />
+        <Stack.Screen name="TransportInfo" component={TransportInfo} />
+        <Stack.Screen name="DriverInfo" component={DriverInfo} />
+        <Stack.Screen name="Camera" component={CameraManager} />
+      </Stack.Navigator>
+    );
+  }
+
+  if (
+    isLogged &&
+    role === "transport" &&
+    infoCompletedFlag &&
+    !authorizedTransport
+  ) {
+    return (
+      <Stack.Navigator>
+        <Stack.Screen name="WaitingForAuthorization" component={WaitForAuth} />
       </Stack.Navigator>
     );
   }
