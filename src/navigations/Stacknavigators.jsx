@@ -26,6 +26,7 @@ import { CameraManager } from "../components/camera/CameraManager";
 import { DriverInfo } from "../screens/auth/register/transport/DriverInfo";
 import { CompleteProfile } from "../screens/auth/register/transport/CompleteProfile";
 import { WaitForAuth } from "../screens/auth/register/transport/WaitForAuth";
+import { DriversReviews } from "../screens/users/DriversReviews";
 
 const Stack = createStackNavigator();
 
@@ -65,6 +66,7 @@ export const Stacknavigators = () => {
         <Stack.Screen name="Confirmation" component={PostConfirm} />
         <Stack.Screen name="Details" component={PostDetails} />
         <Stack.Screen name="OffersList" component={OffersList} />
+        <Stack.Screen name="Reviews" component={DriversReviews} />
         <Stack.Screen name="Maps" component={Maps} />
       </Stack.Navigator>
     );
