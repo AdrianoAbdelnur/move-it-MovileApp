@@ -70,7 +70,7 @@ export const DriverHome = () => {
                 >
                   {formatDate(item.date)}
                   <Text style={globalStyles.generalText}>
-                    Requested by: {item?.owner?.name}
+                    Requested by: {item?.owner?.given_name}
                   </Text>
                   <Text style={globalStyles.generalText}>
                     Type of goods: {item?.goodsType}

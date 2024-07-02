@@ -61,7 +61,9 @@ export const Home = () => {
                     styles.itemContainer,
                     item.status === "Pending"
                       ? { backgroundColor: "green" }
-                      : { backgroundColor: "#37474F" },
+                      : item.status === "offerSelected"
+                      ? { backgroundColor: "#37474F" }
+                      : { backgroundColor: "red" },
                   ]}
                   onPress={() => {
                     navigation.navigate("Details", { data: item });
@@ -83,6 +85,17 @@ export const Home = () => {
                   <Text style={globalStyles.generalText}>
                     status: {item.status}
                   </Text>
+                  {item.offers.length !== 0 && !item.offerSelected && (
+                    <Text style={{ color: "red" }}>
+                      You have {item.offers.length} offers for this post
+                    </Text>
+                  )}
+                  {item.offerSelected && (
+                    <Text style={{ color: "red" }}>
+                      You have selected {item.offerSelected.owner.given_name}'s
+                      offer'
+                    </Text>
+                  )}
                   <Text style={{ alignSelf: "flex-end", color: "black" }}>
                     Press here for more information
                   </Text>

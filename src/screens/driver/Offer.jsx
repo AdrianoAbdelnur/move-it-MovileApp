@@ -1,20 +1,15 @@
 import React, { useContext, useEffect, useState } from "react";
-import {
-  KeyboardAvoidingView,
-  Text,
-  TextInput,
-  TouchableOpacity,
-  View,
-} from "react-native";
+import { KeyboardAvoidingView, Text, TextInput, View } from "react-native";
 import globalStyles from "../../styles/globalStyles";
 import { AuthContext } from "../../contexts/AuthContext";
-import { OfferContext } from "../../contexts/OffersContext";
 import { useNavigation } from "@react-navigation/native";
 import { GeneralButton } from "../../components/ui/GeneralButton";
+import { PostContext } from "../../contexts/PostsContext";
+import { clientAxios } from "../../api/ClientAxios";
 
 export const Offer = ({ route }) => {
   const { state: userState } = useContext(AuthContext);
-  const { state: offerState, addOffer } = useContext(OfferContext);
+  const { addOfferInPost } = useContext(PostContext);
   const { data } = route.params;
   const [price, setPrice] = useState("");
   const [isValid, setIsValid] = useState(true);
@@ -37,6 +32,23 @@ export const Offer = ({ route }) => {
       post: data._id,
     });
     navigation.navigate("driverHome");
+  };
+
+  const addOffer = async (offerData) => {
+    try {
+      const { data } = await clientAxios.post("/offer/addOffer", offerData);
+      const { newOffer } = data;
+      if (newOffer) {
+        addOfferInPost({
+          ownerId: userState.user.id,
+          ownerName: userState.user.given_name,
+          postId: newOffer.post._id,
+          newOfferId: newOffer._id,
+        });
+      }
+    } catch (error) {
+      console.log(error);
+    }
   };
 
   return (

@@ -83,6 +83,40 @@ const PostsProvider = ({ children }) => {
     });
   };
 
+  const postSelectOffer = async (selectData) => {
+    console.log("selectedDATA", selectData);
+    const { data } = await clientAxios.patch(
+      "/userPost/selectOffer",
+      selectData
+    );
+    console.log("DATA POSTFOUND", data);
+    if (data.postFound) {
+      dispatch({
+        type: TYPES.UPDATEPOST,
+        payload: { newPost: data.postFound },
+      });
+    }
+  };
+
+  const addOfferInPost = async (offerInfo) => {
+    try {
+      console.log("OFFERINFO en addOfferInPost", offerInfo);
+      const { data } = await clientAxios.put("/userPost/addNewOffer", {
+        postId: offerInfo.postId,
+        newOfferId: offerInfo.newOfferId,
+      });
+      console.log("Response de DB addNewOffer in post", data);
+      if (data.newPost) {
+        dispatch({
+          type: "ADDOFFERINPOST",
+          payload: offerInfo,
+        });
+      }
+    } catch (error) {
+      console.log(error);
+    }
+  };
+
   return (
     <PostContext.Provider
       value={{
@@ -92,6 +126,8 @@ const PostsProvider = ({ children }) => {
         getMyPosts,
         getPendingPosts,
         clearAlertMsg,
+        postSelectOffer,
+        addOfferInPost,
       }}
     >
       {children}

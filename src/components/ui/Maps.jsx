@@ -19,10 +19,7 @@ export const Maps = () => {
         <GooglePlacesAutocomplete
           style={styles.input}
           placeholder="Search"
-          onPress={(data, details = null) => {
-            // 'details' is provided when fetchDetails = true
-            console.log(data, details);
-          }}
+          onPress={(data, details = null) => {}}
           query={{
             key: "AIzaSyDWAdSPRMoQxd-DIP__MbHPj2RvthFhBVE",
             language: "en",

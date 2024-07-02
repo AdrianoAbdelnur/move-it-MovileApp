@@ -8,8 +8,7 @@ export const CustomModal = () => {
   const { state: AuthState } = useContext(AuthContext);
 
   useEffect(() => {
-    console.log(AuthState.message);
-    if (AuthState.message.message) {
+    if (AuthState?.message?.message) {
       setShowModal(true);
     }
   }, [AuthState.message.message]);
@@ -18,10 +17,10 @@ export const CustomModal = () => {
     <Modal transparent={true} visible={showModal} animationType="fade">
       <View style={styles.modalContainer}>
         <View style={styles.contentModal}>
-          {AuthState.message.type && (
+          {AuthState?.message?.type && (
             <Text
               style={
-                AuthContext.message.type == "Error"
+                AuthState?.message?.type == "Error"
                   ? styles.modalTitleError
                   : ""
               }

@@ -62,7 +62,6 @@ const AuthProvider = ({ children }) => {
             },
             isLogged: true,
             token: dataToken.token,
-            /*  message: { message: "User Logged successfully", type: "Success" }, */
           },
         });
       }

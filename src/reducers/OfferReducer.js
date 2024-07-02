@@ -11,7 +11,14 @@ const OfferReducer = (state={}, action) => {
     return{
         ...state,
         offers: action.payload.myOffers
-    }     
+    };
+    case TYPES.UPDATEOFFER:
+      return {
+        ...state,
+        offers: state.offers.map(offer => 
+          offer.id === action.payload.id ? { ...offer, offerSelected: true } : offer
+        )
+      };
     default:
         return state
  }

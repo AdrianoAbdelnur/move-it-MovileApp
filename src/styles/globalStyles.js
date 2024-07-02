@@ -10,7 +10,7 @@ const globalStyles = StyleSheet.create({
     justifyContent: "center",
     alignItems: "center",
     backgroundColor: colors.background,
-    padding: 20,
+    padding: 5,
   },
   textButtons: {
     color: "white",
@@ -34,7 +34,7 @@ const globalStyles = StyleSheet.create({
   },
   generalText: {
     color: "white",
-    fontSize: 18,
+    fontSize: 15,
   }
 });
 
