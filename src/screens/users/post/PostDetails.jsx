@@ -12,7 +12,9 @@ import { useNavigation } from "@react-navigation/native";
 export const PostDetails = ({ route }) => {
   const navigation = useNavigation();
   const { state: userState } = useContext(AuthContext);
+
   const { data } = route.params;
+
   let fDate = "";
   let fTime = "";
 
@@ -58,23 +60,33 @@ export const PostDetails = ({ route }) => {
       {formatDate(data?.date)}
       <Text style={globalStyles.generalInformationText}>date : {fDate}</Text>
       <Text style={globalStyles.generalInformationText}>time : {fTime}</Text>
-      <View style={globalStyles.nextButtonContainer}></View>
-      {userState.user.role === "transport" && (
-        <TouchableOpacity
-          style={globalStyles.OptionsButton}
-          onPress={() => navigation.navigate("Offer", { data })}
-        >
-          <Text style={globalStyles.textButtons}>Make an offer</Text>
-        </TouchableOpacity>
+      {data.offerSelected && (
+        <Text style={globalStyles.generalInformationText}>
+          Transport: {data?.offerSelected?.owner?.given_name}
+        </Text>
       )}
-      {userState.user.role === "user" && data.offers.length !== 0 && (
-        <TouchableOpacity
-          style={globalStyles.OptionsButton}
-          onPress={() => navigation.navigate("OffersList", { data })}
-        >
-          <Text style={globalStyles.textButtons}>See offers</Text>
-        </TouchableOpacity>
-      )}
+      {data.offers.find((offer) => offer?.owner?._id === userState?.user?.id)
+        ? userState.user.role == "transport" && (
+            <Text>You have already offered for this job</Text>
+          )
+        : userState.user.role == "transport" && (
+            <TouchableOpacity
+              style={globalStyles.OptionsButton}
+              onPress={() => navigation.navigate("Offer", { data })}
+            >
+              <Text style={globalStyles.textButtons}>Make an offer</Text>
+            </TouchableOpacity>
+          )}
+      {userState.user.role === "user" &&
+        data.status === "Pending" &&
+        data.offers.length !== 0 && (
+          <TouchableOpacity
+            style={globalStyles.OptionsButton}
+            onPress={() => navigation.navigate("OffersList", { data })}
+          >
+            <Text style={globalStyles.textButtons}>See offers</Text>
+          </TouchableOpacity>
+        )}
     </View>
   );
 };
