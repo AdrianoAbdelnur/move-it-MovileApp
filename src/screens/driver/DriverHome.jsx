@@ -1,7 +1,6 @@
 import React, { useContext, useEffect } from "react";
 
 import {
-  SafeAreaView,
   ScrollView,
   StyleSheet,
   Text,
@@ -13,6 +12,7 @@ import { StatusBar } from "expo-status-bar";
 import colors from "../../styles/colors";
 import { PostContext } from "../../contexts/PostsContext";
 import { useNavigation } from "@react-navigation/native";
+import { PostShower } from "../../components/post/PostShower";
 
 export const DriverHome = () => {
   const navigation = useNavigation();
@@ -48,7 +48,7 @@ export const DriverHome = () => {
         style={globalStyles.OptionsButton}
         onPress={() => navigation.navigate("MyOffers")}
       >
-        <Text style={styles.buttonText}>See My offers</Text>
+        <Text style={styles.buttonText}>See my accepted offers</Text>
       </TouchableOpacity>
       <View style={styles.services_container}>
         <Text style={styles.servicesTitle}>Requested services:</Text>
@@ -56,41 +56,7 @@ export const DriverHome = () => {
           <View>
             {postsState &&
               postsState?.posts?.map((item, index) => (
-                <TouchableOpacity
-                  key={index}
-                  style={[
-                    styles.itemContainer,
-                    item.status === "Pending"
-                      ? { backgroundColor: "green" }
-                      : { backgroundColor: "#37474F" },
-                  ]}
-                  onPress={() => {
-                    navigation.navigate("Details", { data: item });
-                  }}
-                >
-                  {formatDate(item.date)}
-                  <Text style={globalStyles.generalText}>
-                    Requested by: {item?.owner?.given_name}
-                  </Text>
-                  <Text style={globalStyles.generalText}>
-                    Type of goods: {item?.goodsType}
-                  </Text>
-                  <Text style={globalStyles.generalText}>
-                    from: {item?.directions?.from.description}
-                  </Text>
-                  <Text style={globalStyles.generalText}>
-                    to: {item?.directions?.to.description}
-                  </Text>
-                  <Text style={globalStyles.generalText}>
-                    Date: {fDate} at {fTime}
-                  </Text>
-                  <Text style={globalStyles.generalText}>
-                    status: {item?.status}
-                  </Text>
-                  <Text style={{ alignSelf: "flex-end", color: "black" }}>
-                    Press here for more information
-                  </Text>
-                </TouchableOpacity>
+                <PostShower key={item._id} item={item} />
               ))}
           </View>
         </ScrollView>
