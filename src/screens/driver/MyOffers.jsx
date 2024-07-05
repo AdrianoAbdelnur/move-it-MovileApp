@@ -1,4 +1,4 @@
-import React, { useContext, useEffect } from "react";
+import React, { useContext, useEffect, useState } from "react";
 import {
   ScrollView,
   StatusBar,
@@ -8,19 +8,36 @@ import {
   View,
 } from "react-native";
 import globalStyles from "../../styles/globalStyles";
-import { OfferContext } from "../../contexts/OffersContext";
 import colors from "../../styles/colors";
 import { AuthContext } from "../../contexts/AuthContext";
+import { clientAxios } from "../../api/ClientAxios";
+import { CustomModal } from "../../components/ui/CustomModal";
+import { PostContext } from "../../contexts/PostsContext";
 
 export const MyOffers = () => {
-  const { state: offerState, getMyOffers } = useContext(OfferContext);
   const { state: userState } = useContext(AuthContext);
+  const { uptateStatus } = useContext(PostContext);
+  const [aceptedOffers, setAceptedOffers] = useState([]);
 
   useEffect(() => {
-    if (offerState.offers.length === 0) {
-      getMyOffers(userState.user.id);
-    }
+    getMyAceptedOffers();
   }, []);
+
+  getMyAceptedOffers = async () => {
+    try {
+      let { data } = await clientAxios.get(
+        "/offer/getMyAceptedOffers/" + userState.user.id
+      );
+      console.log(data.offersFound);
+      data.offersFound.sort(
+        (a, b) => new Date(a.post.date) - new Date(b.post.date)
+      );
+      console.log(data.offersFound);
+      setAceptedOffers(data.offersFound);
+    } catch (error) {
+      console.log(error);
+    }
+  };
 
   let fDate = "";
   let fTime = "";
@@ -42,52 +59,44 @@ export const MyOffers = () => {
   return (
     <View style={globalStyles.container}>
       <StatusBar style="auto" backgroundColor="gray" translucent={false} />
-      {/*   <TouchableOpacity
-      style={globalStyles.OptionsButton}
-      onPress={() => navigation.navigate("MyOffers")}
-    >
-      <Text style={styles.buttonText}>See My offers</Text>
-    </TouchableOpacity> */}
       <View style={styles.services_container}>
-        <Text style={styles.servicesTitle}>Requested services:</Text>
+        <Text style={styles.servicesTitle}>Accepted services:</Text>
         <ScrollView style={styles.services}>
           <View>
-            {offerState &&
-              offerState?.offers?.map((item, index) => (
-                <TouchableOpacity
-                  key={index}
-                  style={[
-                    styles.itemContainer,
-                    item.status === "Pending"
-                      ? { backgroundColor: "green" }
-                      : { backgroundColor: "#37474F" },
-                  ]}
-                  /*  onPress={() => {
-                    navigation.navigate("Details", { data: item });
-                  }} */
-                >
+            {aceptedOffers &&
+              aceptedOffers?.map((item, index) => (
+                <TouchableOpacity key={item._id} style={styles.itemContainer}>
                   {formatDate(item.post.date)}
                   <Text style={globalStyles.generalText}>
-                    Your offer: {item?.price}
+                    Type of goods: {item.post.goodsType}
                   </Text>
                   <Text style={globalStyles.generalText}>
-                    Type of goods: {item?.post.goodsType}
+                    from: {item.post.directions?.from?.description}
                   </Text>
                   <Text style={globalStyles.generalText}>
-                    from: {item?.post.directions?.from}
-                  </Text>
-                  <Text style={globalStyles.generalText}>
-                    to: {item?.post.directions?.to}
+                    to: {item.post.directions?.to?.description}
                   </Text>
                   <Text style={globalStyles.generalText}>
                     Date: {fDate} at {fTime}
                   </Text>
                   <Text style={globalStyles.generalText}>
-                    status: {item?.post.status}
+                    status: {item.post.status}
                   </Text>
-                  <Text style={{ alignSelf: "flex-end", color: "black" }}>
-                    Press here for more information
+                  <Text style={globalStyles.generalText}>
+                    Price: {item.price}
                   </Text>
+                  <TouchableOpacity
+                    onPress={() => {
+                      uptateStatus({
+                        postId: item.post._id,
+                        newStatus: "transportDone",
+                      });
+                    }}
+                  >
+                    <Text style={{ alignSelf: "flex-end", color: "black" }}>
+                      Press here if the job has been completed
+                    </Text>
+                  </TouchableOpacity>
                 </TouchableOpacity>
               ))}
           </View>
