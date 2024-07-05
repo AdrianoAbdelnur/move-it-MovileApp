@@ -2,6 +2,7 @@ import React from "react";
 import { StyleSheet, View } from "react-native";
 import { GooglePlacesAutocomplete } from "react-native-google-places-autocomplete";
 import MapView from "react-native-maps";
+import { EXPO_PUBLIC_GOOGLE_MAP_KEY } from "@env";
 
 export const Maps = () => {
   return (
@@ -14,6 +15,8 @@ export const Maps = () => {
           latitudeDelta: 0.09,
           longitudeDelta: 0.09,
         }}
+        showsBuildings
+        provider="google"
       />
       <View style={styles.searchContainer}>
         <GooglePlacesAutocomplete
@@ -21,7 +24,7 @@ export const Maps = () => {
           placeholder="Search"
           onPress={(data, details = null) => {}}
           query={{
-            key: "AIzaSyDWAdSPRMoQxd-DIP__MbHPj2RvthFhBVE",
+            key: EXPO_PUBLIC_GOOGLE_MAP_KEY,
             language: "en",
           }}
         />
