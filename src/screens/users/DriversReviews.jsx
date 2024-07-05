@@ -1,40 +1,97 @@
 import React, { useState } from "react";
-import { Text, View } from "react-native";
+import { Alert, Text, View } from "react-native";
 import globalStyles from "../../styles/globalStyles";
 import StarRating from "../../components/rating/StarRating";
+import { GeneralButton } from "../../components/ui/GeneralButton";
+import { clientAxios } from "../../api/ClientAxios";
+import { useNavigation } from "@react-navigation/native";
 
 export const DriversReviews = ({ route }) => {
-  const { item } = route.params;
-  const [rating, setRating] = useState(3);
-  const changeRating = (newRating) => {
-    setRating(newRating);
+  const navigation = useNavigation();
+  const { transport, addReview = true } = route.params;
+  const [punctualityRating, setPunctualityRating] = useState(0);
+  const [comunicationRating, setComunicationRating] = useState(0);
+  const [generalServiceRating, setGeneralServiceRating] = useState(0);
+
+  changereview = (newRating) => {
+    setReview(newRating);
+  };
+
+  const onSubmit = async () => {
+    if (
+      punctualityRating != 0 &&
+      comunicationRating != 0 &&
+      generalServiceRating != 0
+    ) {
+      try {
+        const review = {
+          punctualityRating,
+          comunicationRating,
+          generalServiceRating,
+        };
+        const { data } = await clientAxios.patch(
+          "/user/updateReviews/" + transport._id,
+          review
+        );
+        navigation.navigate("home");
+      } catch (error) {
+        console.log(error);
+      }
+    } else {
+      Alert.alert(
+        "Error",
+        "You must rate all items.",
+        [{ text: "OK", onPress: () => {} }],
+        { cancelable: false }
+      );
+    }
   };
 
   return (
     <View style={globalStyles.container}>
-      {item.owner.review.reviewsQuantity == 0 ? (
-        <View>
-          <Text style={globalStyles.generalText}>
-            {item.owner.given_name} has no reviews yet
-          </Text>
-        </View>
-      ) : (
+      {transport.review.reviewsQuantity !== 0 || addReview ? (
         <View>
           <Text style={globalStyles.generalText}>Punctuality Rating</Text>
           <StarRating
-            rating={item.owner.review.punctualityRating}
-            name={item.owner.given_name}
+            rating={
+              addReview
+                ? punctualityRating
+                : Math.round(transport.review.punctualityRating)
+            }
+            name={transport.given_name}
+            changeRating={addReview ? setPunctualityRating : () => {}}
           />
           <Text style={globalStyles.generalText}>Comunication Rating</Text>
           <StarRating
-            rating={item.owner.review.comunicationRating}
-            name={item.owner.given_name}
+            rating={
+              addReview
+                ? comunicationRating
+                : Math.round(transport.review.comunicationRating)
+            }
+            name={transport.given_name}
+            changeRating={addReview ? setComunicationRating : () => {}}
           />
           <Text style={globalStyles.generalText}>General Rating</Text>
           <StarRating
-            rating={item.owner.review.generalServiceRating}
-            name={item.owner.given_name}
+            rating={
+              addReview
+                ? generalServiceRating
+                : Math.round(transport.review.generalServiceRating)
+            }
+            name={transport.given_name}
+            changeRating={addReview ? setGeneralServiceRating : () => {}}
           />
+          <View>
+            {addReview && (
+              <GeneralButton text={"submit"} onPressFunction={onSubmit} />
+            )}
+          </View>
+        </View>
+      ) : (
+        <View>
+          <Text style={globalStyles.generalText}>
+            {transport.given_name} has no reviews yet
+          </Text>
         </View>
       )}
     </View>
