@@ -1,17 +1,9 @@
 import React, { useContext, useEffect, useState } from "react";
-import {
-  KeyboardAvoidingView,
-  StyleSheet,
-  Text,
-  TextInput,
-  TouchableOpacity,
-  View,
-} from "react-native";
+import { KeyboardAvoidingView, StyleSheet, Text, View } from "react-native";
 import globalStyles from "../../../styles/globalStyles";
 import { useNavigation } from "@react-navigation/native";
 import { EXPO_PUBLIC_GOOGLE_MAP_KEY } from "@env";
 import { GooglePlacesAutocomplete } from "react-native-google-places-autocomplete";
-import { InputAutocomplete } from "../../../components/InputAutocomplete";
 import colors from "../../../styles/colors";
 import axios from "axios";
 import { NextButton } from "../../../components/ui/NextButton";
@@ -54,9 +46,9 @@ export const Directions = () => {
           },
         }
       );
-      const result = response.data.routes[0].legs[0];
-      setDistance(result.distance.text);
-      setDuration(result.duration.text);
+      const result = response?.data?.routes[0]?.legs[0];
+      setDistance(result?.distance?.text);
+      setDuration(result?.duration?.text);
     } catch (error) {
       console.error(error);
     }
@@ -92,6 +84,7 @@ export const Directions = () => {
             <GooglePlacesAutocomplete
               placeholder="to"
               onPress={(data, details = null) => {
+                console.log(data, details);
                 setDestination({
                   description: data.description,
                   place_id: data.place_id,
