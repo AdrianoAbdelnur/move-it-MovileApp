@@ -1,40 +1,24 @@
 import { useNavigation } from "@react-navigation/native";
 import { StatusBar } from "expo-status-bar";
-import React, { useContext, useEffect } from "react";
-import {
-  ScrollView,
-  StyleSheet,
-  Text,
-  TouchableOpacity,
-  View,
-} from "react-native";
+import React, { useContext, useEffect, useState } from "react";
+import { ScrollView, StyleSheet, Text, View } from "react-native";
 import globalStyles from "../../styles/globalStyles";
 import { PostContext } from "../../contexts/PostsContext";
 import { AuthContext } from "../../contexts/AuthContext";
 import colors from "../../styles/colors";
 import { GeneralButton } from "../../components/ui/GeneralButton";
 
+import { BellNoti } from "../../components/bell/BellNoti";
+import { NotiModal } from "../../components/ui/NotiModal";
+import { PostShower } from "../../components/post/PostShower";
+
 export const Home = () => {
   const navigation = useNavigation();
   const { state: userState } = useContext(AuthContext);
   const { state: postsState, getMyPosts } = useContext(PostContext);
-  /* const { formatDate, fDate, fTime } = useFormatDate(); */
-  let fDate = "";
-  let fTime = "";
-
-  const formatDate = (dateToFormat) => {
-    const date = new Date(dateToFormat);
-    const day = date.getDate().toString().padStart(2, "0");
-    const month = (date.getMonth() + 1).toString().padStart(2, "0");
-    const year = date.getFullYear();
-    let hours = date.getHours();
-    const minutes = date.getMinutes();
-    const ampm = hours >= 12 ? "PM" : "AM";
-    hours = hours % 12 || 12;
-
-    fDate = `${day}/${month}/${year}`;
-    fTime = `${hours}:${minutes.toString().padStart(2, "0")} ${ampm}`;
-  };
+  const [modalVisible, setModalVisible] = useState(false);
+  const [notificationCount, setNotificationCount] = useState(0);
+  const [notiList, setNotiList] = useState([]);
 
   useEffect(() => {
     if (postsState.posts.length === 0) {
@@ -42,9 +26,22 @@ export const Home = () => {
     }
   }, []);
 
+  useEffect(() => {
+    const notiList = postsState.posts.filter(
+      (post) => post.status === "newOffers" || post.status === "transportDone"
+    );
+    setNotiList(notiList);
+    setNotificationCount(notiList.length);
+  }, [postsState]);
+
+  const toggleModal = () => {
+    setModalVisible(!modalVisible);
+  };
+
   return (
     <View style={globalStyles.container}>
       <StatusBar style="auto" backgroundColor="gray" translucent={false} />
+      <BellNoti openModal={toggleModal} notificationCount={notificationCount} />
       <GeneralButton
         text={"Publish a transport"}
         onPressFunction={() => navigation.navigate("Type")}
@@ -54,56 +51,17 @@ export const Home = () => {
         <ScrollView style={styles.services}>
           <View>
             {postsState &&
-              postsState.posts.map((item, index) => (
-                <TouchableOpacity
-                  key={index}
-                  style={[
-                    styles.itemContainer,
-                    item.status === "Pending"
-                      ? { backgroundColor: "green" }
-                      : item.status === "offerSelected"
-                      ? { backgroundColor: "#37474F" }
-                      : { backgroundColor: "red" },
-                  ]}
-                  onPress={() => {
-                    navigation.navigate("Details", { data: item });
-                  }}
-                >
-                  {formatDate(item.date)}
-                  <Text style={globalStyles.generalText}>
-                    Type of goods: {item.goodsType}
-                  </Text>
-                  <Text style={globalStyles.generalText}>
-                    from: {item.directions?.from?.description}
-                  </Text>
-                  <Text style={globalStyles.generalText}>
-                    to: {item.directions?.to?.description}
-                  </Text>
-                  <Text style={globalStyles.generalText}>
-                    Date: {fDate} at {fTime}
-                  </Text>
-                  <Text style={globalStyles.generalText}>
-                    status: {item.status}
-                  </Text>
-                  {item.offers.length !== 0 && !item.offerSelected && (
-                    <Text style={{ color: "red" }}>
-                      You have {item.offers.length} offers for this post
-                    </Text>
-                  )}
-                  {item.offerSelected && (
-                    <Text style={{ color: "red" }}>
-                      You have selected {item.offerSelected.owner.given_name}'s
-                      offer'
-                    </Text>
-                  )}
-                  <Text style={{ alignSelf: "flex-end", color: "black" }}>
-                    Press here for more information
-                  </Text>
-                </TouchableOpacity>
+              postsState.posts.map((item) => (
+                <PostShower key={item._id} item={item} />
               ))}
           </View>
         </ScrollView>
       </View>
+      <NotiModal
+        modalVisible={modalVisible}
+        closeNotiModal={toggleModal}
+        notiList={notiList}
+      />
     </View>
   );
 };
@@ -140,13 +98,5 @@ const styles = StyleSheet.create({
     color: "black",
     fontSize: 25,
     marginBottom: 5,
-  },
-  itemContainer: {
-    backgroundColor: "#37474F",
-    borderColor: "black",
-    borderWidth: 2,
-    borderRadius: 8,
-    margin: 2,
-    padding: 3,
   },
 });
