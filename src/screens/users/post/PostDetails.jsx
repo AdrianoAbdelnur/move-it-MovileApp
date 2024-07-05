@@ -1,10 +1,5 @@
-import React, { useContext, useEffect } from "react";
-import {
-  Text,
-  TouchableOpacity,
-  TouchableOpacityBase,
-  View,
-} from "react-native";
+import React, { useContext } from "react";
+import { Text, TouchableOpacity, View } from "react-native";
 import globalStyles from "../../../styles/globalStyles";
 import { AuthContext } from "../../../contexts/AuthContext";
 import { useNavigation } from "@react-navigation/native";
@@ -78,7 +73,9 @@ export const PostDetails = ({ route }) => {
             </TouchableOpacity>
           )}
       {userState.user.role === "user" &&
-        data.status === "Pending" &&
+        (data.status === "Pending" ||
+          data.status === "newOffers" ||
+          data.status === "offersSeen") &&
         data.offers.length !== 0 && (
           <TouchableOpacity
             style={globalStyles.OptionsButton}
@@ -87,6 +84,14 @@ export const PostDetails = ({ route }) => {
             <Text style={globalStyles.textButtons}>See offers</Text>
           </TouchableOpacity>
         )}
+      {userState.user.role === "user" && data.status === "transportDone" && (
+        <TouchableOpacity
+          style={globalStyles.OptionsButton}
+          onPress={() => navigation.navigate("TransporConfirm", { data })}
+        >
+          <Text style={globalStyles.textButtons}>Confirm transport</Text>
+        </TouchableOpacity>
+      )}
     </View>
   );
 };

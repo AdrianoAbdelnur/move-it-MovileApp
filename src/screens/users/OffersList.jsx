@@ -18,10 +18,20 @@ export const OffersList = ({ route }) => {
   const { data } = route.params;
   const [offers, setOffers] = useState([]);
   const navigation = useNavigation();
-  const { postSelectOffer, state: post } = useContext(PostContext);
+  const {
+    postSelectOffer,
+    state: post,
+    uptateStatus,
+  } = useContext(PostContext);
 
   useEffect(() => {
     getOffers(data._id);
+    if (data.status === "newOffers") {
+      uptateStatus({
+        postId: data._id,
+        newStatus: "offersSeen",
+      });
+    }
   }, [data._id]);
 
   const getOffers = async (id) => {
@@ -61,7 +71,11 @@ export const OffersList = ({ route }) => {
                     {item?.owner?.given_name} offered ${item.price}
                   </Text>
                   <TouchableOpacity
-                    onPress={() => navigation.navigate("Reviews", { item })}
+                    onPress={() =>
+                      navigation.navigate("Reviews", {
+                        transport: item?.owner,
+                      })
+                    }
                   >
                     <Text style={styles.review}>
                       View {item?.owner?.given_name}'s reviews

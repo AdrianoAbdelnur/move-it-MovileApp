@@ -84,12 +84,10 @@ const PostsProvider = ({ children }) => {
   };
 
   const postSelectOffer = async (selectData) => {
-    console.log("selectedDATA", selectData);
     const { data } = await clientAxios.patch(
       "/userPost/selectOffer",
       selectData
     );
-    console.log("DATA POSTFOUND", data);
     if (data.postFound) {
       dispatch({
         type: TYPES.UPDATEPOST,
@@ -100,16 +98,33 @@ const PostsProvider = ({ children }) => {
 
   const addOfferInPost = async (offerInfo) => {
     try {
-      console.log("OFFERINFO en addOfferInPost", offerInfo);
       const { data } = await clientAxios.put("/userPost/addNewOffer", {
         postId: offerInfo.postId,
         newOfferId: offerInfo.newOfferId,
       });
-      console.log("Response de DB addNewOffer in post", data);
       if (data.newPost) {
         dispatch({
           type: "ADDOFFERINPOST",
           payload: offerInfo,
+        });
+      }
+    } catch (error) {
+      console.log(error);
+    }
+  };
+
+  const uptateStatus = async ({ postId, newStatus }) => {
+    try {
+      console.log(postId, newStatus);
+      const { data } = await clientAxios.patch("/userPost/modifyStatus", {
+        postId,
+        newStatus,
+      });
+      console.log(data);
+      if (data.newPost) {
+        dispatch({
+          type: TYPES.UPDATEPOST,
+          payload: { newPost: data.newPost },
         });
       }
     } catch (error) {
@@ -128,6 +143,7 @@ const PostsProvider = ({ children }) => {
         clearAlertMsg,
         postSelectOffer,
         addOfferInPost,
+        uptateStatus,
       }}
     >
       {children}

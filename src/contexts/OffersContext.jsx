@@ -5,6 +5,7 @@ export const OfferContext = createContext();
 import React from "react";
 import OfferReducer from "../reducers/OfferReducer";
 import { clientAxios } from "../api/ClientAxios";
+import { TYPES } from "../actions/OfferActions";
 
 const OfferProvider = ({ children }) => {
   const initialValues = {
@@ -23,7 +24,7 @@ const OfferProvider = ({ children }) => {
           newOfferId: newOffer._id,
         });
         dispatch({
-          type: "ADDNEWOFFER",
+          type: TYPES.ADDNEWOFFER,
           payload: newOffer,
         });
       }
@@ -36,7 +37,6 @@ const OfferProvider = ({ children }) => {
     try {
       const { data } = await clientAxios("/offer/myOffers/" + userId);
       const { myOffers } = data;
-
       if (myOffers) {
         dispatch({
           type: "GETOFFERS",
@@ -48,8 +48,18 @@ const OfferProvider = ({ children }) => {
     }
   };
 
+  const offerSelectOffer = async (offerId) => {
+    try {
+      clientAxios.patch("/offer/selectOffer/" + offerId);
+    } catch (error) {
+      console.log(error);
+    }
+  };
+
   return (
-    <OfferContext.Provider value={{ state, addOffer, getMyOffers }}>
+    <OfferContext.Provider
+      value={{ state, addOffer, getMyOffers, offerSelectOffer }}
+    >
       {children}
     </OfferContext.Provider>
   );
