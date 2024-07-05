@@ -27,6 +27,7 @@ import { DriverInfo } from "../screens/auth/register/transport/DriverInfo";
 import { CompleteProfile } from "../screens/auth/register/transport/CompleteProfile";
 import { WaitForAuth } from "../screens/auth/register/transport/WaitForAuth";
 import { DriversReviews } from "../screens/users/DriversReviews";
+import { TransportConfirm } from "../screens/users/TransportConfirm";
 
 const Stack = createStackNavigator();
 
@@ -67,6 +68,7 @@ export const Stacknavigators = () => {
         <Stack.Screen name="Details" component={PostDetails} />
         <Stack.Screen name="OffersList" component={OffersList} />
         <Stack.Screen name="Reviews" component={DriversReviews} />
+        <Stack.Screen name="TransporConfirm" component={TransportConfirm} />
         <Stack.Screen name="Maps" component={Maps} />
       </Stack.Navigator>
     );
@@ -100,6 +102,7 @@ export const Stacknavigators = () => {
         <Stack.Screen name="TransportInfo" component={TransportInfo} />
         <Stack.Screen name="DriverInfo" component={DriverInfo} />
         <Stack.Screen name="Camera" component={CameraManager} />
+        <Stack.Screen name="Maps" component={Maps} />
       </Stack.Navigator>
     );
   }
