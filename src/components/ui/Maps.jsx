@@ -1,34 +1,125 @@
-import React from "react";
-import { StyleSheet, View } from "react-native";
-import { GooglePlacesAutocomplete } from "react-native-google-places-autocomplete";
-import MapView from "react-native-maps";
+import React, { useEffect, useRef, useState } from "react";
+import {
+  Linking,
+  StyleSheet,
+  Text,
+  TouchableOpacity,
+  View,
+} from "react-native";
+import MapView, { Callout, Marker, PROVIDER_GOOGLE } from "react-native-maps";
 import { EXPO_PUBLIC_GOOGLE_MAP_KEY } from "@env";
+import * as Location from "expo-location";
+import truckLocation from "./../../assetsApp/truckLocation.png";
+import MapViewDirections from "react-native-maps-directions";
+import { GeneralButton } from "./GeneralButton";
+import colors from "../../styles/colors";
 
-export const Maps = () => {
+export const Maps = ({ route }) => {
+  const mapRef = useRef();
+  const directions = route.params.directions;
+  const [currentLocation, setCurrentLocation] = useState(null);
+
+  useEffect(() => {
+    getLocationPermission();
+  }, []);
+
+  useEffect(() => {
+    moveTo();
+    setTimeout(() => {
+      fitMapToCoordinates();
+    }, 1500);
+  }, [currentLocation]);
+
+  const getLocationPermission = async () => {
+    let { status } = await Location.requestForegroundPermissionsAsync();
+    if (status !== "granted") {
+      alert("Permiso denegado");
+      return;
+    }
+    let location = await Location.getCurrentPositionAsync();
+    const currentLoc = {
+      latitude: location.coords.latitude,
+      longitude: location.coords.longitude,
+    };
+    setCurrentLocation(currentLoc);
+  };
+
+  const fitMapToCoordinates = () => {
+    mapRef.current?.fitToCoordinates(
+      [currentLocation, directions.from.location, directions.to.location],
+      {
+        edgePadding: { top: 70, right: 70, bottom: 150, left: 70 },
+        animated: true,
+      }
+    );
+  };
+
+  const moveTo = async () => {
+    try {
+      const camera = await mapRef.current?.getCamera();
+      console.log(camera);
+      if (camera) {
+        camera.center = currentLocation;
+        camera.zoom = 16;
+        mapRef.current.animateCamera(camera, { duration: 1500 });
+      }
+    } catch (error) {
+      console.log(error);
+    }
+  };
+
+  const openNavigation = () => {
+    const origin = `${currentLocation.latitude},${currentLocation.longitude}`;
+    const destination = `${directions.to.location.latitude},${directions.to.location.longitude}`;
+    const waypoints = `${directions.from.location.latitude},${directions.from.location.longitude}`;
+    const url = `https://www.google.com/maps/dir/?api=1&origin=${origin}&destination=${destination}&waypoints=${waypoints}`;
+    Linking.openURL(url);
+  };
+
   return (
     <View style={styles.container}>
       <MapView
         style={styles.map}
+        ref={mapRef}
+        provider={PROVIDER_GOOGLE}
         initialRegion={{
           latitude: -34.92588637283261,
           longitude: 138.59506596659415,
           latitudeDelta: 0.09,
           longitudeDelta: 0.09,
         }}
-        showsBuildings
-        provider="google"
-      />
-      <View style={styles.searchContainer}>
-        <GooglePlacesAutocomplete
-          style={styles.input}
-          placeholder="Search"
-          onPress={(data, details = null) => {}}
-          query={{
-            key: EXPO_PUBLIC_GOOGLE_MAP_KEY,
-            language: "en",
-          }}
+        showsCompass={true}
+      >
+        {currentLocation && (
+          <Marker coordinate={currentLocation} image={truckLocation}>
+            <Callout>
+              <View>
+                <Text>Your location</Text>
+              </View>
+            </Callout>
+          </Marker>
+        )}
+        <Marker coordinate={directions.from.location} title={"Origin"} />
+        <Marker coordinate={directions.to.location} title={"Destination"} />
+        <MapViewDirections
+          origin={currentLocation}
+          destination={directions.from.location}
+          optimizeWaypoints
+          apikey={EXPO_PUBLIC_GOOGLE_MAP_KEY}
+          strokeWidth={4}
+          strokeColor="purple"
         />
-      </View>
+        <MapViewDirections
+          origin={directions.from.location}
+          destination={directions.to.location}
+          optimizeWaypoints
+          apikey={EXPO_PUBLIC_GOOGLE_MAP_KEY}
+          strokeWidth={4}
+        />
+      </MapView>
+      <TouchableOpacity style={styles.button} onPress={openNavigation}>
+        <Text style={styles.buttonText}>Go to Navigator</Text>
+      </TouchableOpacity>
     </View>
   );
 };
@@ -42,21 +133,43 @@ const styles = StyleSheet.create({
     width: "100%",
     height: "100%",
   },
-  searchContainer: {
-    flex: 1,
+  instructionsContainer: {
     position: "absolute",
+    bottom: 20,
     width: "90%",
     backgroundColor: "white",
+    padding: 10,
+    borderRadius: 8,
     shadowColor: "black",
     shadowOffset: { width: 2, height: 2 },
     shadowOpacity: 0.5,
     shadowRadius: 4,
     elevation: 4,
-    padding: 8,
-    borderRadius: 8,
   },
-  input: {
-    borderColor: "#888",
-    borderWidth: 1,
+  instruction: {
+    fontSize: 16,
+    fontWeight: "bold",
+  },
+  button: {
+    position: "absolute",
+    bottom: 20,
+    width: "90%",
+    backgroundColor: colors.primary,
+    padding: 15,
+    borderRadius: 8,
+    alignItems: "center",
+    justifyContent: "center",
+    shadowColor: "black",
+    shadowOffset: { width: 2, height: 2 },
+    shadowOpacity: 0.5,
+    shadowRadius: 4,
+    elevation: 4,
+  },
+  buttonText: {
+    fontSize: 16,
+    fontWeight: "bold",
+    color: "white",
   },
 });
+
+export default Maps;
