@@ -20,6 +20,7 @@ export const Directions = () => {
 
   useEffect(() => {
     if (origin && destination) {
+      console.log(origin, destination);
       getDirections();
       setFormData({
         ...formData,
@@ -65,10 +66,16 @@ export const Directions = () => {
             <GooglePlacesAutocomplete
               style={styles.input}
               placeholder="from"
+              fetchDetails
               onPress={(data, details = null) => {
                 setOrigin({
-                  description: data.description,
-                  place_id: data.place_id,
+                  description: details.formatted_address,
+                  place_id: details.place_id,
+                  location: {
+                    latitude: details.geometry.location.lat,
+                    longitude: details.geometry.location.lng,
+                  },
+                  address_components: details.address_components,
                 });
               }}
               query={{
@@ -83,11 +90,17 @@ export const Directions = () => {
             </Text>
             <GooglePlacesAutocomplete
               placeholder="to"
+              fetchDetails
               onPress={(data, details = null) => {
                 console.log(data, details);
                 setDestination({
-                  description: data.description,
-                  place_id: data.place_id,
+                  description: details.formatted_address,
+                  place_id: details.place_id,
+                  location: {
+                    latitude: details.geometry.location.lat,
+                    longitude: details.geometry.location.lng,
+                  },
+                  address_components: details.address_components,
                 });
               }}
               query={{
