@@ -91,6 +91,7 @@ export const Stacknavigators = () => {
         <Stack.Screen name="Details" component={PostDetails} />
         <Stack.Screen name="Offer" component={Offer} />
         <Stack.Screen name="MyOffers" component={MyOffers} />
+        <Stack.Screen name="Maps" component={Maps} />
       </Stack.Navigator>
     );
   }
@@ -102,7 +103,6 @@ export const Stacknavigators = () => {
         <Stack.Screen name="TransportInfo" component={TransportInfo} />
         <Stack.Screen name="DriverInfo" component={DriverInfo} />
         <Stack.Screen name="Camera" component={CameraManager} />
-        <Stack.Screen name="Maps" component={Maps} />
       </Stack.Navigator>
     );
   }

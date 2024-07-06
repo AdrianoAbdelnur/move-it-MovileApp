@@ -11,13 +11,14 @@ import globalStyles from "../../styles/globalStyles";
 import colors from "../../styles/colors";
 import { AuthContext } from "../../contexts/AuthContext";
 import { clientAxios } from "../../api/ClientAxios";
-import { CustomModal } from "../../components/ui/CustomModal";
 import { PostContext } from "../../contexts/PostsContext";
+import { useNavigation } from "@react-navigation/native";
 
 export const MyOffers = () => {
   const { state: userState } = useContext(AuthContext);
   const { uptateStatus } = useContext(PostContext);
   const [aceptedOffers, setAceptedOffers] = useState([]);
+  const navigation = useNavigation();
 
   useEffect(() => {
     getMyAceptedOffers();
@@ -65,7 +66,15 @@ export const MyOffers = () => {
           <View>
             {aceptedOffers &&
               aceptedOffers?.map((item, index) => (
-                <TouchableOpacity key={item._id} style={styles.itemContainer}>
+                <TouchableOpacity
+                  key={item._id}
+                  style={styles.itemContainer}
+                  onPress={() =>
+                    navigation.navigate("Maps", {
+                      directions: item.post.directions,
+                    })
+                  }
+                >
                   {formatDate(item.post.date)}
                   <Text style={globalStyles.generalText}>
                     Type of goods: {item.post.goodsType}

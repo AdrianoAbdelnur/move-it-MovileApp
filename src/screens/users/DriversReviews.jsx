@@ -8,7 +8,7 @@ import { useNavigation } from "@react-navigation/native";
 
 export const DriversReviews = ({ route }) => {
   const navigation = useNavigation();
-  const { transport, addReview = true } = route.params;
+  const { transport, addReview = false } = route.params;
   const [punctualityRating, setPunctualityRating] = useState(0);
   const [comunicationRating, setComunicationRating] = useState(0);
   const [generalServiceRating, setGeneralServiceRating] = useState(0);
