@@ -1,5 +1,5 @@
 import { createStackNavigator } from "@react-navigation/stack";
-import React, { useContext } from "react";
+import React, { useContext, useState } from "react";
 import { Home } from "../screens/users/Home";
 import { Post } from "../screens/users/post/Post";
 import { Type } from "../screens/users/post/Type";
@@ -28,11 +28,13 @@ import { CompleteProfile } from "../screens/auth/register/transport/CompleteProf
 import { WaitForAuth } from "../screens/auth/register/transport/WaitForAuth";
 import { DriversReviews } from "../screens/users/DriversReviews";
 import { TransportConfirm } from "../screens/users/TransportConfirm";
+import { UserMaps } from "../components/ui/UserMaps";
 
 const Stack = createStackNavigator();
 
 export const Stacknavigators = () => {
   const { state } = useContext(AuthContext);
+  const [chatWith, setChatWith] = useState({});
 
   const isLogged = state.isLogged;
   const role = state?.user?.role;
@@ -57,8 +59,14 @@ export const Stacknavigators = () => {
   if (isLogged && role == "user") {
     return (
       <Stack.Navigator>
-        <Stack.Screen name="home" component={Home} />
-        <Stack.Screen name="chat" component={ChatScreen} />
+        <Stack.Screen name="home">
+          {(props) => <Home {...props} setChatWith={setChatWith} />}
+        </Stack.Screen>
+        <Stack.Screen
+          name="chat"
+          component={ChatScreen}
+          options={{ title: `Chat with ${chatWith}` }}
+        />
         <Stack.Screen name="Type" component={Type} />
         <Stack.Screen name="Dimensions" component={Dimen} />
         <Stack.Screen name="post" component={Post} />
@@ -69,7 +77,7 @@ export const Stacknavigators = () => {
         <Stack.Screen name="OffersList" component={OffersList} />
         <Stack.Screen name="Reviews" component={DriversReviews} />
         <Stack.Screen name="TransporConfirm" component={TransportConfirm} />
-        <Stack.Screen name="Maps" component={Maps} />
+        <Stack.Screen name="UserMaps" component={UserMaps} />
       </Stack.Navigator>
     );
   }
@@ -85,13 +93,20 @@ export const Stacknavigators = () => {
             headerStyle: {
               backgroundColor: colors.border,
             },
-            headerTintColor: "#FFF", // Color del texto del título (opcional)
+            headerTintColor: "#FFF",
           }}
         />
         <Stack.Screen name="Details" component={PostDetails} />
         <Stack.Screen name="Offer" component={Offer} />
-        <Stack.Screen name="MyOffers" component={MyOffers} />
+        <Stack.Screen name="MyOffers">
+          {(props) => <MyOffers {...props} setChatWith={setChatWith} />}
+        </Stack.Screen>
         <Stack.Screen name="Maps" component={Maps} />
+        <Stack.Screen
+          name="chat"
+          component={ChatScreen}
+          options={{ title: `Chat with ${chatWith}` }}
+        />
       </Stack.Navigator>
     );
   }
