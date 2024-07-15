@@ -25,20 +25,26 @@ const PostReducer = (state={}, action) => {
                 alertMsg: ""
             }
         case TYPES.UPDATEPOST:
-
             return {
                 ...state,
                 posts: state.posts.map((post)=>
                     post._id === action.payload.newPost._id? action.payload.newPost : post
                 ) 
             }
-        case "ADDOFFERINPOST":
+        case TYPES.ADDOFFERINPOST:
             return {
                 ...state,
                 posts: state.posts.map((post)=>
                     post._id === action.payload.postId? {...post, offers:[...post.offers, {_id: action.payload.newOfferId, owner:{_id:action.payload.ownerId, given_name:action.payload.ownerName}}]}: post
                ) 
             }
+        case TYPES.ADDMESSAGE:
+        return {
+            ...state,
+            posts: state.posts.map((post)=>
+                post._id === action.payload.postId? {...post, chatMessages: [action.payload.newMessage, ...post.chatMessages]}: post
+            ) 
+        }
     default:
         return state
 }

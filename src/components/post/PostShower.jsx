@@ -2,8 +2,9 @@ import React from "react";
 import { StyleSheet, Text, TouchableOpacity } from "react-native";
 import globalStyles from "../../styles/globalStyles";
 import { useNavigation } from "@react-navigation/native";
+import colors from "../../styles/colors";
 
-export const PostShower = ({ item }) => {
+export const PostShower = ({ item, setChatWith }) => {
   const navigation = useNavigation();
   let fDate = "";
   let fTime = "";
@@ -56,9 +57,22 @@ export const PostShower = ({ item }) => {
         </Text>
       )}
       {item.offerSelected && (
-        <Text style={{ color: "red" }}>
-          You have selected {item?.offerSelected?.owner?.given_name}'s offer'
-        </Text>
+        <TouchableOpacity
+          style={styles.openChatButton}
+          onPress={() => {
+            setChatWith(item?.offerSelected?.owner?.given_name);
+            navigation.navigate("chat", {
+              post: item,
+            });
+          }}
+        >
+          <Text style={{ color: "white" }}>
+            You have selected {item?.offerSelected?.owner?.given_name}'s offer'
+          </Text>
+          <Text style={{ color: "white", fontSize: 10, alignSelf: "center" }}>
+            press here to chat with him
+          </Text>
+        </TouchableOpacity>
       )}
       <Text style={{ alignSelf: "flex-end", color: "black" }}>
         Press here for more information
@@ -75,5 +89,11 @@ const styles = StyleSheet.create({
     borderRadius: 8,
     margin: 2,
     padding: 3,
+  },
+  openChatButton: {
+    flex: 1,
+    backgroundColor: colors.background,
+    padding: 8,
+    borderRadius: 12,
   },
 });

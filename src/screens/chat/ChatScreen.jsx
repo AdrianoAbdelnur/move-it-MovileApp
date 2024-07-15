@@ -1,4 +1,4 @@
-import React, { useState } from "react";
+import React, { useContext, useEffect, useState } from "react";
 import {
   FlatList,
   StyleSheet,
@@ -7,22 +7,74 @@ import {
   TouchableOpacity,
   View,
 } from "react-native";
+import io from "socket.io-client";
+import { AuthContext } from "../../contexts/AuthContext";
+import { PostContext } from "../../contexts/PostsContext";
 
-export const ChatScreen = () => {
+const socket = io("https://move-it-backend-3.onrender.com/");
+
+export const ChatScreen = ({ route }) => {
   const [messages, setMessages] = useState([]);
   const [currentMessage, setCurrentMessage] = useState("");
+  const { state: userState } = useContext(AuthContext);
+  const { addMessage, updateMessage } = useContext(PostContext);
 
-  const sendMessage = () => {
-    if (currentMessage.trim()) {
+  useEffect(() => {
+    setMessages(route?.params?.post?.chatMessages);
+  }, []);
+
+  useEffect(() => {
+    socket.emit("newUser", userState?.user?.id);
+    socket.on("privateMessage", (msg) => {
       setMessages((prevMessages) => [
         {
-          id: Date.now().toString(),
-          text: currentMessage,
-          user: "other", // or 'other' for messages from other users
+          _id: new Date().toString(),
+          text: msg.message,
+          sender: msg.sender,
         },
         ...prevMessages,
       ]);
+      if (userState.user.role === "user") {
+        updateMessage({
+          postId: route.params.post?._id,
+          newMessage: {
+            _id: new Date().toString(),
+            text: msg.message,
+            sender: msg.sender,
+          },
+        });
+      }
+    });
+
+    return () => {
+      socket.off("mensaje");
+    };
+  }, []);
+
+  const sendMessage = () => {
+    if (currentMessage.trim()) {
+      const newMessage = {
+        sender: userState?.user?.id,
+        text: currentMessage,
+        date: new Date().toISOString(),
+        _id: new Date().toISOString(),
+      };
+      setMessages((prevMessages) => [newMessage, ...prevMessages]);
+      addMessage({ postId: route.params.post?._id, message: newMessage });
+      const messageData = {
+        message: currentMessage,
+        recipient:
+          userState.user.role === "user"
+            ? route.params.post?.offerSelected?.owner._id
+            : route.params.post?.owner?._id,
+      };
+      socket.emit("privateMessage", messageData);
       setCurrentMessage("");
+      if (userState.user.role === "user") {
+        updateMessage({ postId: route.params.post?._id, newMessage });
+      }
+      if (userState.user.role === "transport") {
+      }
     }
   };
 
@@ -30,7 +82,9 @@ export const ChatScreen = () => {
     <View
       style={[
         styles.messageContainer,
-        item.user === "me" ? styles.myMessage : styles.otherMessage,
+        item.sender === userState?.user?.id
+          ? styles.myMessage
+          : styles.otherMessage,
       ]}
     >
       <Text style={styles.messageText}>{item.text}</Text>
@@ -42,7 +96,7 @@ export const ChatScreen = () => {
       <FlatList
         data={messages}
         renderItem={renderItem}
-        keyExtractor={(item) => item.id}
+        keyExtractor={(item) => item._id}
         style={styles.messagesList}
         inverted
       />
@@ -51,10 +105,10 @@ export const ChatScreen = () => {
           style={styles.input}
           value={currentMessage}
           onChangeText={setCurrentMessage}
-          placeholder="Escribe un mensaje..."
+          placeholder="Write a message..."
         />
         <TouchableOpacity onPress={sendMessage} style={styles.sendButton}>
-          <Text style={styles.sendButtonText}>Enviar</Text>
+          <Text style={styles.sendButtonText}>send</Text>
         </TouchableOpacity>
       </View>
     </View>
@@ -72,7 +126,7 @@ const styles = StyleSheet.create({
   },
   messageContainer: {
     marginVertical: 5,
-    padding: 10,
+    padding: 5,
     borderRadius: 10,
     maxWidth: "75%",
   },
@@ -86,7 +140,7 @@ const styles = StyleSheet.create({
   },
   messageText: {
     color: "#fff",
-    fontSize: 20,
+    fontSize: 18,
   },
   inputContainer: {
     flexDirection: "row",

@@ -11,7 +11,6 @@ import { EXPO_PUBLIC_GOOGLE_MAP_KEY } from "@env";
 import * as Location from "expo-location";
 import truckLocation from "./../../assetsApp/truckLocation.png";
 import MapViewDirections from "react-native-maps-directions";
-import { GeneralButton } from "./GeneralButton";
 import colors from "../../styles/colors";
 
 export const Maps = ({ route }) => {
@@ -57,7 +56,6 @@ export const Maps = ({ route }) => {
   const moveTo = async () => {
     try {
       const camera = await mapRef.current?.getCamera();
-      console.log(camera);
       if (camera) {
         camera.center = currentLocation;
         camera.zoom = 16;
@@ -72,7 +70,8 @@ export const Maps = ({ route }) => {
     const origin = `${currentLocation.latitude},${currentLocation.longitude}`;
     const destination = `${directions.to.location.latitude},${directions.to.location.longitude}`;
     const waypoints = `${directions.from.location.latitude},${directions.from.location.longitude}`;
-    const url = `https://www.google.com/maps/dir/?api=1&origin=${origin}&destination=${destination}&waypoints=${waypoints}`;
+    const travelmode = "driving";
+    const url = `https://www.google.com/maps/dir/?api=1&origin=${origin}&destination=${destination}&waypoints=${waypoints}&travelmode=${travelmode}`;
     Linking.openURL(url);
   };
 
