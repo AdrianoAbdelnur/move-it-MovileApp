@@ -12,28 +12,30 @@ import colors from "../../styles/colors";
 import { AuthContext } from "../../contexts/AuthContext";
 import { clientAxios } from "../../api/ClientAxios";
 import { PostContext } from "../../contexts/PostsContext";
-import { useNavigation } from "@react-navigation/native";
+import { useIsFocused, useNavigation } from "@react-navigation/native";
 
-export const MyOffers = () => {
+export const MyOffers = ({ setChatWith }) => {
   const { state: userState } = useContext(AuthContext);
-  const { uptateStatus } = useContext(PostContext);
+  const { state, uptateStatus } = useContext(PostContext);
   const [aceptedOffers, setAceptedOffers] = useState([]);
   const navigation = useNavigation();
 
+  const isFocused = useIsFocused();
+
   useEffect(() => {
-    getMyAceptedOffers();
-  }, []);
+    if (isFocused) {
+      getMyAceptedOffers();
+    }
+  }, [isFocused]);
 
   getMyAceptedOffers = async () => {
     try {
       let { data } = await clientAxios.get(
         "/offer/getMyAceptedOffers/" + userState.user.id
       );
-      console.log(data.offersFound);
       data.offersFound.sort(
         (a, b) => new Date(a.post.date) - new Date(b.post.date)
       );
-      console.log(data.offersFound);
       setAceptedOffers(data.offersFound);
     } catch (error) {
       console.log(error);
@@ -95,6 +97,30 @@ export const MyOffers = () => {
                     Price: {item.price}
                   </Text>
                   <TouchableOpacity
+                    style={styles.openChatButton}
+                    onPress={() => {
+                      setChatWith(item?.post?.owner?.given_name);
+                      navigation.navigate("chat", {
+                        post: item.post,
+                      });
+                    }}
+                  >
+                    <Text style={{ color: "white" }}>
+                      Your offer has been selected by{" "}
+                      {item?.post?.owner?.given_name}
+                    </Text>
+                    <Text
+                      style={{
+                        color: "white",
+                        fontSize: 10,
+                        alignSelf: "center",
+                      }}
+                    >
+                      press here to chat with him
+                    </Text>
+                  </TouchableOpacity>
+                  <TouchableOpacity
+                    style={styles.done}
                     onPress={() => {
                       uptateStatus({
                         postId: item.post._id,
@@ -155,5 +181,14 @@ const styles = StyleSheet.create({
     borderRadius: 8,
     margin: 2,
     padding: 3,
+  },
+  openChatButton: {
+    flex: 1,
+    backgroundColor: colors.background,
+    padding: 8,
+    borderRadius: 12,
+  },
+  done: {
+    backgroundColor: "red",
   },
 });
