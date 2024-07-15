@@ -12,7 +12,7 @@ import { BellNoti } from "../../components/bell/BellNoti";
 import { NotiModal } from "../../components/ui/NotiModal";
 import { PostShower } from "../../components/post/PostShower";
 
-export const Home = () => {
+export const Home = ({ setChatWith }) => {
   const navigation = useNavigation();
   const { state: userState } = useContext(AuthContext);
   const { state: postsState, getMyPosts } = useContext(PostContext);
@@ -52,7 +52,11 @@ export const Home = () => {
           <View>
             {postsState &&
               postsState.posts.map((item) => (
-                <PostShower key={item._id} item={item} />
+                <PostShower
+                  key={item._id}
+                  item={item}
+                  setChatWith={setChatWith}
+                />
               ))}
           </View>
         </ScrollView>
