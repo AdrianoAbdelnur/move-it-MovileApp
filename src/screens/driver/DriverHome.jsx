@@ -1,4 +1,4 @@
-import React, { useContext, useEffect } from "react";
+import React, { useContext, useEffect, useState } from "react";
 
 import {
   ScrollView,
@@ -13,16 +13,46 @@ import colors from "../../styles/colors";
 import { PostContext } from "../../contexts/PostsContext";
 import { useNavigation } from "@react-navigation/native";
 import { PostShower } from "../../components/post/PostShower";
+import { AuthContext } from "../../contexts/AuthContext";
+import { BellNoti } from "../../components/bell/BellNoti";
+import { NotiModal } from "../../components/ui/NotiModal";
 
 export const DriverHome = () => {
   const navigation = useNavigation();
   const { state: postsState, getPendingPosts } = useContext(PostContext);
+  const { state: userState } = useContext(AuthContext);
+  const [pendingPost, setPendingPost] = useState([]);
+  const [modalVisible, setModalVisible] = useState(false);
+  const [notificationCount, setNotificationCount] = useState(0);
+  const [notiList, setNotiList] = useState([]);
 
   useEffect(() => {
     if (postsState.posts.length === 0) {
-      getPendingPosts();
+      getPendingPosts(userState.user.id);
     }
   }, []);
+
+  useEffect(() => {
+    if (postsState.posts.length !== 0) {
+      const pendings = postsState.posts.filter(
+        (post) => post.status.mainStatus === "pending"
+      );
+      setPendingPost(pendings);
+    }
+    const newsNotiList = postsState.posts.flatMap((post) => {
+      const notifications = [];
+      if (post.status.messagesStatus.newUserMessage === true) {
+        notifications.push({ type: "newMessage", post });
+      }
+
+      return notifications;
+    });
+    setNotiList(newsNotiList);
+  }, [postsState]);
+
+  useEffect(() => {
+    setNotificationCount(notiList?.length);
+  }, [notiList]);
 
   let fDate = "";
   let fTime = "";
@@ -41,9 +71,14 @@ export const DriverHome = () => {
     fTime = `${hours}:${minutes.toString().padStart(2, "0")} ${ampm}`;
   };
 
+  const toggleModal = () => {
+    setModalVisible(!modalVisible);
+  };
+
   return (
     <View style={globalStyles.container}>
       <StatusBar style="auto" backgroundColor="gray" translucent={false} />
+      <BellNoti openModal={toggleModal} notificationCount={notificationCount} />
       <TouchableOpacity
         style={globalStyles.OptionsButton}
         onPress={() => navigation.navigate("MyOffers")}
@@ -54,13 +89,18 @@ export const DriverHome = () => {
         <Text style={styles.servicesTitle}>Requested services:</Text>
         <ScrollView style={styles.services}>
           <View>
-            {postsState &&
-              postsState?.posts?.map((item, index) => (
+            {pendingPost &&
+              pendingPost.map((item, index) => (
                 <PostShower key={item._id} item={item} />
               ))}
           </View>
         </ScrollView>
       </View>
+      <NotiModal
+        modalVisible={modalVisible}
+        closeNotiModal={toggleModal}
+        notiList={notiList}
+      />
     </View>
   );
 };
