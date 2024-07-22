@@ -1,5 +1,5 @@
 import { useNavigation } from "@react-navigation/native";
-import React, { useState } from "react";
+import React, { useEffect, useState } from "react";
 import {
   Modal,
   PanResponder,
@@ -11,7 +11,6 @@ import {
 
 export const NotiModal = ({ modalVisible, closeNotiModal, notiList }) => {
   const navigation = useNavigation();
-  const [transportInfo, setTransportInfo] = useState({});
 
   const panResponder = PanResponder.create({
     onStartShouldSetPanResponder: () => true,
@@ -32,19 +31,19 @@ export const NotiModal = ({ modalVisible, closeNotiModal, notiList }) => {
     >
       <View style={styles.modalContainer} {...panResponder.panHandlers}>
         <View style={styles.modalContent}>
-          {notiList.map((post) => {
-            if (post.status === "newOffers") {
+          {notiList?.map((noti) => {
+            if (noti.type === "newOffer") {
               return (
                 <TouchableOpacity
-                  key={post._id}
+                  key={noti.post._id + noti.type}
                   onPress={() => {
-                    navigation.navigate("Details", { data: post });
+                    navigation.navigate("Details", { data: noti.post });
                     closeNotiModal();
                   }}
                 >
                   <View style={styles.notiContainer}>
                     <Text>
-                      You have new offers in your post for {post.goodsType}
+                      You have new offers in your post for {noti.post.goodsType}
                     </Text>
                     <Text style={styles.secondaryNotiText}>
                       Confirm the transport
@@ -53,19 +52,41 @@ export const NotiModal = ({ modalVisible, closeNotiModal, notiList }) => {
                 </TouchableOpacity>
               );
             }
-            if (post.status === "transportDone") {
+            if (noti.type === "transportDone") {
               return (
                 <TouchableOpacity
-                  key={post._id}
+                  key={noti.post._id + noti.type}
                   onPress={() => {
-                    navigation.navigate("Details", { data: post });
+                    navigation.navigate("Details", { data: noti.post });
                     closeNotiModal();
                   }}
                 >
                   <View style={styles.notiContainer}>
-                    <Text>Transport {post.goodsType} done</Text>
+                    <Text>Transport {noti.post.goodsType} done</Text>
                     <Text style={styles.secondaryNotiText}>
                       Confirm the transport
+                    </Text>
+                  </View>
+                </TouchableOpacity>
+              );
+            }
+            if (noti.type === "newMessage") {
+              return (
+                <TouchableOpacity
+                  key={noti.post._id + noti.type}
+                  onPress={() => {
+                    navigation.navigate("chat", {
+                      post: noti.post,
+                    });
+                    closeNotiModal();
+                  }}
+                >
+                  <View style={styles.notiContainer}>
+                    <Text>
+                      You have a new message in your posts {noti.post.goodsType}
+                    </Text>
+                    <Text style={styles.secondaryNotiText}>
+                      See the message
                     </Text>
                   </View>
                 </TouchableOpacity>

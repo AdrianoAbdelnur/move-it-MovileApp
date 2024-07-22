@@ -1,7 +1,7 @@
 import { useNavigation } from "@react-navigation/native";
 import { StatusBar } from "expo-status-bar";
 import React, { useContext, useEffect, useState } from "react";
-import { ScrollView, StyleSheet, Text, View } from "react-native";
+import { StyleSheet, View } from "react-native";
 import globalStyles from "../../styles/globalStyles";
 import { PostContext } from "../../contexts/PostsContext";
 import { AuthContext } from "../../contexts/AuthContext";
@@ -10,7 +10,6 @@ import { GeneralButton } from "../../components/ui/GeneralButton";
 
 import { BellNoti } from "../../components/bell/BellNoti";
 import { NotiModal } from "../../components/ui/NotiModal";
-import { PostShower } from "../../components/post/PostShower";
 
 export const Home = ({ setChatWith }) => {
   const navigation = useNavigation();
@@ -27,12 +26,26 @@ export const Home = ({ setChatWith }) => {
   }, []);
 
   useEffect(() => {
-    const notiList = postsState.posts.filter(
-      (post) => post.status === "newOffers" || post.status === "transportDone"
-    );
-    setNotiList(notiList);
-    setNotificationCount(notiList.length);
+    const newsNotiList = postsState.posts.flatMap((post) => {
+      const notifications = [];
+      if (post.status.newOffers === true) {
+        notifications.push({ type: "newOffer", post });
+      }
+      if (post.status.mainStatus === "transportDone") {
+        notifications.push({ type: "transportDone", post });
+      }
+      if (post.status.messagesStatus.newTransportMessage === true) {
+        notifications.push({ type: "newMessage", post });
+      }
+
+      return notifications;
+    });
+    setNotiList(newsNotiList);
   }, [postsState]);
+
+  useEffect(() => {
+    setNotificationCount(notiList?.length);
+  }, [notiList]);
 
   const toggleModal = () => {
     setModalVisible(!modalVisible);
@@ -43,24 +56,13 @@ export const Home = ({ setChatWith }) => {
       <StatusBar style="auto" backgroundColor="gray" translucent={false} />
       <BellNoti openModal={toggleModal} notificationCount={notificationCount} />
       <GeneralButton
-        text={"Publish a transport"}
+        text={"Post a transport"}
         onPressFunction={() => navigation.navigate("Type")}
       />
-      <View style={styles.services_container}>
-        <Text style={styles.servicesTitle}>Your Services:</Text>
-        <ScrollView style={styles.services}>
-          <View>
-            {postsState &&
-              postsState.posts.map((item) => (
-                <PostShower
-                  key={item._id}
-                  item={item}
-                  setChatWith={setChatWith}
-                />
-              ))}
-          </View>
-        </ScrollView>
-      </View>
+      <GeneralButton
+        text={"Your posts"}
+        onPressFunction={() => navigation.navigate("PostsList")}
+      />
       <NotiModal
         modalVisible={modalVisible}
         closeNotiModal={toggleModal}
