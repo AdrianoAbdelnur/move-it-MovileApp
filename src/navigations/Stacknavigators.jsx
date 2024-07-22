@@ -28,7 +28,7 @@ import { CompleteProfile } from "../screens/auth/register/transport/CompleteProf
 import { WaitForAuth } from "../screens/auth/register/transport/WaitForAuth";
 import { DriversReviews } from "../screens/users/DriversReviews";
 import { TransportConfirm } from "../screens/users/TransportConfirm";
-import { UserMaps } from "../components/ui/UserMaps";
+import { PostsList } from "../screens/PostsList";
 
 const Stack = createStackNavigator();
 
@@ -62,6 +62,9 @@ export const Stacknavigators = () => {
         <Stack.Screen name="home">
           {(props) => <Home {...props} setChatWith={setChatWith} />}
         </Stack.Screen>
+        <Stack.Screen name="PostsList">
+          {(props) => <PostsList {...props} setChatWith={setChatWith} />}
+        </Stack.Screen>
         <Stack.Screen
           name="chat"
           component={ChatScreen}
@@ -77,7 +80,6 @@ export const Stacknavigators = () => {
         <Stack.Screen name="OffersList" component={OffersList} />
         <Stack.Screen name="Reviews" component={DriversReviews} />
         <Stack.Screen name="TransporConfirm" component={TransportConfirm} />
-        <Stack.Screen name="UserMaps" component={UserMaps} />
       </Stack.Navigator>
     );
   }
