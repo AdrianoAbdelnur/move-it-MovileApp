@@ -7,49 +7,54 @@ import {
   TouchableOpacity,
   View,
 } from "react-native";
-import io from "socket.io-client";
 import { AuthContext } from "../../contexts/AuthContext";
 import { PostContext } from "../../contexts/PostsContext";
-
-const socket = io("https://move-it-backend-3.onrender.com/");
+import { SocketContext } from "../../contexts/SocketContext";
 
 export const ChatScreen = ({ route }) => {
   const [messages, setMessages] = useState([]);
   const [currentMessage, setCurrentMessage] = useState("");
   const { state: userState } = useContext(AuthContext);
-  const { addMessage, updateMessage } = useContext(PostContext);
+  const {
+    state: postState,
+    addMessage,
+    updateMessage,
+    uptateStatus,
+  } = useContext(PostContext);
+  const { socket, newMessage, removeNewMessage, sendPrivateMessage } =
+    useContext(SocketContext);
 
   useEffect(() => {
     setMessages(route?.params?.post?.chatMessages);
+    const newStatusMessage =
+      userState.user.role === "user"
+        ? { newTransportMessage: false }
+        : { newUserMessage: false };
+
+    uptateStatus({
+      postId: route?.params?.post?._id,
+      newStatus: {
+        ...route?.params?.post?.status,
+        messagesStatus: {
+          ...route?.params?.post?.status.messagesStatus,
+          ...newStatusMessage,
+        },
+      },
+    });
   }, []);
 
   useEffect(() => {
-    socket.emit("newUser", userState?.user?.id);
-    socket.on("privateMessage", (msg) => {
+    if (
+      newMessage &&
+      newMessage?.text !== route?.params?.post?.chatMessages[0]?.text
+    ) {
       setMessages((prevMessages) => [
-        {
-          _id: new Date().toString(),
-          text: msg.message,
-          sender: msg.sender,
-        },
+        { ...newMessage, _id: new Date().toString() },
         ...prevMessages,
       ]);
-      if (userState.user.role === "user") {
-        updateMessage({
-          postId: route.params.post?._id,
-          newMessage: {
-            _id: new Date().toString(),
-            text: msg.message,
-            sender: msg.sender,
-          },
-        });
-      }
-    });
-
-    return () => {
-      socket.off("mensaje");
-    };
-  }, []);
+      removeNewMessage();
+    }
+  }, [newMessage]);
 
   const sendMessage = () => {
     if (currentMessage.trim()) {
@@ -62,19 +67,16 @@ export const ChatScreen = ({ route }) => {
       setMessages((prevMessages) => [newMessage, ...prevMessages]);
       addMessage({ postId: route.params.post?._id, message: newMessage });
       const messageData = {
-        message: currentMessage,
+        text: currentMessage,
         recipient:
           userState.user.role === "user"
             ? route.params.post?.offerSelected?.owner._id
-            : route.params.post?.owner?._id,
+            : route.params.post?.owner._id,
+        postId: route.params.post?._id,
       };
-      socket.emit("privateMessage", messageData);
+      sendPrivateMessage(messageData);
       setCurrentMessage("");
-      if (userState.user.role === "user") {
-        updateMessage({ postId: route.params.post?._id, newMessage });
-      }
-      if (userState.user.role === "transport") {
-      }
+      updateMessage({ postId: route.params.post?._id, newMessage });
     }
   };
 
