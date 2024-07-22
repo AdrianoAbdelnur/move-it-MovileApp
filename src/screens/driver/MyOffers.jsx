@@ -9,38 +9,19 @@ import {
 } from "react-native";
 import globalStyles from "../../styles/globalStyles";
 import colors from "../../styles/colors";
-import { AuthContext } from "../../contexts/AuthContext";
-import { clientAxios } from "../../api/ClientAxios";
 import { PostContext } from "../../contexts/PostsContext";
-import { useIsFocused, useNavigation } from "@react-navigation/native";
+import { useNavigation } from "@react-navigation/native";
 
 export const MyOffers = ({ setChatWith }) => {
-  const { state: userState } = useContext(AuthContext);
-  const { state, uptateStatus } = useContext(PostContext);
-  const [aceptedOffers, setAceptedOffers] = useState([]);
+  const { state: postState, uptateStatus } = useContext(PostContext);
   const navigation = useNavigation();
-
-  const isFocused = useIsFocused();
+  const [mySelectedOffers, setMySelectedOffers] = useState([]);
 
   useEffect(() => {
-    if (isFocused) {
-      getMyAceptedOffers();
-    }
-  }, [isFocused]);
-
-  getMyAceptedOffers = async () => {
-    try {
-      let { data } = await clientAxios.get(
-        "/offer/getMyAceptedOffers/" + userState.user.id
-      );
-      data.offersFound.sort(
-        (a, b) => new Date(a.post.date) - new Date(b.post.date)
-      );
-      setAceptedOffers(data.offersFound);
-    } catch (error) {
-      console.log(error);
-    }
-  };
+    setMySelectedOffers(
+      postState.posts.filter((post) => post.offerSelected._id)
+    );
+  }, []);
 
   let fDate = "";
   let fTime = "";
@@ -66,48 +47,47 @@ export const MyOffers = ({ setChatWith }) => {
         <Text style={styles.servicesTitle}>Accepted services:</Text>
         <ScrollView style={styles.services}>
           <View>
-            {aceptedOffers &&
-              aceptedOffers?.map((item, index) => (
+            {mySelectedOffers.length !== 0 &&
+              mySelectedOffers.map((item, index) => (
                 <TouchableOpacity
                   key={item._id}
                   style={styles.itemContainer}
                   onPress={() =>
                     navigation.navigate("Maps", {
-                      directions: item.post.directions,
+                      directions: item.directions,
                     })
                   }
                 >
-                  {formatDate(item.post.date)}
+                  {formatDate(item.date)}
                   <Text style={globalStyles.generalText}>
-                    Type of goods: {item.post.goodsType}
+                    Type of goods: {item.goodsType}
                   </Text>
                   <Text style={globalStyles.generalText}>
-                    from: {item.post.directions?.from?.description}
+                    from: {item.directions?.from?.description}
                   </Text>
                   <Text style={globalStyles.generalText}>
-                    to: {item.post.directions?.to?.description}
+                    to: {item.directions?.to?.description}
                   </Text>
                   <Text style={globalStyles.generalText}>
                     Date: {fDate} at {fTime}
                   </Text>
                   <Text style={globalStyles.generalText}>
-                    status: {item.post.status}
+                    status: {item.status.mainStatus}
                   </Text>
                   <Text style={globalStyles.generalText}>
-                    Price: {item.price}
+                    Price: {item.offerSelected.price}
                   </Text>
                   <TouchableOpacity
                     style={styles.openChatButton}
                     onPress={() => {
-                      setChatWith(item?.post?.owner?.given_name);
+                      setChatWith(item.owner.given_name);
                       navigation.navigate("chat", {
-                        post: item.post,
+                        post: item,
                       });
                     }}
                   >
                     <Text style={{ color: "white" }}>
-                      Your offer has been selected by{" "}
-                      {item?.post?.owner?.given_name}
+                      Your offer has been selected by {item.owner.given_name}
                     </Text>
                     <Text
                       style={{
@@ -123,8 +103,11 @@ export const MyOffers = ({ setChatWith }) => {
                     style={styles.done}
                     onPress={() => {
                       uptateStatus({
-                        postId: item.post._id,
-                        newStatus: "transportDone",
+                        postId: item._id,
+                        newStatus: {
+                          ...item.status,
+                          mainStatus: "transportDone",
+                        },
                       });
                     }}
                   >
