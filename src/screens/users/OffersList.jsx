@@ -26,10 +26,10 @@ export const OffersList = ({ route }) => {
 
   useEffect(() => {
     getOffers(data._id);
-    if (data.status === "newOffers") {
+    if (data.status.newOffers === true) {
       uptateStatus({
         postId: data._id,
-        newStatus: "offersSeen",
+        newStatus: { ...data.status, newOffers: false },
       });
     }
   }, [data._id]);
