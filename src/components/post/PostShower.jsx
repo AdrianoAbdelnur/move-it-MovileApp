@@ -27,9 +27,9 @@ export const PostShower = ({ item, setChatWith }) => {
     <TouchableOpacity
       style={[
         styles.itemContainer,
-        item.status === "Pending" || item.status === "newOffers"
+        item.status.mainStatus === "pending"
           ? { backgroundColor: "green" }
-          : item.status === "offerSelected"
+          : item.status.mainStatus === "offerSelected"
           ? { backgroundColor: "#37474F" }
           : { backgroundColor: "red" },
       ]}
@@ -50,7 +50,9 @@ export const PostShower = ({ item, setChatWith }) => {
       <Text style={globalStyles.generalText}>
         Date: {fDate} at {fTime}
       </Text>
-      <Text style={globalStyles.generalText}>status: {item.status}</Text>
+      <Text style={globalStyles.generalText}>
+        status: {item.status.mainStatus}
+      </Text>
       {item.offers.length !== 0 && !item.offerSelected && (
         <Text style={{ color: "red" }}>
           You have {item.offers.length} offers for this post
