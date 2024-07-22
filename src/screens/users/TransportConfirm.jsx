@@ -11,13 +11,15 @@ export const TransportConfirm = ({ route }) => {
   const navidation = useNavigation();
 
   const confirmFuction = (data) => {
-    uptateStatus({ postId: data._id, newStatus: "TransportConfirmed" });
+    uptateStatus({
+      postId: data._id,
+      newStatus: { ...data.status, mainStatus: "confirmed" },
+    });
     navidation.navigate("Reviews", {
       transport: data.offerSelected.owner,
       addReview: true,
     });
   };
-  console.log("AUU", data);
   return (
     <View style={globalStyles.container}>
       <Text style={globalStyles.generalText}>
