@@ -46,14 +46,19 @@ const PostsProvider = ({ children }) => {
     }
   };
 
-  const getPendingPosts = async () => {
+  const getPendingPosts = async (ownerId) => {
     try {
       const { data } = await clientAxios("/userPost/pendingPosts");
       const { pendingPost } = data;
+      const { data: mySelectedPost } = await clientAxios(
+        "/userPost/getMySelectedPosts/" + ownerId
+      );
+      const { yourOfferSelectedPosts } = mySelectedPost;
+      const relevantPosts = [...pendingPost, ...yourOfferSelectedPosts];
       if (pendingPost) {
         dispatch({
           type: TYPES.GETPENDINGPOSTS,
-          payload: { pendingPost },
+          payload: { relevantPosts },
         });
       }
     } catch (error) {
@@ -121,13 +126,20 @@ const PostsProvider = ({ children }) => {
       });
       if (data.newPost) {
         dispatch({
-          type: TYPES.UPDATEPOST,
-          payload: { newPost: data.newPost },
+          type: TYPES.UPDATEMYSTATUS,
+          payload: { postId: data.newPost._id, newStatus: data.newPost.status },
         });
       }
     } catch (error) {
       console.log(error);
     }
+  };
+
+  const uptateMyStatus = ({ postId, newStatus }) => {
+    dispatch({
+      type: TYPES.UPDATEMYSTATUS,
+      payload: { postId, newStatus },
+    });
   };
 
   const addMessage = async ({ postId, message }) => {
@@ -162,6 +174,7 @@ const PostsProvider = ({ children }) => {
         uptateStatus,
         addMessage,
         updateMessage,
+        uptateMyStatus,
       }}
     >
       {children}
