@@ -17,7 +17,7 @@ const PostReducer = (state={}, action) => {
         case TYPES.GETPENDINGPOSTS:
             return{
                 ...state,
-                posts: action.payload.pendingPost
+                posts: action.payload.relevantPosts
             }
         case TYPES.CLEARALERTMSG:
             return {
@@ -43,6 +43,13 @@ const PostReducer = (state={}, action) => {
             ...state,
             posts: state.posts.map((post)=>
                 post._id === action.payload.postId? {...post, chatMessages: [action.payload.newMessage, ...post.chatMessages]}: post
+            ) 
+        }
+        case TYPES.UPDATEMYSTATUS:
+        return {
+            ...state,
+            posts: state.posts.map((post)=>
+                post._id === action.payload.postId? {...post, status: action.payload.newStatus}: post
             ) 
         }
     default:
