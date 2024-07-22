@@ -73,9 +73,7 @@ export const PostDetails = ({ route }) => {
             </TouchableOpacity>
           )}
       {userState.user.role === "user" &&
-        (data.status === "Pending" ||
-          data.status === "newOffers" ||
-          data.status === "offersSeen") &&
+        data.status.mainStatus === "pending" &&
         data.offers.length !== 0 && (
           <TouchableOpacity
             style={globalStyles.OptionsButton}
@@ -84,14 +82,15 @@ export const PostDetails = ({ route }) => {
             <Text style={globalStyles.textButtons}>See offers</Text>
           </TouchableOpacity>
         )}
-      {userState.user.role === "user" && data.status === "transportDone" && (
-        <TouchableOpacity
-          style={globalStyles.OptionsButton}
-          onPress={() => navigation.navigate("TransporConfirm", { data })}
-        >
-          <Text style={globalStyles.textButtons}>Confirm transport</Text>
-        </TouchableOpacity>
-      )}
+      {userState.user.role === "user" &&
+        data.status.mainStatus === "transportDone" && (
+          <TouchableOpacity
+            style={globalStyles.OptionsButton}
+            onPress={() => navigation.navigate("TransporConfirm", { data })}
+          >
+            <Text style={globalStyles.textButtons}>Confirm transport</Text>
+          </TouchableOpacity>
+        )}
     </View>
   );
 };
