@@ -18,7 +18,9 @@ const globalStyles = StyleSheet.create({
   },
   generalInformationText: {
     color: "white",
-    fontSize: 22,
+    fontSize: 11,
+    marginBottom: 3,
+    alignSelf: "flex-start"
   },
   input: {
     width: "100%",
@@ -35,6 +37,8 @@ const globalStyles = StyleSheet.create({
   generalText: {
     color: "white",
     fontSize: 15,
+    marginBottom: 3,
+    alignSelf: "flex-start"
   }
 });
 
