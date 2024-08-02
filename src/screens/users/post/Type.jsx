@@ -18,7 +18,6 @@ import { ItemsList } from "./ItemsList";
 export const Type = ({ leg }) => {
   const { formData, setFormData } = useContext(FormContext);
   const currentLeg = `leg${leg + 1}`;
-  console.log(formData?.itemsDetails[currentLeg]?.description);
 
   const navigation = useNavigation();
 
