@@ -1,58 +1,95 @@
-import React, { useContext, useEffect, useState } from "react";
-import { KeyboardAvoidingView, StyleSheet, Text, View } from "react-native";
+import React, { useContext, useEffect, useRef, useState } from "react";
+import {
+  KeyboardAvoidingView,
+  StyleSheet,
+  Text,
+  TouchableOpacity,
+  View,
+} from "react-native";
 import globalStyles from "../../../styles/globalStyles";
 import { useNavigation } from "@react-navigation/native";
 import { EXPO_PUBLIC_GOOGLE_MAP_KEY } from "@env";
 import { GooglePlacesAutocomplete } from "react-native-google-places-autocomplete";
 import colors from "../../../styles/colors";
-import axios from "axios";
 import { NextButton } from "../../../components/ui/NextButton";
 import { FormContext } from "../../../contexts/FormContext";
+import { ScrollView } from "react-native-gesture-handler";
+import { Entypo } from "@expo/vector-icons";
 
 export const Directions = () => {
   const navigation = useNavigation();
   const { formData, setFormData } = useContext(FormContext);
-  const [origin, setOrigin] = useState();
-  const [destination, setDestination] = useState();
-  const [distance, setDistance] = useState(null);
-  const [duration, setDuration] = useState(null);
-  const [date, setDate] = useState(new Date());
+  const autocompleteRef = useRef(null);
+  const [directionSelected, setDirectionSelected] = useState(null);
 
-  useEffect(() => {
-    if (origin && destination) {
-      console.log(origin, destination);
-      getDirections();
+  const handleSelection = (data, details) => {
+    if (directionSelected != null) {
       setFormData({
         ...formData,
-        directions: { from: origin, to: destination },
+        directions: formData.directions.map((dir, index) =>
+          index == directionSelected
+            ? {
+                description: details.formatted_address,
+                place_id: details.place_id,
+                location: {
+                  latitude: details.geometry.location.lat,
+                  longitude: details.geometry.location.lng,
+                },
+                addressComponents: details.address_components,
+              }
+            : dir
+        ),
       });
-    }
-  }, [destination]);
-
-  useEffect(() => {
-    setDate(Math.floor(formData?.date?.getTime() / 1000));
-  }, [formData]);
-
-  const getDirections = async () => {
-    try {
-      const response = await axios.get(
-        `https://maps.googleapis.com/maps/api/directions/json`,
-        {
-          params: {
-            origin: `place_id:${origin.place_id}`,
-            destination: `place_id:${destination.place_id}`,
-            key: EXPO_PUBLIC_GOOGLE_MAP_KEY,
-            mode: "driving",
-            departure_time: date,
+      setTimeout(() => {
+        autocompleteRef.current.setAddressText("");
+      }, 100);
+      setDirectionSelected(null);
+    } else
+      setFormData({
+        ...formData,
+        directions: [
+          ...formData.directions,
+          {
+            description: details.formatted_address,
+            place_id: details.place_id,
+            location: {
+              latitude: details.geometry.location.lat,
+              longitude: details.geometry.location.lng,
+            },
+            address_components: details.address_components,
           },
-        }
+        ],
+      });
+    setTimeout(() => {
+      autocompleteRef.current.setAddressText("");
+    }, 100);
+  };
+
+  const changeDirection = (index) => {
+    setDirectionSelected((prevIndex) => {
+      if (prevIndex !== index) {
+        return index;
+      }
+      if (prevIndex === index) {
+        return null;
+      }
+    });
+  };
+
+  const removeDirection = (index) => {
+    setFormData({
+      ...formData,
+      directions: formData.directions.filter((dir, i) => index !== i),
+    });
+  };
+
+  const checkInfo = () => {
+    if (formData?.directions?.length > 1) {
+      navigation.navigate("DetailsSelector");
+    } else
+      alert(
+        "You must select at least one starting address and one destination address for your delivery"
       );
-      const result = response?.data?.routes[0]?.legs[0];
-      setDistance(result?.distance?.text);
-      setDuration(result?.duration?.text);
-    } catch (error) {
-      console.error(error);
-    }
   };
 
   return (
@@ -60,67 +97,100 @@ export const Directions = () => {
       <View style={styles.container}>
         <View style={{ flex: 1 }}>
           <View style={styles.searchContainer}>
-            <Text style={globalStyles.generalInformationText}>
-              Where do you want to transport the load from
-            </Text>
+            {formData.directions == 0 || directionSelected == 0 ? (
+              <Text style={globalStyles.generalInformationText}>
+                Where do you want to transport the load from
+              </Text>
+            ) : (
+              <Text style={globalStyles.generalInformationText}>
+                Where do you want to transport the load to
+              </Text>
+            )}
             <GooglePlacesAutocomplete
-              style={styles.input}
-              placeholder="from"
+              ref={autocompleteRef}
+              placeholder={
+                formData?.directions?.length == 0 || directionSelected == 0
+                  ? "From"
+                  : formData?.directions?.length == 1 || directionSelected == 1
+                  ? "to"
+                  : "add a new leg"
+              }
               fetchDetails
-              onPress={(data, details = null) => {
-                setOrigin({
-                  description: details.formatted_address,
-                  place_id: details.place_id,
-                  location: {
-                    latitude: details.geometry.location.lat,
-                    longitude: details.geometry.location.lng,
-                  },
-                  address_components: details.address_components,
-                });
-              }}
+              onPress={(data, details = null) => handleSelection(data, details)}
               query={{
                 key: EXPO_PUBLIC_GOOGLE_MAP_KEY,
                 language: "en",
-              }}
-            />
-            <Text
-              style={[globalStyles.generalInformationText, { marginTop: 25 }]}
-            >
-              Where do you want to transport the load to
-            </Text>
-            <GooglePlacesAutocomplete
-              placeholder="to"
-              fetchDetails
-              onPress={(data, details = null) => {
-                console.log(data, details);
-                setDestination({
-                  description: details.formatted_address,
-                  place_id: details.place_id,
-                  location: {
-                    latitude: details.geometry.location.lat,
-                    longitude: details.geometry.location.lng,
-                  },
-                  address_components: details.address_components,
-                });
-              }}
-              query={{
-                key: EXPO_PUBLIC_GOOGLE_MAP_KEY,
-                language: "en",
+                components: "country:au",
               }}
             />
           </View>
         </View>
-        {distance && duration && (
-          <View>
-            <Text style={globalStyles.generalInformationText}>
-              Distance: {distance}
-            </Text>
-            <Text style={globalStyles.generalInformationText}>
-              Duration: {duration}
-            </Text>
-          </View>
-        )}
-        <NextButton navigateTo={"Confirmation"} />
+        <ScrollView style={styles.directionsList}>
+          {formData?.directions?.map((dir, index) => {
+            const splitedDir = dir.description.split(",");
+            return (
+              <TouchableOpacity
+                key={dir.description + index}
+                onPress={() => changeDirection(index)}
+                style={{
+                  borderColor: "white",
+                  borderWidth: 1,
+                  borderRadius: 8,
+                  marginHorizontal: 10,
+                  marginVertical: 8,
+                  padding: 4,
+                  backgroundColor: "#260026",
+                }}
+              >
+                {index == 0 ? (
+                  <Text style={globalStyles.generalText}>Start From</Text>
+                ) : index == formData?.directions?.length - 1 ? (
+                  <Text style={globalStyles.generalText}>End of the Route</Text>
+                ) : (
+                  <Text style={globalStyles.generalText}>To</Text>
+                )}
+                {index !== directionSelected ? (
+                  <View style={styles.directionContainer}>
+                    <View style={{ flex: 6 }}>
+                      <Text
+                        style={[
+                          globalStyles.generalText,
+                          { marginBottom: 0, marginLeft: 15 },
+                        ]}
+                      >
+                        {splitedDir[0]}
+                      </Text>
+                      <Text
+                        style={[
+                          globalStyles.generalInformationText,
+                          { marginLeft: 20 },
+                        ]}
+                      >
+                        {splitedDir.slice(1).join(", ")}
+                      </Text>
+                    </View>
+                    <TouchableOpacity
+                      style={{ flex: 1 }}
+                      onPress={() => removeDirection(index)}
+                    >
+                      <Entypo name="trash" size={28} color={colors.primary} />
+                    </TouchableOpacity>
+                  </View>
+                ) : (
+                  <Text
+                    style={[
+                      globalStyles.generalInformationText,
+                      { marginLeft: 20 },
+                    ]}
+                  >
+                    Where?
+                  </Text>
+                )}
+              </TouchableOpacity>
+            );
+          })}
+        </ScrollView>
+        <NextButton toDo={checkInfo} />
       </View>
     </KeyboardAvoidingView>
   );
@@ -146,7 +216,6 @@ const styles = StyleSheet.create({
   searchContainer: {
     flex: 1,
     position: "absolute",
-    width: "90%",
     backgroundColor: colors.background,
     shadowColor: "black",
     shadowOffset: { width: 2, height: 2 },
@@ -155,11 +224,29 @@ const styles = StyleSheet.create({
     elevation: 4,
     padding: 8,
     borderRadius: 8,
+    zIndex: 1,
   },
   googleInput: {
     backgroundColor: "red",
     borderColor: "#888",
     borderWidth: 1,
     fontSize: 55,
+  },
+  directionsList: {
+    position: "absolute",
+    width: "100%",
+    height: "50%",
+    top: 150,
+    left: 0,
+    right: 0,
+    bottom: 0,
+    margin: 20,
+    borderColor: "white",
+    borderWidth: 1,
+    borderRadius: 12,
+    zIndex: -1,
+  },
+  directionContainer: {
+    flexDirection: "row",
   },
 });
