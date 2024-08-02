@@ -17,7 +17,7 @@ import { AuthContext } from "../../contexts/AuthContext";
 import { BellNoti } from "../../components/bell/BellNoti";
 import { NotiModal } from "../../components/ui/NotiModal";
 
-export const DriverHome = () => {
+export const DriverHome = ({ setChatWith }) => {
   const navigation = useNavigation();
   const { state: postsState, getPendingPosts } = useContext(PostContext);
   const { state: userState } = useContext(AuthContext);
@@ -100,6 +100,7 @@ export const DriverHome = () => {
         modalVisible={modalVisible}
         closeNotiModal={toggleModal}
         notiList={notiList}
+        setChatWith={setChatWith}
       />
     </View>
   );
