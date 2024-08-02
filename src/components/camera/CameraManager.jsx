@@ -14,11 +14,18 @@ export const CameraManager = ({ route }) => {
   const [image, setImage] = useState(null);
   const [type, setType] = useState("back");
   const [flash, setFlash] = useState("off");
+  const [base64Image, setBase64Image] = useState("");
   const cameraRef = useRef(null);
   const { formData, setFormData } = useContext(FormContext);
   const { changeStatus } = useContext(AuthContext);
-
-  const { saveAs } = route.params;
+  const [objetPrueba, setObjetPrueba] = useState({
+    title: "safsaf",
+    details: {
+      detail1: "safsaa",
+      perro: { gato: { conejo: { ffff: "ahahaha" } } },
+    },
+  });
+  const { path } = route.params;
 
   useEffect(() => {
     (async () => {
@@ -28,16 +35,30 @@ export const CameraManager = ({ route }) => {
     })();
   }, []);
 
+  const addImage = () => {
+    const keys = path.split(".");
+    let current = { ...formData };
+
+    keys.reduce((acc, key, idx) => {
+      if (idx === keys.length - 1) {
+        acc[key] = base64Image;
+      } else {
+        acc[key] = acc[key] || {};
+        return acc[key];
+      }
+    }, current);
+
+    setFormData(current);
+  };
+
   const takePicture = async () => {
     if (cameraRef) {
       try {
         const data = await cameraRef.current.takePictureAsync({
           base64: true,
-          quality: 0.1,
+          quality: 0.2,
         });
-        setFormData({
-          transportInfo: { ...formData.transportInfo, [saveAs]: data.base64 },
-        });
+        setBase64Image(data.base64);
         setImage(data.uri);
       } catch (error) {
         console.log(error);
@@ -49,8 +70,9 @@ export const CameraManager = ({ route }) => {
     if (image) {
       try {
         const asset = await MediaLibrary.createAssetAsync(image);
-        changeStatus({ [saveAs]: true });
+        addImage();
         setImage(null);
+        setBase64Image("");
         navigation.goBack();
       } catch (error) {
         console.log(error);
