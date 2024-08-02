@@ -29,6 +29,12 @@ import { WaitForAuth } from "../screens/auth/register/transport/WaitForAuth";
 import { DriversReviews } from "../screens/users/DriversReviews";
 import { TransportConfirm } from "../screens/users/TransportConfirm";
 import { PostsList } from "../screens/PostsList";
+import { ItemsList } from "../screens/users/post/ItemsList";
+import { ItemDetails } from "../screens/users/post/ItemDetails";
+import { Title } from "../screens/users/post/Title";
+import { DirectionsSelect } from "../screens/users/post/DirectionsSelect";
+import { DetailsSelector } from "../screens/users/post/DetailsSelector";
+import { ImageDisplayer } from "../components/imageDisplayer/ImageDisplayer";
 
 const Stack = createStackNavigator();
 
@@ -70,7 +76,11 @@ export const Stacknavigators = () => {
           component={ChatScreen}
           options={{ title: `Chat with ${chatWith}` }}
         />
+        <Stack.Screen name="Title" component={Title} />
+        <Stack.Screen name="DetailsSelector" component={DetailsSelector} />
         <Stack.Screen name="Type" component={Type} />
+        <Stack.Screen name="ItemsList" component={ItemsList} />
+        <Stack.Screen name="ItemDetails" component={ItemDetails} />
         <Stack.Screen name="Dimensions" component={Dimen} />
         <Stack.Screen name="post" component={Post} />
         <Stack.Screen name="Directions" component={Directions} />
@@ -80,6 +90,8 @@ export const Stacknavigators = () => {
         <Stack.Screen name="OffersList" component={OffersList} />
         <Stack.Screen name="Reviews" component={DriversReviews} />
         <Stack.Screen name="TransporConfirm" component={TransportConfirm} />
+        <Stack.Screen name="Camera" component={CameraManager} />
+        <Stack.Screen name="Image" component={ImageDisplayer} />
       </Stack.Navigator>
     );
   }
@@ -89,7 +101,6 @@ export const Stacknavigators = () => {
       <Stack.Navigator>
         <Stack.Screen
           name="driverHome"
-          component={DriverHome}
           options={{
             title: "Home",
             headerStyle: {
@@ -97,7 +108,9 @@ export const Stacknavigators = () => {
             },
             headerTintColor: "#FFF",
           }}
-        />
+        >
+          {(props) => <DriverHome {...props} setChatWith={setChatWith} />}
+        </Stack.Screen>
         <Stack.Screen name="Details" component={PostDetails} />
         <Stack.Screen name="Offer" component={Offer} />
         <Stack.Screen name="MyOffers">
