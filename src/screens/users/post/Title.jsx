@@ -20,10 +20,6 @@ export const Title = () => {
   const navigation = useNavigation();
 
   useEffect(() => {
-    console.log(formData);
-  }, [formData]);
-
-  useEffect(() => {
     const unsubscribe = navigation.addListener("beforeRemove", (e) => {
       setFormData({});
     });
