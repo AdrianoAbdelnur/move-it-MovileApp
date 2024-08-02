@@ -32,7 +32,6 @@ import { PostsList } from "../screens/PostsList";
 import { ItemsList } from "../screens/users/post/ItemsList";
 import { ItemDetails } from "../screens/users/post/ItemDetails";
 import { Title } from "../screens/users/post/Title";
-import { DirectionsSelect } from "../screens/users/post/DirectionsSelect";
 import { DetailsSelector } from "../screens/users/post/DetailsSelector";
 import { ImageDisplayer } from "../components/imageDisplayer/ImageDisplayer";
 
