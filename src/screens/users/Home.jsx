@@ -50,14 +50,13 @@ export const Home = ({ setChatWith }) => {
   const toggleModal = () => {
     setModalVisible(!modalVisible);
   };
-
   return (
     <View style={globalStyles.container}>
       <StatusBar style="auto" backgroundColor="gray" translucent={false} />
       <BellNoti openModal={toggleModal} notificationCount={notificationCount} />
       <GeneralButton
         text={"Post a transport"}
-        onPressFunction={() => navigation.navigate("Type")}
+        onPressFunction={() => navigation.navigate("Title")}
       />
       <GeneralButton
         text={"Your posts"}
@@ -67,6 +66,7 @@ export const Home = ({ setChatWith }) => {
         modalVisible={modalVisible}
         closeNotiModal={toggleModal}
         notiList={notiList}
+        setChatWith={setChatWith}
       />
     </View>
   );
