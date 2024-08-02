@@ -1,5 +1,5 @@
 import { useNavigation } from "@react-navigation/native";
-import React, { useEffect, useState } from "react";
+import React, { useContext, useEffect, useState } from "react";
 import {
   Modal,
   PanResponder,
@@ -8,9 +8,16 @@ import {
   TouchableOpacity,
   View,
 } from "react-native";
+import { AuthContext } from "../../contexts/AuthContext";
 
-export const NotiModal = ({ modalVisible, closeNotiModal, notiList }) => {
+export const NotiModal = ({
+  modalVisible,
+  closeNotiModal,
+  notiList,
+  setChatWith,
+}) => {
   const navigation = useNavigation();
+  const { state: userState } = useContext(AuthContext);
 
   const panResponder = PanResponder.create({
     onStartShouldSetPanResponder: () => true,
@@ -75,6 +82,11 @@ export const NotiModal = ({ modalVisible, closeNotiModal, notiList }) => {
                 <TouchableOpacity
                   key={noti.post._id + noti.type}
                   onPress={() => {
+                    setChatWith(
+                      userState.user.role === "user"
+                        ? noti.post.offerSelected.owner.given_name
+                        : noti.post.owner.given_name
+                    );
                     navigation.navigate("chat", {
                       post: noti.post,
                     });

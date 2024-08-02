@@ -37,22 +37,20 @@ export const PostShower = ({ item, setChatWith }) => {
         navigation.navigate("Details", { data: item });
       }}
     >
-      {formatDate(item.date)}
-      <Text style={globalStyles.generalText}>
-        Type of goods: {item.goodsType}
-      </Text>
-      <Text style={globalStyles.generalText}>
-        from: {item.directions?.from?.description}
-      </Text>
-      <Text style={globalStyles.generalText}>
-        to: {item.directions?.to?.description}
-      </Text>
-      <Text style={globalStyles.generalText}>
-        Date: {fDate} at {fTime}
-      </Text>
-      <Text style={globalStyles.generalText}>
-        status: {item.status.mainStatus}
-      </Text>
+      {formatDate(item.date.date)}
+      <Text style={globalStyles.generalText}>title: {item.title}</Text>
+      {item.date.timeDay === "specificTime" ? (
+        <Text style={globalStyles.generalInformationText}>
+          Date: {fDate} at {fTime}
+        </Text>
+      ) : (
+        <Text style={globalStyles.generalInformationText}>Date: {fDate}</Text>
+      )}
+      {item.date.timeDay !== "specificTime" && (
+        <Text style={globalStyles.generalInformationText}>
+          time of day: {item.date.timeDay}
+        </Text>
+      )}
       {item.offers.length !== 0 && !item.offerSelected && (
         <Text style={{ color: "red" }}>
           You have {item.offers.length} offers for this post

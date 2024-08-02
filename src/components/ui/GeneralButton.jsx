@@ -1,11 +1,29 @@
 import React from "react";
-import { StyleSheet, Text, TouchableOpacity } from "react-native";
+import { StyleSheet, Text, TouchableOpacity, View } from "react-native";
 import colors from "../../styles/colors";
+import { Entypo } from "@expo/vector-icons";
 
-export const GeneralButton = ({ text, onPressFunction }) => {
+export const GeneralButton = ({
+  text,
+  onPressFunction,
+  secondaryText = null,
+  icon = null,
+}) => {
   return (
     <TouchableOpacity style={styles.GeneralButton} onPress={onPressFunction}>
-      <Text style={styles.buttonText}>{text}</Text>
+      <View style={styles.infoContainer}>
+        {icon && (
+          <View style={styles.iconContainer}>
+            <Entypo name={icon} size={28} color={"#f1f1f1"} />
+          </View>
+        )}
+        <View style={styles.textContainer}>
+          <Text style={styles.buttonText}>{text}</Text>
+          {secondaryText && (
+            <Text style={styles.secondaryButtonText}>{secondaryText}</Text>
+          )}
+        </View>
+      </View>
     </TouchableOpacity>
   );
 };
@@ -23,6 +41,23 @@ const styles = StyleSheet.create({
   buttonText: {
     color: "white",
     fontSize: 20,
-    margin: 10,
+  },
+  secondaryButtonText: {
+    color: "white",
+    fontSize: 12,
+  },
+  infoContainer: {
+    width: "100%",
+    flexDirection: "row",
+  },
+  iconContainer: {
+    flex: 2,
+    justifyContent: "center",
+    alignItems: "center",
+  },
+  textContainer: {
+    flex: 6,
+    justifyContent: "center",
+    alignItems: "center",
   },
 });
