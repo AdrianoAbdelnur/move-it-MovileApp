@@ -12,23 +12,54 @@ export const DateSelect = () => {
   const [date, setDate] = useState(new Date());
   const [mode, setMode] = useState("");
   const [show, setShow] = useState(false);
-  const [info, setInfo] = useState("Empty");
+  const [info, setInfo] = useState("Please select a date");
   const navigation = useNavigation();
   const { formatDate, fDate, fTime } = useFormatDate();
   const { formData, setFormData } = useContext(FormContext);
+  const [selectedOption, setSelectedOption] = useState(null);
 
   useEffect(() => {
-    setInfo(fDate + " at " + fTime);
-  }, [fDate, fTime]);
+    if (fDate) {
+      if (
+        selectedOption === "Morning" ||
+        selectedOption === "Afternoon" ||
+        selectedOption === "Evening"
+      ) {
+        setInfo(fDate + " in the " + selectedOption);
+      } else if (selectedOption === "At Any Time") {
+        setInfo(fDate + " at any time");
+      } else if (selectedOption === "specificTime") {
+        setInfo(fDate + " at " + fTime);
+      } else if (fDate) {
+        setInfo(fDate + " (please select a time of the day)");
+      }
+    }
+  }, [fDate, fTime, selectedOption]);
+
+  useEffect(() => {
+    if (selectedOption) {
+      setFormData({
+        ...formData,
+        date: { ...formData.date, timeDay: selectedOption },
+      });
+    }
+  }, [selectedOption]);
+
+  const checkInfo = () => {
+    if (formData?.date?.date) {
+      if (formData.date.timeDay) {
+        navigation.navigate("Directions");
+      } else alert("Select a time of day");
+    } else alert("You must select a date");
+  };
 
   const onChange = (e, selectedDate) => {
     setDate(selectedDate);
     setShow(false);
     formatDate(selectedDate);
-
     setFormData({
       ...formData,
-      date: selectedDate,
+      date: { ...formData.date, date: selectedDate },
     });
   };
 
@@ -50,19 +81,50 @@ export const DateSelect = () => {
 
   return (
     <View style={globalStyles.container}>
-      <Text style={globalStyles.generalInformationText}>Select the date</Text>
+      <Text style={globalStyles.generalText}>Select the date</Text>
       <GeneralButton
         text={"Select the date"}
         onPressFunction={() => showMode("date")}
       />
-      <GeneralButton
-        text={"Select the time"}
-        onPressFunction={() => showMode("time")}
-      />
-      <Text style={globalStyles.generalInformationText}>
+      <View style={{ margin: 20 }}>
+        <Text style={globalStyles.generalText}>Select an option:</Text>
+        <TouchableOpacity onPress={() => setSelectedOption("Morning")}>
+          <Text style={globalStyles.generalText}>
+            {selectedOption === "Morning" ? "🔘" : "⚪️"} Morning
+          </Text>
+        </TouchableOpacity>
+        <TouchableOpacity onPress={() => setSelectedOption("Afternoon")}>
+          <Text style={globalStyles.generalText}>
+            {selectedOption === "Afternoon" ? "🔘" : "⚪️"} Afternoon
+          </Text>
+        </TouchableOpacity>
+        <TouchableOpacity onPress={() => setSelectedOption("Evening")}>
+          <Text style={globalStyles.generalText}>
+            {selectedOption === "Evening" ? "🔘" : "⚪️"} Evening
+          </Text>
+        </TouchableOpacity>
+        <TouchableOpacity onPress={() => setSelectedOption("At Any Time")}>
+          <Text style={globalStyles.generalText}>
+            {selectedOption === "At Any Time" ? "🔘" : "⚪️"} At any time
+          </Text>
+        </TouchableOpacity>
+        <TouchableOpacity onPress={() => setSelectedOption("specificTime")}>
+          <Text style={globalStyles.generalText}>
+            {selectedOption === "specificTime" ? "🔘" : "⚪️"} At a specific
+            time
+          </Text>
+        </TouchableOpacity>
+      </View>
+      {selectedOption === "specificTime" && (
+        <GeneralButton
+          text={"Select the time"}
+          onPressFunction={() => showMode("time")}
+        />
+      )}
+      <Text style={globalStyles.generalText}>
         Date for your transport: {"\n"} {info}
       </Text>
-      <NextButton navigateTo={"Directions"} />
+      <NextButton toDo={checkInfo} />
       {show && (
         <RNDateTimePicker
           testID="dateTimePicker"
