@@ -79,6 +79,7 @@ export const PersonalInf = () => {
         />
 
         <TextInput
+          autoCapitalize="none"
           placeholder="email"
           keyboardType="email-address"
           textContentType="emailAddress"
@@ -88,6 +89,7 @@ export const PersonalInf = () => {
         />
         <View style={styles.passwordContainer}>
           <TextInput
+            autoCapitalize="none"
             placeholder="password"
             keyboardType="default"
             textContentType="password"
@@ -111,6 +113,7 @@ export const PersonalInf = () => {
         </View>
         <View style={styles.passwordContainer}>
           <TextInput
+            autoCapitalize="none"
             placeholder="confirm password"
             keyboardType="default"
             textContentType="password"
