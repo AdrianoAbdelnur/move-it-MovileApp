@@ -30,6 +30,7 @@ export const Login = () => {
       <View style={globalStyles.container}>
         <Text style={styles.text}>LOGIN</Text>
         <TextInput
+          autoCapitalize="none"
           placeholder="email"
           keyboardType="email-address"
           textContentType="username"
@@ -39,6 +40,7 @@ export const Login = () => {
         />
         <View style={styles.passwordContainer}>
           <TextInput
+            autoCapitalize="none"
             placeholder="password"
             keyboardType="default"
             textContentType="password"
