@@ -57,10 +57,12 @@ export const Home = ({ setChatWith }) => {
       <GeneralButton
         text={"Post a transport"}
         onPressFunction={() => navigation.navigate("Title")}
+        icon="add-to-list"
       />
       <GeneralButton
         text={"Your posts"}
         onPressFunction={() => navigation.navigate("PostsList")}
+        icon="text-document"
       />
       <NotiModal
         modalVisible={modalVisible}
