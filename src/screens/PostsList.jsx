@@ -1,12 +1,30 @@
-import React, { useContext } from "react";
+import React, { useContext, useEffect, useState } from "react";
 import { ScrollView, StatusBar, StyleSheet, Text, View } from "react-native";
 import globalStyles from "../styles/globalStyles";
 import colors from "../styles/colors";
 import { PostContext } from "../contexts/PostsContext";
 import { PostShower } from "../components/post/PostShower";
 
+const statusOrder = {
+  offerSelected: 0,
+  pending: 1,
+  confirmed: 2,
+};
+
 export const PostsList = ({ setChatWith }) => {
   const { state: postsState } = useContext(PostContext);
+  const [sortedPosts, setSortedPosts] = useState([]);
+
+  useEffect(() => {
+    setSortedPosts(
+      postsState?.posts?.sort((a, b) => {
+        const statusA = a.status.mainStatus;
+        const statusB = b.status.mainStatus;
+
+        return statusOrder[statusA] - statusOrder[statusB];
+      })
+    );
+  }, [postsState]);
 
   return (
     <View style={globalStyles.container}>
@@ -15,8 +33,8 @@ export const PostsList = ({ setChatWith }) => {
         <Text style={styles.servicesTitle}>Your Posts:</Text>
         <ScrollView style={styles.services}>
           <View>
-            {postsState &&
-              postsState.posts.map((item) => (
+            {sortedPosts &&
+              sortedPosts.map((item) => (
                 <PostShower
                   key={item._id}
                   item={item}
@@ -37,8 +55,8 @@ const styles = StyleSheet.create({
     margin: 10,
   },
   services_container: {
-    width: "90%",
-    maxHeight: "60%",
+    width: "95%",
+    maxHeight: "90%",
     justifyContent: "center",
     alignItems: "center",
     backgroundColor: colors.secondary,
@@ -51,7 +69,7 @@ const styles = StyleSheet.create({
     margin: 5,
   },
   services: {
-    width: "85%",
+    width: "95%",
     borderWidth: 2,
     borderColor: "#000",
     borderRadius: 10,
