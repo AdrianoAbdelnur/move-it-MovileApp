@@ -5,6 +5,7 @@ import {
   StyleSheet,
   Text,
   TextInput,
+  TouchableOpacity,
   View,
 } from "react-native";
 import { NextButton } from "../../../components/ui/NextButton";
@@ -69,17 +70,38 @@ export const Type = ({ leg }) => {
             secondaryText={"(optional)"}
             onPressFunction={addItemsList}
           />
-          <GeneralButton
-            text={"Add a photo"}
-            secondaryText={"(optional)"}
-            icon={"camera"}
-            onPressFunction={() => {
-              navigation.navigate("Camera", {
-                path: `itemsDetails.${currentLeg}.photoItems`,
-              });
-            }}
-          />
-          {/* <NextButton navigateTo={"Date"} /> */}
+
+          {!formData?.itemsDetails?.[currentLeg]?.photoItems ? (
+            <GeneralButton
+              text={"Add a photo"}
+              secondaryText={"(optional)"}
+              icon={"camera"}
+              onPressFunction={() => {
+                navigation.navigate("Camera", {
+                  path: `itemsDetails.${currentLeg}.photoItems`,
+                });
+              }}
+            />
+          ) : (
+            <TouchableOpacity
+              style={styles.changePhotoButton}
+              onPress={() =>
+                setFormData({
+                  ...formData,
+                  itemsDetails: {
+                    ...formData.itemsDetails,
+                    [currentLeg]: {
+                      ...formData.itemsDetails[currentLeg],
+                      photoItems: null,
+                    },
+                  },
+                })
+              }
+            >
+              <Text>Item Photo uploaded </Text>
+              <Text>change?</Text>
+            </TouchableOpacity>
+          )}
         </View>
       </ScrollView>
     </KeyboardAvoidingView>
@@ -102,5 +124,14 @@ const styles = StyleSheet.create({
   scrollViewContainer: {
     backgroundColor: colors.background,
     paddingTop: 15,
+  },
+  changePhotoButton: {
+    backgroundColor: "grey",
+    minWidth: "70%",
+    padding: 8,
+    borderRadius: 15,
+    justifyContent: "center",
+    alignItems: "center",
+    marginBottom: 10,
   },
 });
