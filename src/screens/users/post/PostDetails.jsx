@@ -203,7 +203,9 @@ export const PostDetails = ({ route }) => {
                   {data.itemsDetails[currentLeg].photoItems && (
                     <TouchableOpacity
                       onPress={() =>
-                        navigation.navigate("Image", { currentLeg })
+                        navigation.navigate("Image", {
+                          image: data.itemsDetails[currentLeg].photoItems,
+                        })
                       }
                     >
                       <Text

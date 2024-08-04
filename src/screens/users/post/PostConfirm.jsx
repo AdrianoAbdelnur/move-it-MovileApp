@@ -213,7 +213,9 @@ export const PostConfirm = () => {
                   {formData.itemsDetails[currentLeg].photoItems && (
                     <TouchableOpacity
                       onPress={() =>
-                        navigation.navigate("Image", { currentLeg })
+                        navigation.navigate("Image", {
+                          image: formData.itemsDetails[currentLeg].photoItems,
+                        })
                       }
                     >
                       <Text
