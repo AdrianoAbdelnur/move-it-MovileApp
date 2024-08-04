@@ -19,7 +19,7 @@ export const MyOffers = ({ setChatWith }) => {
 
   useEffect(() => {
     setMySelectedOffers(
-      postState.posts.filter((post) => post.offerSelected._id)
+      postState?.posts?.filter((post) => post?.offerSelected?._id)
     );
   }, []);
 
@@ -58,22 +58,24 @@ export const MyOffers = ({ setChatWith }) => {
                     })
                   }
                 >
-                  {formatDate(item.date)}
+                  {formatDate(item.date.date)}
                   <Text style={globalStyles.generalText}>
-                    Type of goods: {item.goodsType}
+                    title: {item.title}
                   </Text>
-                  <Text style={globalStyles.generalText}>
-                    from: {item.directions?.from?.description}
-                  </Text>
-                  <Text style={globalStyles.generalText}>
-                    to: {item.directions?.to?.description}
-                  </Text>
-                  <Text style={globalStyles.generalText}>
-                    Date: {fDate} at {fTime}
-                  </Text>
-                  <Text style={globalStyles.generalText}>
-                    status: {item.status.mainStatus}
-                  </Text>
+                  {item.date.timeDay === "specificTime" ? (
+                    <Text style={globalStyles.generalInformationText}>
+                      Date: {fDate} at {fTime}
+                    </Text>
+                  ) : (
+                    <Text style={globalStyles.generalInformationText}>
+                      Date: {fDate}
+                    </Text>
+                  )}
+                  {item.date.timeDay !== "specificTime" && (
+                    <Text style={globalStyles.generalInformationText}>
+                      time of day: {item.date.timeDay}
+                    </Text>
+                  )}
                   <Text style={globalStyles.generalText}>
                     Price: {item.offerSelected.price}
                   </Text>
@@ -172,6 +174,6 @@ const styles = StyleSheet.create({
     borderRadius: 12,
   },
   done: {
-    backgroundColor: "red",
+    backgroundColor: "grey",
   },
 });
