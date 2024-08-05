@@ -12,44 +12,49 @@ import { NextButton } from "../../../../components/ui/NextButton";
 import { useNavigation } from "@react-navigation/native";
 import { FormContext } from "../../../../contexts/FormContext";
 import { AuthContext } from "../../../../contexts/AuthContext";
-import { PhotoButton } from "../../../../components/ui/PhotoButton";
 import { GeneralButton } from "../../../../components/ui/GeneralButton";
+import { DropDownCustom } from "../../../../components/dropDown/DropDownCustom";
 
 export const TransportInfo = () => {
   const navigation = useNavigation();
   const { formData, setFormData } = useContext(FormContext);
   const { state: user } = useContext(AuthContext);
 
+  const items = [
+    { label: "Truck", value: "Truck" },
+    { label: "Van", value: "Van" },
+    { label: "Ute", value: "Ute" },
+    { label: "Trailer", value: "Trailer" },
+    { label: "Pick up", value: "Pick up" },
+  ];
+
+  const handleSelect = (item) => {
+    setFormData({
+      ...formData,
+      transportInfo: { ...formData.transportInfo, vehicle: item.value },
+    });
+  };
+
   return (
     <KeyboardAvoidingView style={globalStyles.KeyboardAvoidingView}>
       <View style={globalStyles.container}>
-        <TextInput
-          placeholder={
-            user.user.transportInfo.vehicle
-              ? user.user.transportInfo.vehicle
-              : "type of vehicle"
-          }
-          keyboardType="ascii-capable"
-          textContentType="username"
-          inputMode="text"
-          style={globalStyles.input}
-          onChangeText={(value) =>
-            setFormData({
-              transportInfo: { ...formData.transportInfo, vehicle: value },
-            })
-          }
+        <DropDownCustom
+          items={items}
+          onSelect={handleSelect}
+          placeholder="Select a type of vehicle"
         />
         <TextInput
           placeholder={
             user.user.transportInfo.registrationPlate
               ? user.user.transportInfo.registrationPlate
-              : "registration plate"
+              : "Plate number"
           }
           keyboardType="phone-pad"
           inputMode="text"
           style={globalStyles.input}
           onChangeText={(value) =>
             setFormData({
+              ...formData,
               transportInfo: {
                 ...formData.transportInfo,
                 registrationPlate: value,
