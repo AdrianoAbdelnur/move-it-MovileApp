@@ -12,6 +12,7 @@ import * as Location from "expo-location";
 import truckLocation from "./../../assetsApp/truckLocation.png";
 import MapViewDirections from "react-native-maps-directions";
 import colors from "../../styles/colors";
+import Directions from "./Directions";
 
 export const Maps = ({ route }) => {
   const mapRef = useRef();
@@ -45,9 +46,9 @@ export const Maps = ({ route }) => {
 
   const fitMapToCoordinates = () => {
     mapRef.current?.fitToCoordinates(
-      [currentLocation, directions.from.location, directions.to.location],
+      [currentLocation, ...directions.map((direction) => direction.location)],
       {
-        edgePadding: { top: 70, right: 70, bottom: 150, left: 70 },
+        edgePadding: { top: 120, right: 70, bottom: 150, left: 70 },
         animated: true,
       }
     );
@@ -68,8 +69,16 @@ export const Maps = ({ route }) => {
 
   const openNavigation = () => {
     const origin = `${currentLocation.latitude},${currentLocation.longitude}`;
-    const destination = `${directions.to.location.latitude},${directions.to.location.longitude}`;
-    const waypoints = `${directions.from.location.latitude},${directions.from.location.longitude}`;
+    const destination = `${
+      directions[directions.length - 1].location.latitude
+    },${directions[directions.length - 1].location.longitude}`;
+    const waypoints = directions
+      .slice(0, directions.length - 1)
+      .map(
+        (direction) =>
+          `${direction.location.latitude},${direction.location.longitude}`
+      )
+      .join("|");
     const travelmode = "driving";
     const url = `https://www.google.com/maps/dir/?api=1&origin=${origin}&destination=${destination}&waypoints=${waypoints}&travelmode=${travelmode}`;
     Linking.openURL(url);
@@ -77,6 +86,7 @@ export const Maps = ({ route }) => {
 
   return (
     <View style={styles.container}>
+      <Directions directions={directions} />
       <MapView
         style={styles.map}
         ref={mapRef}
@@ -98,23 +108,34 @@ export const Maps = ({ route }) => {
             </Callout>
           </Marker>
         )}
-        <Marker coordinate={directions.from.location} title={"Origin"} />
-        <Marker coordinate={directions.to.location} title={"Destination"} />
-        <MapViewDirections
-          origin={currentLocation}
-          destination={directions.from.location}
-          optimizeWaypoints
-          apikey={EXPO_PUBLIC_GOOGLE_MAP_KEY}
-          strokeWidth={4}
-          strokeColor="purple"
-        />
-        <MapViewDirections
-          origin={directions.from.location}
-          destination={directions.to.location}
-          optimizeWaypoints
-          apikey={EXPO_PUBLIC_GOOGLE_MAP_KEY}
-          strokeWidth={4}
-        />
+        {directions.map((direction, index) => (
+          <Marker
+            key={index}
+            coordinate={direction.location}
+            title={direction.description}
+          />
+        ))}
+        {currentLocation && directions.length > 0 && (
+          <>
+            <MapViewDirections
+              origin={currentLocation}
+              destination={directions[0].location}
+              apikey={EXPO_PUBLIC_GOOGLE_MAP_KEY}
+              strokeWidth={4}
+              strokeColor="purple"
+            />
+            {directions.slice(1).map((direction, index) => (
+              <MapViewDirections
+                key={index}
+                origin={directions[index].location}
+                destination={direction.location}
+                apikey={EXPO_PUBLIC_GOOGLE_MAP_KEY}
+                strokeWidth={4}
+                strokeColor="purple"
+              />
+            ))}
+          </>
+        )}
       </MapView>
       <TouchableOpacity style={styles.button} onPress={openNavigation}>
         <Text style={styles.buttonText}>Go to Navigator</Text>

@@ -109,12 +109,12 @@ export const DriverHome = ({ setChatWith }) => {
 const styles = StyleSheet.create({
   buttonText: {
     color: "white",
-    fontSize: 25,
+    fontSize: 15,
     margin: 10,
   },
   services_container: {
     width: "90%",
-    maxHeight: "60%",
+    maxHeight: "80%",
     justifyContent: "center",
     alignItems: "center",
     backgroundColor: colors.secondary,

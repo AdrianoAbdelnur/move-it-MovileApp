@@ -30,8 +30,8 @@ export const PostShower = ({ item, setChatWith }) => {
         item.status.mainStatus === "pending"
           ? { backgroundColor: "green" }
           : item.status.mainStatus === "offerSelected"
-          ? { backgroundColor: "#37474F" }
-          : { backgroundColor: "red" },
+          ? { backgroundColor: "#455A64" }
+          : { backgroundColor: "#444444" },
       ]}
       onPress={() => {
         navigation.navigate("Details", { data: item });
@@ -51,12 +51,15 @@ export const PostShower = ({ item, setChatWith }) => {
           time of day: {item.date.timeDay}
         </Text>
       )}
+      <Text style={{ alignSelf: "flex-end", color: "black" }}>
+        Press here for more information
+      </Text>
       {item.offers.length !== 0 && !item.offerSelected && (
         <Text style={{ color: "red" }}>
           You have {item.offers.length} offers for this post
         </Text>
       )}
-      {item.offerSelected && (
+      {item.status.mainStatus === "offerSelected" && (
         <TouchableOpacity
           style={styles.openChatButton}
           onPress={() => {
@@ -74,9 +77,9 @@ export const PostShower = ({ item, setChatWith }) => {
           </Text>
         </TouchableOpacity>
       )}
-      <Text style={{ alignSelf: "flex-end", color: "black" }}>
-        Press here for more information
-      </Text>
+      {item.status.mainStatus === "confirmed" && (
+        <Text>The transport has been completed</Text>
+      )}
     </TouchableOpacity>
   );
 };

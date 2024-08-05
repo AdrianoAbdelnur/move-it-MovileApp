@@ -121,6 +121,7 @@ export const Stacknavigators = () => {
           component={ChatScreen}
           options={{ title: `Chat with ${chatWith}` }}
         />
+        <Stack.Screen name="Image" component={ImageDisplayer} />
       </Stack.Navigator>
     );
   }

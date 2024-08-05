@@ -1,11 +1,19 @@
 import React, { useContext, useEffect, useState } from "react";
-import { KeyboardAvoidingView, TextInput, View } from "react-native";
+import {
+  KeyboardAvoidingView,
+  StyleSheet,
+  Text,
+  TextInput,
+  TouchableOpacity,
+  View,
+} from "react-native";
 import globalStyles from "../../../../styles/globalStyles";
 import { NextButton } from "../../../../components/ui/NextButton";
 import { useNavigation } from "@react-navigation/native";
 import { FormContext } from "../../../../contexts/FormContext";
 import { AuthContext } from "../../../../contexts/AuthContext";
 import { PhotoButton } from "../../../../components/ui/PhotoButton";
+import { GeneralButton } from "../../../../components/ui/GeneralButton";
 
 export const TransportInfo = () => {
   const navigation = useNavigation();
@@ -49,26 +57,76 @@ export const TransportInfo = () => {
             })
           }
         />
-        <PhotoButton
-          primaryText={"Vehicle Photo"}
-          secondaryText={"(General)"}
-          icon={"camera"}
-          fileName={"generalImg"}
-          onPressFunction={() =>
-            navigation.navigate("Camera", { saveAs: "generalImg" })
-          }
-        />
-        <PhotoButton
-          primaryText={"Vehicle Photo"}
-          secondaryText={"(Cargo Area)"}
-          icon={"camera"}
-          fileName={"cargoAreaImg"}
-          onPressFunction={() =>
-            navigation.navigate("Camera", { saveAs: "cargoAreaImg" })
-          }
-        />
+        {!formData?.transportInfo?.generalImg ? (
+          <GeneralButton
+            text={"Vehicle Photo"}
+            secondaryText={"(General)"}
+            icon={"camera"}
+            onPressFunction={() => {
+              navigation.navigate("Camera", {
+                path: `transportInfo.generalImg`,
+              });
+            }}
+          />
+        ) : (
+          <TouchableOpacity
+            style={styles.changePhotoButton}
+            onPress={() =>
+              setFormData({
+                ...formData,
+                transportInfo: {
+                  ...formData?.transportInfo,
+                  generalImg: null,
+                },
+              })
+            }
+          >
+            <Text>General photo uploaded </Text>
+            <Text>change?</Text>
+          </TouchableOpacity>
+        )}
+        {!formData?.transportInfo?.cargoAreaImg ? (
+          <GeneralButton
+            text={"Vehicle Photo"}
+            secondaryText={"(Cargo Area)"}
+            icon={"camera"}
+            onPressFunction={() => {
+              navigation.navigate("Camera", {
+                path: `transportInfo.cargoAreaImg`,
+              });
+            }}
+          />
+        ) : (
+          <TouchableOpacity
+            style={styles.changePhotoButton}
+            onPress={() =>
+              setFormData({
+                ...formData,
+                transportInfo: {
+                  ...formData?.transportInfo,
+                  cargoAreaImg: null,
+                },
+              })
+            }
+          >
+            <Text>Cargo Area photo uploaded </Text>
+            <Text>change?</Text>
+          </TouchableOpacity>
+        )}
         <NextButton navigateTo={"DriverInfo"} />
       </View>
     </KeyboardAvoidingView>
   );
 };
+
+const styles = StyleSheet.create({
+  changePhotoButton: {
+    backgroundColor: "grey",
+    minWidth: "70%",
+    padding: 8,
+    borderRadius: 15,
+    justifyContent: "center",
+    alignItems: "center",
+    marginBottom: 10,
+  },
+});
