@@ -134,7 +134,7 @@ const styles = StyleSheet.create({
   },
   services_container: {
     width: "90%",
-    maxHeight: "60%",
+    maxHeight: "95%",
     justifyContent: "center",
     alignItems: "center",
     backgroundColor: colors.secondary,
