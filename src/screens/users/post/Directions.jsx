@@ -15,51 +15,37 @@ import { NextButton } from "../../../components/ui/NextButton";
 import { FormContext } from "../../../contexts/FormContext";
 import { ScrollView } from "react-native-gesture-handler";
 import { Entypo } from "@expo/vector-icons";
+import { useUpdateObj } from "../../../hooks/useUpdateObj";
 
 export const Directions = () => {
   const navigation = useNavigation();
   const { formData, setFormData } = useContext(FormContext);
   const autocompleteRef = useRef(null);
   const [directionSelected, setDirectionSelected] = useState(null);
+  const [updateObj] = useUpdateObj(setFormData);
 
   const handleSelection = (data, details) => {
+    const newDir = {
+      description: details.formatted_address,
+      place_id: details.place_id,
+      location: {
+        latitude: details.geometry.location.lat,
+        longitude: details.geometry.location.lng,
+      },
+      addressComponents: details.address_components,
+    };
     if (directionSelected != null) {
-      setFormData({
-        ...formData,
-        directions: formData.directions.map((dir, index) =>
-          index == directionSelected
-            ? {
-                description: details.formatted_address,
-                place_id: details.place_id,
-                location: {
-                  latitude: details.geometry.location.lat,
-                  longitude: details.geometry.location.lng,
-                },
-                addressComponents: details.address_components,
-              }
-            : dir
-        ),
-      });
+      updateObj(
+        "directions",
+        formData.directions.map((dir, index) =>
+          index == directionSelected ? newDir : dir
+        )
+      );
       setTimeout(() => {
         autocompleteRef.current.setAddressText("");
       }, 100);
       setDirectionSelected(null);
-    } else
-      setFormData({
-        ...formData,
-        directions: [
-          ...formData.directions,
-          {
-            description: details.formatted_address,
-            place_id: details.place_id,
-            location: {
-              latitude: details.geometry.location.lat,
-              longitude: details.geometry.location.lng,
-            },
-            address_components: details.address_components,
-          },
-        ],
-      });
+    } else updateObj("directions", [...formData.directions, newDir]);
     setTimeout(() => {
       autocompleteRef.current.setAddressText("");
     }, 100);
@@ -77,10 +63,10 @@ export const Directions = () => {
   };
 
   const removeDirection = (index) => {
-    setFormData({
-      ...formData,
-      directions: formData.directions.filter((dir, i) => index !== i),
-    });
+    updateObj(
+      "directions",
+      formData.directions.filter((dir, i) => index !== i)
+    );
   };
 
   const checkInfo = () => {
@@ -99,11 +85,11 @@ export const Directions = () => {
           <View style={styles.searchContainer}>
             {formData.directions == 0 || directionSelected == 0 ? (
               <Text style={globalStyles.generalInformationText}>
-                Where do you want to transport the load from
+                Where do you want to transport the load from?
               </Text>
             ) : (
               <Text style={globalStyles.generalInformationText}>
-                Where do you want to transport the load to
+                Where do you want to transport the load to?
               </Text>
             )}
             <GooglePlacesAutocomplete

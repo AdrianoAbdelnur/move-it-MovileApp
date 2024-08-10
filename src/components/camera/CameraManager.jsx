@@ -7,6 +7,7 @@ import { CameraButton } from "../ui/CameraButton";
 import { useNavigation } from "@react-navigation/native";
 import { FormContext } from "../../contexts/FormContext";
 import { AuthContext } from "../../contexts/AuthContext";
+import { useUpdateObj } from "../../hooks/useUpdateObj";
 
 export const CameraManager = ({ route }) => {
   const navigation = useNavigation();
@@ -17,14 +18,8 @@ export const CameraManager = ({ route }) => {
   const [base64Image, setBase64Image] = useState("");
   const cameraRef = useRef(null);
   const { formData, setFormData } = useContext(FormContext);
-  const { changeStatus } = useContext(AuthContext);
-  const [objetPrueba, setObjetPrueba] = useState({
-    title: "safsaf",
-    details: {
-      detail1: "safsaa",
-      perro: { gato: { conejo: { ffff: "ahahaha" } } },
-    },
-  });
+  const [updateObj] = useUpdateObj(setFormData);
+
   const { path } = route.params;
 
   useEffect(() => {
@@ -36,19 +31,7 @@ export const CameraManager = ({ route }) => {
   }, []);
 
   const addImage = () => {
-    const keys = path.split(".");
-    let current = { ...formData };
-
-    keys.reduce((acc, key, idx) => {
-      if (idx === keys.length - 1) {
-        acc[key] = base64Image;
-      } else {
-        acc[key] = acc[key] || {};
-        return acc[key];
-      }
-    }, current);
-
-    setFormData(current);
+    updateObj(path, base64Image);
   };
 
   const takePicture = async () => {
