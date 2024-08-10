@@ -31,7 +31,7 @@ export const GeneralButton = ({
 const styles = StyleSheet.create({
   GeneralButton: {
     width: "90%",
-    height: 75,
+    height: 60,
     backgroundColor: colors.primary,
     borderRadius: 15,
     alignItems: "center",

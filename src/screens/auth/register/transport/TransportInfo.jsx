@@ -1,4 +1,4 @@
-import React, { useContext, useEffect, useState } from "react";
+import React, { useContext, useEffect } from "react";
 import {
   KeyboardAvoidingView,
   StyleSheet,
@@ -14,11 +14,29 @@ import { FormContext } from "../../../../contexts/FormContext";
 import { AuthContext } from "../../../../contexts/AuthContext";
 import { GeneralButton } from "../../../../components/ui/GeneralButton";
 import { DropDownCustom } from "../../../../components/dropDown/DropDownCustom";
+import { useUpdateObj } from "../../../../hooks/useUpdateObj";
 
 export const TransportInfo = () => {
   const navigation = useNavigation();
   const { formData, setFormData } = useContext(FormContext);
-  const { state: user } = useContext(AuthContext);
+  const { state: userState } = useContext(AuthContext);
+  const [updateObj] = useUpdateObj(setFormData);
+
+  useEffect(() => {
+    if (userState?.user?.transportInfo) {
+      const keyValue = Object.entries(userState?.user?.transportInfo);
+      for (const item of keyValue) {
+        const [key, value] = item;
+        if (value !== false) {
+          updateObj(`transportInfo.${key}`, value);
+        }
+      }
+    }
+  }, [userState]);
+
+  useEffect(() => {
+    console.log("formData", formData);
+  }, [formData]);
 
   const items = [
     { label: "Truck", value: "Truck" },
@@ -29,37 +47,29 @@ export const TransportInfo = () => {
   ];
 
   const handleSelect = (item) => {
-    setFormData({
-      ...formData,
-      transportInfo: { ...formData.transportInfo, vehicle: item.value },
-    });
+    updateObj("transportInfo.vehicle", item.value);
   };
 
   return (
     <KeyboardAvoidingView style={globalStyles.KeyboardAvoidingView}>
       <View style={globalStyles.container}>
         <DropDownCustom
+          prevItem={userState?.user?.transportInfo?.vehicle}
           items={items}
           onSelect={handleSelect}
           placeholder="Select a type of vehicle"
         />
         <TextInput
           placeholder={
-            user.user.transportInfo.registrationPlate
-              ? user.user.transportInfo.registrationPlate
+            userState.user.transportInfo.registrationPlate
+              ? userState.user.transportInfo.registrationPlate
               : "Plate number"
           }
           keyboardType="phone-pad"
           inputMode="text"
           style={globalStyles.input}
           onChangeText={(value) =>
-            setFormData({
-              ...formData,
-              transportInfo: {
-                ...formData.transportInfo,
-                registrationPlate: value,
-              },
-            })
+            updateObj("transportInfo.registrationPlate", value)
           }
         />
         {!formData?.transportInfo?.generalImg ? (
@@ -76,15 +86,7 @@ export const TransportInfo = () => {
         ) : (
           <TouchableOpacity
             style={styles.changePhotoButton}
-            onPress={() =>
-              setFormData({
-                ...formData,
-                transportInfo: {
-                  ...formData?.transportInfo,
-                  generalImg: null,
-                },
-              })
-            }
+            onPress={() => updateObj("transportInfo.generalImg", null)}
           >
             <Text>General photo uploaded </Text>
             <Text>change?</Text>
@@ -104,15 +106,7 @@ export const TransportInfo = () => {
         ) : (
           <TouchableOpacity
             style={styles.changePhotoButton}
-            onPress={() =>
-              setFormData({
-                ...formData,
-                transportInfo: {
-                  ...formData?.transportInfo,
-                  cargoAreaImg: null,
-                },
-              })
-            }
+            onPress={() => updateObj("transportInfo.cargoAreaImg", null)}
           >
             <Text>Cargo Area photo uploaded </Text>
             <Text>change?</Text>
@@ -127,7 +121,8 @@ export const TransportInfo = () => {
 const styles = StyleSheet.create({
   changePhotoButton: {
     backgroundColor: "grey",
-    minWidth: "70%",
+    minWidth: "80%",
+    height: 60,
     padding: 8,
     borderRadius: 15,
     justifyContent: "center",

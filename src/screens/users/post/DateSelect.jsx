@@ -1,5 +1,5 @@
 import React, { useContext, useEffect, useState } from "react";
-import { Button, Text, TouchableOpacity, View } from "react-native";
+import { Text, TouchableOpacity, View } from "react-native";
 import globalStyles from "../../../styles/globalStyles";
 import RNDateTimePicker from "@react-native-community/datetimepicker";
 import { useNavigation } from "@react-navigation/native";
@@ -7,6 +7,7 @@ import { useFormatDate } from "../../../hooks/useFormatDate";
 import { GeneralButton } from "../../../components/ui/GeneralButton";
 import { NextButton } from "../../../components/ui/NextButton";
 import { FormContext } from "../../../contexts/FormContext";
+import { useUpdateObj } from "../../../hooks/useUpdateObj";
 
 export const DateSelect = () => {
   const [date, setDate] = useState(new Date());
@@ -17,6 +18,16 @@ export const DateSelect = () => {
   const { formatDate, fDate, fTime } = useFormatDate();
   const { formData, setFormData } = useContext(FormContext);
   const [selectedOption, setSelectedOption] = useState(null);
+  const [updateObj] = useUpdateObj(setFormData);
+
+  useEffect(() => {
+    if (formData?.date?.date) {
+      formatDate(formData.date.date);
+    }
+    if (formData?.date?.timeDay) {
+      setSelectedOption(formData.date.timeDay);
+    }
+  }, []);
 
   useEffect(() => {
     if (fDate) {
@@ -38,10 +49,7 @@ export const DateSelect = () => {
 
   useEffect(() => {
     if (selectedOption) {
-      setFormData({
-        ...formData,
-        date: { ...formData.date, timeDay: selectedOption },
-      });
+      updateObj("date.timeDay", selectedOption);
     }
   }, [selectedOption]);
 
@@ -57,26 +65,12 @@ export const DateSelect = () => {
     setDate(selectedDate);
     setShow(false);
     formatDate(selectedDate);
-    setFormData({
-      ...formData,
-      date: { ...formData.date, date: selectedDate },
-    });
+    updateObj("date.date", selectedDate);
   };
 
   const showMode = (currentMode) => {
     setShow(true);
     setMode(currentMode);
-  };
-
-  const amPmFunction = (date) => {
-    let hours = date.getHours();
-    let minutes = date.getMinutes();
-    let ampm = hours >= 12 ? "PM" : "AM";
-    hours = hours % 12;
-    hours = hours ? hours : 12;
-    minutes = minutes < 10 ? "0" + minutes : minutes;
-    let strTime = hours + ":" + minutes + " " + ampm;
-    return strTime;
   };
 
   return (

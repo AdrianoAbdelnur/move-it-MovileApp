@@ -12,11 +12,13 @@ import { Type } from "./Type";
 import { FormContext } from "../../../contexts/FormContext";
 import { Entypo } from "@expo/vector-icons";
 import { useNavigation } from "@react-navigation/native";
+import { useUpdateObj } from "../../../hooks/useUpdateObj";
 
 export const DetailsSelector = () => {
   const { formData, setFormData } = useContext(FormContext);
   const [currentIndex, setCurrentIndex] = useState(0);
   const navigation = useNavigation();
+  const [updateObj] = useUpdateObj(setFormData);
 
   useEffect(() => {
     const newItemsDetails = {};
@@ -24,10 +26,7 @@ export const DetailsSelector = () => {
       const key = `leg${i + 1}`;
       newItemsDetails[key] = { description: "" };
     }
-    setFormData({
-      ...formData,
-      itemsDetails: newItemsDetails,
-    });
+    updateObj("itemsDetails", newItemsDetails);
   }, []);
 
   const handleArrowPress = (selection) => {

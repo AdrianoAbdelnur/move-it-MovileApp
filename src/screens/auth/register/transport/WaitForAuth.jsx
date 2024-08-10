@@ -5,7 +5,7 @@ import globalStyles from "../../../../styles/globalStyles";
 export const WaitForAuth = () => {
   return (
     <View style={globalStyles.container}>
-      <Text style={globalStyles.generalInformationText}>
+      <Text style={globalStyles.generalText}>
         Congratulations! You've completed your information. Please allow up to
         24 hours for us to review it before you can start earning money with our
         app.

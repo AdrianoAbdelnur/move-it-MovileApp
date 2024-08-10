@@ -6,7 +6,7 @@ import { NextButton } from "../../../../components/ui/NextButton";
 export const CompleteProfile = () => {
   return (
     <View style={globalStyles.container}>
-      <Text style={globalStyles.generalInformationText}>
+      <Text style={globalStyles.generalText}>
         Please complete your profile to start earning money. To do this, you
         will need to take some photos, such as those of your vehicle or driver's
         license. Therefore, we recommend that you be near these items. Once

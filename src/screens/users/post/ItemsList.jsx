@@ -1,6 +1,5 @@
 import React, { useContext, useEffect, useState } from "react";
 import {
-  Dimensions,
   SectionList,
   StyleSheet,
   Text,
@@ -19,7 +18,7 @@ import { useNavigation } from "@react-navigation/native";
 
 export const ItemsList = ({ route }) => {
   const [filterText, setFilterText] = useState("");
-  const { formData, setFormData } = useContext(FormContext);
+  const { formData } = useContext(FormContext);
   const [filteredData, setFilteredData] = useState([]);
   const [expandedCategory, setExpandedCategory] = useState(null);
   const navigation = useNavigation();

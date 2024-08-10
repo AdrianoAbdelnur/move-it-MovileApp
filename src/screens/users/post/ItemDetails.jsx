@@ -11,6 +11,7 @@ import {
 import { FormContext } from "../../../contexts/FormContext";
 import colors from "../../../styles/colors";
 import { useIsFocused } from "@react-navigation/native";
+import { useUpdateObj } from "../../../hooks/useUpdateObj";
 
 export const ItemDetails = ({ route }) => {
   const { formData, setFormData } = useContext(FormContext);
@@ -18,6 +19,7 @@ export const ItemDetails = ({ route }) => {
   const isFocused = useIsFocused();
   const { leg } = route.params;
   const currentLeg = `leg${leg + 1}`;
+  const [updateObj] = useUpdateObj(setFormData);
 
   useEffect(() => {
     if (route.params.data.name) {
@@ -35,16 +37,7 @@ export const ItemDetails = ({ route }) => {
           return i;
         }
       );
-      setFormData({
-        ...formData,
-        itemsDetails: {
-          ...formData.itemsDetails,
-          [currentLeg]: {
-            ...formData.itemsDetails[currentLeg],
-            itemsList: newItemsList,
-          },
-        },
-      });
+      updateObj(`itemsDetails.${currentLeg}.itemsList`, newItemsList);
     }
   }, [isFocused]);
 
@@ -74,7 +67,9 @@ export const ItemDetails = ({ route }) => {
             You may also add dimensions if you wish.
           </Text>
           <View style={styles.dimensionsInputs}>
-            <Text style={globalStyles.generalInformationText}>length(m)</Text>
+            <Text style={[globalStyles.generalText, { flex: 1 }]}>
+              length(m)
+            </Text>
             <TextInput
               placeholder="length"
               keyboardType="number-pad"
@@ -93,7 +88,9 @@ export const ItemDetails = ({ route }) => {
             />
           </View>
           <View style={styles.dimensionsInputs}>
-            <Text style={globalStyles.generalInformationText}>width(m)</Text>
+            <Text style={[globalStyles.generalText, { flex: 1 }]}>
+              width(m)
+            </Text>
             <TextInput
               placeholder="width"
               keyboardType="number-pad"
@@ -112,7 +109,9 @@ export const ItemDetails = ({ route }) => {
             />
           </View>
           <View style={styles.dimensionsInputs}>
-            <Text style={globalStyles.generalInformationText}>height(m)</Text>
+            <Text style={[globalStyles.generalText, { flex: 1 }]}>
+              height(m)
+            </Text>
             <TextInput
               placeholder="height"
               keyboardType="number-pad"
@@ -131,7 +130,9 @@ export const ItemDetails = ({ route }) => {
             />
           </View>
           <View style={styles.dimensionsInputs}>
-            <Text style={globalStyles.generalInformationText}>weight(Kg)</Text>
+            <Text style={[globalStyles.generalText, { flex: 1 }]}>
+              weight(Kg)
+            </Text>
             <TextInput
               placeholder="weight"
               keyboardType="number-pad"
@@ -167,7 +168,7 @@ const styles = StyleSheet.create({
     backgroundColor: "#FFFFFF",
     color: colors.textPrimary,
     textAlignVertical: "top",
-    fontSize: 18,
+    fontSize: 15,
   },
   container: {
     flex: 1,
@@ -177,9 +178,9 @@ const styles = StyleSheet.create({
     justifyContent: "space-evenly",
   },
   dimensionsInputs: {
-    display: "flex",
     flexDirection: "row",
     flex: 1,
+    paddingHorizontal: 25,
   },
   scrollViewContainer: {
     backgroundColor: colors.background,

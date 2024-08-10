@@ -8,37 +8,27 @@ import {
   TouchableOpacity,
   View,
 } from "react-native";
-import { NextButton } from "../../../components/ui/NextButton";
 import { FormContext } from "../../../contexts/FormContext";
 import colors from "../../../styles/colors";
 import { GeneralButton } from "../../../components/ui/GeneralButton";
 import { ScrollView } from "react-native-gesture-handler";
 import { useNavigation } from "@react-navigation/native";
-import { ItemsList } from "./ItemsList";
+import { useUpdateObj } from "../../../hooks/useUpdateObj";
 
 export const Type = ({ leg }) => {
   const { formData, setFormData } = useContext(FormContext);
+  const [updateObj] = useUpdateObj(setFormData);
   const currentLeg = `leg${leg + 1}`;
 
   const navigation = useNavigation();
 
-  /*  const fontSize =
-    formData?.description === undefined || formData?.description === ""
-      ? 15
-      : 18; */
+  useEffect(() => {
+    console.log(formData?.itemsDetails?.[currentLeg]?.description);
+  }, [formData]);
 
   const addItemsList = () => {
     if (!formData.itemsDetails[currentLeg].itemsList) {
-      setFormData({
-        ...formData,
-        itemsDetails: {
-          ...formData.itemsDetails,
-          [currentLeg]: {
-            ...formData.itemsDetails[currentLeg],
-            itemsList: [],
-          },
-        },
-      });
+      updateObj(`itemsDetails.${currentLeg}.itemsList`, []);
     }
     navigation.navigate("ItemsList", { leg });
   };
@@ -50,19 +40,13 @@ export const Type = ({ leg }) => {
           <Text style={globalStyles.generalText}>Add a Description:</Text>
 
           <TextInput
-            style={[styles.multilineInput /* , { fontSize } */]}
+            style={styles.multilineInput}
             multiline
             numberOfLines={4}
             value={formData?.itemsDetails[currentLeg]?.description}
             placeholder="Include as many details as possible to ensure the transporter has a clear understanding of the journey. You can also add a list of items to be moved or a photo if you want."
             onChangeText={(value) =>
-              setFormData({
-                ...formData,
-                itemsDetails: {
-                  ...formData.itemsDetails,
-                  [currentLeg]: { description: value },
-                },
-              })
+              updateObj(`itemsDetails.${currentLeg}.description`, value)
             }
           />
           <GeneralButton
