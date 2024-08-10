@@ -31,6 +31,8 @@ import { ItemDetails } from "../screens/users/post/ItemDetails";
 import { Title } from "../screens/users/post/Title";
 import { DetailsSelector } from "../screens/users/post/DetailsSelector";
 import { ImageDisplayer } from "../components/imageDisplayer/ImageDisplayer";
+import { DriversDetails } from "../screens/users/DriversDetails";
+import { DriverProfile } from "../screens/users/DriverProfile";
 
 const Stack = createStackNavigator();
 
@@ -79,10 +81,11 @@ export const Stacknavigators = () => {
         <Stack.Screen name="ItemsList" component={ItemsList} />
         <Stack.Screen name="ItemDetails" component={ItemDetails} />
         <Stack.Screen name="Confirmation" component={PostConfirm} />
-        {/* <Stack.Screen name="post" component={Post} /> */}
         <Stack.Screen name="Details" component={PostDetails} />
         <Stack.Screen name="OffersList" component={OffersList} />
+        <Stack.Screen name="DriverDetails" component={DriversDetails} />
         <Stack.Screen name="Reviews" component={DriversReviews} />
+        <Stack.Screen name="DriverProfile" component={DriverProfile} />
         <Stack.Screen name="TransporConfirm" component={TransportConfirm} />
         <Stack.Screen name="Camera" component={CameraManager} />
         <Stack.Screen name="Image" component={ImageDisplayer} />
