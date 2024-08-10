@@ -1,4 +1,4 @@
-import React, { useState } from "react";
+import React, { useEffect, useState } from "react";
 import {
   View,
   Text,
@@ -10,11 +10,23 @@ import {
 } from "react-native";
 import { Entypo } from "@expo/vector-icons";
 
-export const DropDownCustom = ({ items, onSelect, placeholder }) => {
+export const DropDownCustom = ({
+  prevItem = null,
+  items,
+  onSelect,
+  placeholder,
+}) => {
   const [isVisible, setIsVisible] = useState(false);
   const [selectedItem, setSelectedItem] = useState(null);
 
   const toggleDropdown = () => setIsVisible(!isVisible);
+
+  useEffect(() => {
+    if (prevItem) {
+      console.log("aaa", prevItem);
+      setSelectedItem({ label: prevItem, value: prevItem });
+    }
+  }, [prevItem]);
 
   const handleSelect = (item) => {
     setSelectedItem(item);
