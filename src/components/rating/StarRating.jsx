@@ -2,6 +2,7 @@ import React, { useState } from "react";
 import { View, Text, StyleSheet } from "react-native";
 import Star from "./../ui/Star";
 import colors from "../../styles/colors";
+import globalStyles from "../../styles/globalStyles";
 
 const StarRating = ({
   maxStars = 5,
@@ -24,7 +25,7 @@ const StarRating = ({
           />
         ))}
       </View>
-      <Text style={styles.ratingText}>
+      <Text style={globalStyles.generalText}>
         {name}´s rating: {rating}/{maxStars}
       </Text>
     </View>
@@ -35,15 +36,9 @@ const styles = StyleSheet.create({
   container: {
     justifyContent: "center",
     alignItems: "center",
-    padding: 10,
   },
   starsContainer: {
     flexDirection: "row",
-  },
-  ratingText: {
-    marginBottom: 20,
-    fontSize: 18,
-    color: "white",
   },
 });
 
