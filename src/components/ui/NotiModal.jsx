@@ -39,6 +39,7 @@ export const NotiModal = ({
       <View style={styles.modalContainer} {...panResponder.panHandlers}>
         <View style={styles.modalContent}>
           {notiList?.map((noti) => {
+            console.log(noti);
             if (noti.type === "newOffer") {
               return (
                 <TouchableOpacity
@@ -50,7 +51,7 @@ export const NotiModal = ({
                 >
                   <View style={styles.notiContainer}>
                     <Text>
-                      You have new offers in your post for {noti.post.goodsType}
+                      You have new offers in your post for {noti?.post?.title}
                     </Text>
                     <Text style={styles.secondaryNotiText}>
                       Confirm the transport
@@ -69,7 +70,7 @@ export const NotiModal = ({
                   }}
                 >
                   <View style={styles.notiContainer}>
-                    <Text>Transport {noti.post.goodsType} done</Text>
+                    <Text>Transport {noti.post.title} done</Text>
                     <Text style={styles.secondaryNotiText}>
                       Confirm the transport
                     </Text>
@@ -95,7 +96,7 @@ export const NotiModal = ({
                 >
                   <View style={styles.notiContainer}>
                     <Text>
-                      You have a new message in your posts {noti.post.goodsType}
+                      You have a new message in your posts {noti.post.title}
                     </Text>
                     <Text style={styles.secondaryNotiText}>
                       See the message
