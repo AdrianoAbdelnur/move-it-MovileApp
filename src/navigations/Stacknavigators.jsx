@@ -1,9 +1,6 @@
 import { createStackNavigator } from "@react-navigation/stack";
 import React, { useContext, useState } from "react";
 import { Home } from "../screens/users/Home";
-import { Post } from "../screens/users/post/Post";
-import { Type } from "../screens/users/post/Type";
-import { Dimen } from "../screens/users/post/Dimen";
 import { Directions } from "../screens/users/post/Directions";
 import { DateSelect } from "../screens/users/post/DateSelect";
 import { PostConfirm } from "../screens/users/post/PostConfirm";
@@ -76,15 +73,13 @@ export const Stacknavigators = () => {
           options={{ title: `Chat with ${chatWith}` }}
         />
         <Stack.Screen name="Title" component={Title} />
+        <Stack.Screen name="Date" component={DateSelect} />
+        <Stack.Screen name="Directions" component={Directions} />
         <Stack.Screen name="DetailsSelector" component={DetailsSelector} />
-        <Stack.Screen name="Type" component={Type} />
         <Stack.Screen name="ItemsList" component={ItemsList} />
         <Stack.Screen name="ItemDetails" component={ItemDetails} />
-        <Stack.Screen name="Dimensions" component={Dimen} />
-        <Stack.Screen name="post" component={Post} />
-        <Stack.Screen name="Directions" component={Directions} />
-        <Stack.Screen name="Date" component={DateSelect} />
         <Stack.Screen name="Confirmation" component={PostConfirm} />
+        {/* <Stack.Screen name="post" component={Post} /> */}
         <Stack.Screen name="Details" component={PostDetails} />
         <Stack.Screen name="OffersList" component={OffersList} />
         <Stack.Screen name="Reviews" component={DriversReviews} />
