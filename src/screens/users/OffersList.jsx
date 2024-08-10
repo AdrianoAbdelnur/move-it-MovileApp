@@ -72,13 +72,13 @@ export const OffersList = ({ route }) => {
                   </Text>
                   <TouchableOpacity
                     onPress={() =>
-                      navigation.navigate("Reviews", {
+                      navigation.navigate("DriverProfile", {
                         transport: item?.owner,
                       })
                     }
                   >
                     <Text style={styles.review}>
-                      View {item?.owner?.given_name}'s reviews
+                      View {item?.owner?.given_name}'s Profile
                     </Text>
                   </TouchableOpacity>
                   <TouchableOpacity

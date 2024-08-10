@@ -15,7 +15,7 @@ export const TransportConfirm = ({ route }) => {
       postId: data._id,
       newStatus: { ...data.status, mainStatus: "confirmed" },
     });
-    navidation.navigate("Reviews", {
+    navidation.navigate("DriverProfile", {
       transport: data.offerSelected.owner,
       addReview: true,
     });

@@ -60,7 +60,7 @@ export const Offer = ({ route }) => {
           keyboardType="numeric"
           value={price}
           inputMode="numeric"
-          style={globalStyles.input}
+          style={[globalStyles.input, { textAlign: "right", width: "70%" }]}
           onChangeText={validateMoneyInput}
         />
         {!isValid && (
