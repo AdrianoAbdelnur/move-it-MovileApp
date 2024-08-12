@@ -39,7 +39,6 @@ export const NotiModal = ({
       <View style={styles.modalContainer} {...panResponder.panHandlers}>
         <View style={styles.modalContent}>
           {notiList?.map((noti) => {
-            console.log(noti);
             if (noti.type === "newOffer") {
               return (
                 <TouchableOpacity

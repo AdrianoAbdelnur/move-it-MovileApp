@@ -6,7 +6,6 @@ import * as MediaLibrary from "expo-media-library";
 import { CameraButton } from "../ui/CameraButton";
 import { useNavigation } from "@react-navigation/native";
 import { FormContext } from "../../contexts/FormContext";
-import { AuthContext } from "../../contexts/AuthContext";
 import { useUpdateObj } from "../../hooks/useUpdateObj";
 
 export const CameraManager = ({ route }) => {
@@ -17,10 +16,10 @@ export const CameraManager = ({ route }) => {
   const [flash, setFlash] = useState("off");
   const [base64Image, setBase64Image] = useState("");
   const cameraRef = useRef(null);
-  const { formData, setFormData } = useContext(FormContext);
+  const { setFormData } = useContext(FormContext);
   const [updateObj] = useUpdateObj(setFormData);
 
-  const { path } = route.params;
+  const { path, photoType = null } = route.params;
 
   useEffect(() => {
     (async () => {
@@ -29,6 +28,12 @@ export const CameraManager = ({ route }) => {
       setHasCameraPermission(cameraStatus.status === "granted");
     })();
   }, []);
+
+  useEffect(() => {
+    if (photoType) {
+      setType(photoType);
+    }
+  }, [photoType]);
 
   const addImage = () => {
     updateObj(path, base64Image);

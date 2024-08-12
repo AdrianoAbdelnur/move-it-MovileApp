@@ -23,7 +23,6 @@ export const DropDownCustom = ({
 
   useEffect(() => {
     if (prevItem) {
-      console.log("aaa", prevItem);
       setSelectedItem({ label: prevItem, value: prevItem });
     }
   }, [prevItem]);

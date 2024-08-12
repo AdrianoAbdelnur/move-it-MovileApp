@@ -147,8 +147,11 @@ const AuthProvider = ({ children }) => {
     } catch (error) {
       console.log(error);
       dispatch({
-        type: TYPES.LOADING,
-        payload: { isLoading: false },
+        type: TYPES.LOGOUT,
+        payload: {
+          message: error.response.data.errors[0].msg || "Register failed !",
+          type: "Error",
+        },
       });
     }
   };

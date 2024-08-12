@@ -1,10 +1,12 @@
-import React from "react";
+import React, { useContext } from "react";
 import { StyleSheet, Text, TouchableOpacity } from "react-native";
 import globalStyles from "../../styles/globalStyles";
 import { useNavigation } from "@react-navigation/native";
 import colors from "../../styles/colors";
+import { AuthContext } from "../../contexts/AuthContext";
 
 export const PostShower = ({ item, setChatWith }) => {
+  const { state: userState } = useContext(AuthContext);
   const navigation = useNavigation();
   let fDate = "";
   let fTime = "";
@@ -54,10 +56,19 @@ export const PostShower = ({ item, setChatWith }) => {
       <Text style={{ alignSelf: "flex-end", color: "black" }}>
         Press here for more information
       </Text>
-      {item.offers.length !== 0 && !item.offerSelected && (
+      {item.offers.length !== 0 &&
+      !item.offerSelected &&
+      userState.user === "user" ? (
         <Text style={{ color: "red" }}>
           You have {item.offers.length} offers for this post
         </Text>
+      ) : (
+        item.offers.find(
+          (offer) => offer?.owner?._id === userState?.user?.id
+        ) &&
+        userState.user.role == "transport" && (
+          <Text>You have already offered for this job</Text>
+        )
       )}
       {item.status.mainStatus === "offerSelected" && (
         <TouchableOpacity

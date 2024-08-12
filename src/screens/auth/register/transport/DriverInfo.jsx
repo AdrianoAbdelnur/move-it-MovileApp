@@ -44,6 +44,27 @@ export const DriverInfo = () => {
   return (
     <KeyboardAvoidingView style={globalStyles.KeyboardAvoidingView}>
       <View style={globalStyles.container}>
+        {!formData?.transportInfo?.profilePhotoImg ? (
+          <GeneralButton
+            text={"Profile Photo"}
+            secondaryText={"(Selfie)"}
+            icon={"camera"}
+            onPressFunction={() => {
+              navigation.navigate("Camera", {
+                path: `transportInfo.profilePhotoImg`,
+                photoType: "front",
+              });
+            }}
+          />
+        ) : (
+          <TouchableOpacity
+            style={styles.changePhotoButton}
+            onPress={() => updateObj("transportInfo.profilePhotoImg", null)}
+          >
+            <Text>Profile Photo uploaded </Text>
+            <Text>change?</Text>
+          </TouchableOpacity>
+        )}
         {!formData?.transportInfo?.licenseFrontImg ? (
           <GeneralButton
             text={"License Photo"}
