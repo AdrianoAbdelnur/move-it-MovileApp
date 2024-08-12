@@ -22,10 +22,6 @@ export const Type = ({ leg }) => {
 
   const navigation = useNavigation();
 
-  useEffect(() => {
-    console.log(formData?.itemsDetails?.[currentLeg]?.description);
-  }, [formData]);
-
   const addItemsList = () => {
     if (!formData.itemsDetails[currentLeg].itemsList) {
       updateObj(`itemsDetails.${currentLeg}.itemsList`, []);

@@ -34,10 +34,6 @@ export const TransportInfo = () => {
     }
   }, [userState]);
 
-  useEffect(() => {
-    console.log("formData", formData);
-  }, [formData]);
-
   const items = [
     { label: "Truck", value: "Truck" },
     { label: "Van", value: "Van" },
