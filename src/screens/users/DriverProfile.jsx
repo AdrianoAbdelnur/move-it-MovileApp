@@ -16,10 +16,6 @@ export const DriverProfile = ({ route }) => {
   const [generalServiceRating, setGeneralServiceRating] = useState(0);
   const [reviewDetail, setReviewDetail] = useState();
 
-  /* changereview = (newRating) => {
-    setReview(newRating);
-  }; */
-
   const onSubmit = async () => {
     if (
       punctualityRating != 0 &&
@@ -33,6 +29,7 @@ export const DriverProfile = ({ route }) => {
           generalServiceRating,
           review: reviewDetail,
         };
+        console.log(review);
         const { data } = await clientAxios.patch(
           "/user/updateReviews/" + transport._id,
           review
@@ -67,46 +64,56 @@ export const DriverProfile = ({ route }) => {
   return (
     <View style={globalStyles.container}>
       <ScrollView style={{ width: "100%" }}>
+        {!addReview && (
+          <View>
+            <Text
+              style={[
+                globalStyles.generalText,
+                { fontSize: 20, textDecorationLine: "underline" },
+              ]}
+            >
+              Profile
+            </Text>
+            <Text style={globalStyles.generalText}>
+              Name: {transport.given_name} {transport.family_name}
+            </Text>
+            <Text style={globalStyles.generalText}>
+              Vehicle type: {transport.transportInfo.vehicle}
+            </Text>
+            <TouchableOpacity onPress={() => getImage("generalImg")}>
+              <Text
+                style={[
+                  globalStyles.generalText,
+                  { marginLeft: 20, color: "blue" },
+                ]}
+              >
+                View vehicle overview photo
+              </Text>
+            </TouchableOpacity>
+            <TouchableOpacity onPress={() => getImage("cargoAreaImg")}>
+              <Text
+                style={[
+                  globalStyles.generalText,
+                  { marginLeft: 20, color: "blue" },
+                ]}
+              >
+                View the vehicle's cargo area
+              </Text>
+            </TouchableOpacity>
+            <TouchableOpacity onPress={() => getImage("profilePhotoImg")}>
+              <Text
+                style={[
+                  globalStyles.generalText,
+                  { marginLeft: 20, color: "blue" },
+                ]}
+              >
+                View the vehicle's cargo area
+              </Text>
+            </TouchableOpacity>
+          </View>
+        )}
         {transport.review.reviewsQuantity !== 0 || addReview ? (
           <View style={{ width: "100%" }}>
-            {!addReview && (
-              <View>
-                <Text
-                  style={[
-                    globalStyles.generalText,
-                    { fontSize: 20, textDecorationLine: "underline" },
-                  ]}
-                >
-                  Profile
-                </Text>
-                <Text style={globalStyles.generalText}>
-                  Name: {transport.given_name} {transport.family_name}
-                </Text>
-                <Text style={globalStyles.generalText}>
-                  Vehicle type: {transport.transportInfo.vehicle}
-                </Text>
-                <TouchableOpacity onPress={() => getImage("generalImg")}>
-                  <Text
-                    style={[
-                      globalStyles.generalText,
-                      { marginLeft: 20, color: "blue" },
-                    ]}
-                  >
-                    View vehicle overview photo
-                  </Text>
-                </TouchableOpacity>
-                <TouchableOpacity onPress={() => getImage("cargoAreaImg")}>
-                  <Text
-                    style={[
-                      globalStyles.generalText,
-                      { marginLeft: 20, color: "blue" },
-                    ]}
-                  >
-                    View the vehicle's cargo area
-                  </Text>
-                </TouchableOpacity>
-              </View>
-            )}
             <Text
               style={[
                 globalStyles.generalText,
