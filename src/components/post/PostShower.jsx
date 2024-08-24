@@ -5,8 +5,20 @@ import { useNavigation } from "@react-navigation/native";
 import colors from "../../styles/colors";
 import { AuthContext } from "../../contexts/AuthContext";
 
+const statusColors = {
+  pending: "#388E3C",
+  offerSelected: "#3F51B5",
+  inProgress: "#FF9800",
+  transportConfirmed: "#4CAF50",
+  confirmed: "#003300",
+  expired: "#F44336",
+  cancelled: "#6C757D",
+  transportDone: "blue",
+};
+
 export const PostShower = ({ item, setChatWith }) => {
   const { state: userState } = useContext(AuthContext);
+  const cardColor = statusColors[item.status.mainStatus];
   const navigation = useNavigation();
   let fDate = "";
   let fTime = "";
@@ -27,14 +39,7 @@ export const PostShower = ({ item, setChatWith }) => {
 
   return (
     <TouchableOpacity
-      style={[
-        styles.itemContainer,
-        item.status.mainStatus === "pending"
-          ? { backgroundColor: "green" }
-          : item.status.mainStatus === "offerSelected"
-          ? { backgroundColor: "#455A64" }
-          : { backgroundColor: "#444444" },
-      ]}
+      style={[styles.itemContainer, { backgroundColor: cardColor }]}
       onPress={() => {
         navigation.navigate("Details", { data: item });
       }}
@@ -70,26 +75,58 @@ export const PostShower = ({ item, setChatWith }) => {
           <Text>You have already offered for this job</Text>
         )
       )}
-      {item.status.mainStatus === "offerSelected" && (
-        <TouchableOpacity
-          style={styles.openChatButton}
-          onPress={() => {
-            setChatWith(item?.offerSelected?.owner?.given_name);
-            navigation.navigate("chat", {
-              post: item,
-            });
-          }}
-        >
-          <Text style={{ color: "white" }}>
-            You have selected {item?.offerSelected?.owner?.given_name}'s offer'
-          </Text>
-          <Text style={{ color: "white", fontSize: 10, alignSelf: "center" }}>
-            press here to chat with him
-          </Text>
-        </TouchableOpacity>
-      )}
+      {userState.user.role === "user" &&
+        (item.status.mainStatus === "offerSelected" ||
+          item.status.mainStatus === "inProgress") && (
+          <TouchableOpacity
+            style={styles.openChatButton}
+            onPress={() => {
+              setChatWith(item?.offerSelected?.owner?.given_name);
+              navigation.navigate("chat", {
+                post: item,
+              });
+            }}
+          >
+            <Text style={{ color: "white" }}>
+              You have selected {item?.offerSelected?.owner?.given_name}'s
+              offer'
+            </Text>
+            <Text style={{ color: "white", fontSize: 10, alignSelf: "center" }}>
+              press here to chat with him
+            </Text>
+          </TouchableOpacity>
+        )}
+      {userState.user.role === "transport" &&
+        (item.status.mainStatus === "offerSelected" ||
+          item.status.mainStatus === "inProgress") && (
+          <TouchableOpacity
+            style={styles.openChatButton}
+            onPress={() => {
+              setChatWith(item.owner.given_name);
+              navigation.navigate("chat", {
+                post: item,
+              });
+            }}
+          >
+            <Text style={{ color: "white" }}>
+              Your offer has been selected by {item.owner.given_name}
+            </Text>
+            <Text
+              style={{
+                color: "white",
+                fontSize: 10,
+                alignSelf: "center",
+              }}
+            >
+              press here to chat with him
+            </Text>
+          </TouchableOpacity>
+        )}
       {item.status.mainStatus === "confirmed" && (
         <Text>The transport has been completed</Text>
+      )}
+      {item.status.mainStatus === "transportDone" && (
+        <Text>Waiting for user confirmation</Text>
       )}
     </TouchableOpacity>
   );
