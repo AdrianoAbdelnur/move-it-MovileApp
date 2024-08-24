@@ -1,27 +1,42 @@
 import React, { useContext, useEffect, useState } from "react";
-import {
-  ScrollView,
-  StatusBar,
-  StyleSheet,
-  Text,
-  TouchableOpacity,
-  View,
-} from "react-native";
+import { ScrollView, StatusBar, StyleSheet, Text, View } from "react-native";
 import globalStyles from "../../styles/globalStyles";
 import colors from "../../styles/colors";
 import { PostContext } from "../../contexts/PostsContext";
 import { useNavigation } from "@react-navigation/native";
+import { PostShower } from "../../components/post/PostShower";
+
+const statusOrder = {
+  inProgress: 0,
+  offerSelected: 1,
+  transportDone: 2,
+  confirmed: 3,
+  cancelled: 4,
+  expired: 5,
+};
 
 export const MyOffers = ({ setChatWith }) => {
   const { state: postState, uptateStatus } = useContext(PostContext);
   const navigation = useNavigation();
   const [mySelectedOffers, setMySelectedOffers] = useState([]);
+  const [sortedPosts, setSortedPosts] = useState([]);
 
   useEffect(() => {
     setMySelectedOffers(
       postState?.posts?.filter((post) => post?.offerSelected?._id)
     );
-  }, []);
+  }, [postState]);
+
+  useEffect(() => {
+    setSortedPosts(
+      mySelectedOffers?.sort((a, b) => {
+        const statusA = a.status.mainStatus;
+        const statusB = b.status.mainStatus;
+
+        return statusOrder[statusA] - statusOrder[statusB];
+      })
+    );
+  }, [mySelectedOffers]);
 
   let fDate = "";
   let fTime = "";
@@ -47,77 +62,13 @@ export const MyOffers = ({ setChatWith }) => {
         <Text style={styles.servicesTitle}>Accepted services:</Text>
         <ScrollView style={styles.services}>
           <View>
-            {mySelectedOffers.length !== 0 &&
-              mySelectedOffers.map((item, index) => (
-                <TouchableOpacity
+            {sortedPosts?.length !== 0 &&
+              sortedPosts?.map((item) => (
+                <PostShower
                   key={item._id}
-                  style={styles.itemContainer}
-                  onPress={() =>
-                    navigation.navigate("Maps", {
-                      directions: item.directions,
-                    })
-                  }
-                >
-                  {formatDate(item.date.date)}
-                  <Text style={globalStyles.generalText}>
-                    title: {item.title}
-                  </Text>
-                  {item.date.timeDay === "specificTime" ? (
-                    <Text style={globalStyles.generalInformationText}>
-                      Date: {fDate} at {fTime}
-                    </Text>
-                  ) : (
-                    <Text style={globalStyles.generalInformationText}>
-                      Date: {fDate}
-                    </Text>
-                  )}
-                  {item.date.timeDay !== "specificTime" && (
-                    <Text style={globalStyles.generalInformationText}>
-                      time of day: {item.date.timeDay}
-                    </Text>
-                  )}
-                  <Text style={globalStyles.generalText}>
-                    Price: {item.offerSelected.price}
-                  </Text>
-                  <TouchableOpacity
-                    style={styles.openChatButton}
-                    onPress={() => {
-                      setChatWith(item.owner.given_name);
-                      navigation.navigate("chat", {
-                        post: item,
-                      });
-                    }}
-                  >
-                    <Text style={{ color: "white" }}>
-                      Your offer has been selected by {item.owner.given_name}
-                    </Text>
-                    <Text
-                      style={{
-                        color: "white",
-                        fontSize: 10,
-                        alignSelf: "center",
-                      }}
-                    >
-                      press here to chat with him
-                    </Text>
-                  </TouchableOpacity>
-                  <TouchableOpacity
-                    style={styles.done}
-                    onPress={() => {
-                      uptateStatus({
-                        postId: item._id,
-                        newStatus: {
-                          ...item.status,
-                          mainStatus: "transportDone",
-                        },
-                      });
-                    }}
-                  >
-                    <Text style={{ alignSelf: "flex-end", color: "black" }}>
-                      Press here if the job has been completed
-                    </Text>
-                  </TouchableOpacity>
-                </TouchableOpacity>
+                  item={item}
+                  setChatWith={setChatWith}
+                />
               ))}
           </View>
         </ScrollView>
