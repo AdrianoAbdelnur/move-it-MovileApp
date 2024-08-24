@@ -17,7 +17,7 @@ export const Offer = ({ route }) => {
 
   const validateMoneyInput = (value) => {
     const moneyRegex = /^\d+([.,]\d{2})?$/;
-    if (moneyRegex.test(value)) {
+    if (value.trim() !== "" && moneyRegex.test(value)) {
       setIsValid(true);
     } else {
       setIsValid(false);
@@ -56,7 +56,7 @@ export const Offer = ({ route }) => {
       <View style={globalStyles.container}>
         <Text style={globalStyles.generalText}>Make your offer</Text>
         <TextInput
-          placeholder="0,00"
+          placeholder="0.00"
           keyboardType="numeric"
           value={price}
           inputMode="numeric"
