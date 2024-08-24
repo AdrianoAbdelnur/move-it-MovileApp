@@ -33,9 +33,13 @@ export const DriverHome = ({ setChatWith }) => {
   }, []);
 
   useEffect(() => {
+    const currentDate = new Date();
+    currentDate.setHours(0, 0, 0, 0);
     if (postsState.posts.length !== 0) {
       const pendings = postsState.posts.filter(
-        (post) => post.status.mainStatus === "pending"
+        (post) =>
+          post.status.mainStatus === "pending" &&
+          !post.transportCancel.find((id) => id === userState.user.id)
       );
       setPendingPost(pendings);
     }
@@ -43,6 +47,15 @@ export const DriverHome = ({ setChatWith }) => {
       const notifications = [];
       if (post.status.messagesStatus.newUserMessage === true) {
         notifications.push({ type: "newMessage", post });
+      }
+      if (post.status.offerAcepted === true) {
+        notifications.push({ type: "offerAcepted", post });
+      }
+      if (
+        post.status.offerSelected &&
+        new Date(post?.date?.date) < currentDate
+      ) {
+        notifications.push({ type: "OfferSelectedExpired", post });
       }
 
       return notifications;
