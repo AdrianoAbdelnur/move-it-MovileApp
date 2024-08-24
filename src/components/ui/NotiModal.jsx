@@ -9,6 +9,7 @@ import {
   View,
 } from "react-native";
 import { AuthContext } from "../../contexts/AuthContext";
+import { ScrollView } from "react-native-gesture-handler";
 
 export const NotiModal = ({
   modalVisible,
@@ -37,8 +38,35 @@ export const NotiModal = ({
       onRequestClose={closeNotiModal}
     >
       <View style={styles.modalContainer} {...panResponder.panHandlers}>
-        <View style={styles.modalContent}>
+        <ScrollView style={styles.modalContent}>
           {notiList?.map((noti) => {
+            if (noti.type === "transportCancelled") {
+              return (
+                <TouchableOpacity
+                  key={noti.post._id + noti.type}
+                  onPress={() => {
+                    navigation.navigate("Details", { data: noti.post });
+                    closeNotiModal();
+                  }}
+                >
+                  <View style={styles.notiContainer}>
+                    <Text>
+                      We're sorry, but {noti.post.transportCancel[0].given_name}{" "}
+                      canceled the service for your post {noti.post.title}.
+                    </Text>
+                    {noti.post.offers.length > 0 ? (
+                      <Text style={styles.secondaryNotiText}>
+                        Please choose another offer or wait for new ones.
+                      </Text>
+                    ) : (
+                      <Text style={styles.secondaryNotiText}>
+                        Let´s whait for new offers
+                      </Text>
+                    )}
+                  </View>
+                </TouchableOpacity>
+              );
+            }
             if (noti.type === "newOffer") {
               return (
                 <TouchableOpacity
@@ -52,9 +80,7 @@ export const NotiModal = ({
                     <Text>
                       You have new offers in your post for {noti?.post?.title}
                     </Text>
-                    <Text style={styles.secondaryNotiText}>
-                      Confirm the transport
-                    </Text>
+                    <Text style={styles.secondaryNotiText}>See the offers</Text>
                   </View>
                 </TouchableOpacity>
               );
@@ -72,6 +98,24 @@ export const NotiModal = ({
                     <Text>Transport {noti.post.title} done</Text>
                     <Text style={styles.secondaryNotiText}>
                       Confirm the transport
+                    </Text>
+                  </View>
+                </TouchableOpacity>
+              );
+            }
+            if (noti.type === "postExpired") {
+              return (
+                <TouchableOpacity
+                  key={noti.post._id + noti.type}
+                  onPress={() => {
+                    navigation.navigate("Details", { data: noti.post });
+                    closeNotiModal();
+                  }}
+                >
+                  <View style={styles.notiContainer}>
+                    <Text>Post {noti.post.title} is expired</Text>
+                    <Text style={styles.secondaryNotiText}>
+                      Change the date or cancel
                     </Text>
                   </View>
                 </TouchableOpacity>
@@ -104,11 +148,50 @@ export const NotiModal = ({
                 </TouchableOpacity>
               );
             }
+
+            if (noti.type === "offerAcepted") {
+              return (
+                <TouchableOpacity
+                  key={noti.post._id + noti.type}
+                  onPress={() => {
+                    navigation.navigate("Details", { data: noti.post });
+                    closeNotiModal();
+                  }}
+                >
+                  <View style={styles.notiContainer}>
+                    <Text>
+                      {noti.post.owner.given_name} has selected your offer for{" "}
+                      {noti.post.title}.
+                    </Text>
+                    <Text style={styles.secondaryNotiText}>See details</Text>
+                  </View>
+                </TouchableOpacity>
+              );
+            }
+            if (noti.type === "OfferSelectedExpired") {
+              return (
+                <TouchableOpacity
+                  key={noti.post._id + noti.type}
+                  onPress={() => {
+                    navigation.navigate("Details", { data: noti.post });
+                    closeNotiModal();
+                  }}
+                >
+                  <View style={styles.notiContainer}>
+                    <Text>Post {noti.post.title} is expired</Text>
+                    <Text style={styles.secondaryNotiText}>
+                      You can initiate it when you are ready or cancel it asking
+                      for help if you have a problem
+                    </Text>
+                  </View>
+                </TouchableOpacity>
+              );
+            }
           })}
-          <TouchableOpacity style={styles.closeButton} onPress={closeNotiModal}>
-            <Text style={styles.closeButtonText}>Cerrar</Text>
-          </TouchableOpacity>
-        </View>
+        </ScrollView>
+        <TouchableOpacity style={styles.closeButton} onPress={closeNotiModal}>
+          <Text style={styles.closeButtonText}>close</Text>
+        </TouchableOpacity>
       </View>
     </Modal>
   );
