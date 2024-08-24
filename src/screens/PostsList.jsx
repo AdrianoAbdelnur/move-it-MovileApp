@@ -6,9 +6,13 @@ import { PostContext } from "../contexts/PostsContext";
 import { PostShower } from "../components/post/PostShower";
 
 const statusOrder = {
-  offerSelected: 0,
-  pending: 1,
-  confirmed: 2,
+  transportDone: 0,
+  inProgress: 1,
+  expired: 2,
+  offerSelected: 3,
+  pending: 4,
+  confirmed: 5,
+  cancelled: 6,
 };
 
 export const PostsList = ({ setChatWith }) => {
@@ -16,14 +20,16 @@ export const PostsList = ({ setChatWith }) => {
   const [sortedPosts, setSortedPosts] = useState([]);
 
   useEffect(() => {
-    setSortedPosts(
-      postsState?.posts?.sort((a, b) => {
-        const statusA = a.status.mainStatus;
-        const statusB = b.status.mainStatus;
+    console.log(postsState);
+    let sorted = [...postsState.posts];
+    sorted = sorted?.sort((a, b) => {
+      const statusA = a.status.mainStatus;
+      const statusB = b.status.mainStatus;
 
-        return statusOrder[statusA] - statusOrder[statusB];
-      })
-    );
+      return statusOrder[statusA] - statusOrder[statusB];
+    });
+    console.log(sorted);
+    setSortedPosts(sorted);
   }, [postsState]);
 
   return (
@@ -74,7 +80,7 @@ const styles = StyleSheet.create({
     borderColor: "#000",
     borderRadius: 10,
     margin: 10,
-    backgroundColor: colors.primary,
+    backgroundColor: "white",
   },
   text: {
     color: "black",
