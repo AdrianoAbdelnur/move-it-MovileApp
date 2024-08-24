@@ -24,7 +24,6 @@ export const DriverInfo = () => {
 
   useEffect(() => {
     if (fileBase64) {
-      console.log("file", fileBase64);
       updateObj("transportInfo.policeCheckPdf", fileBase64);
       setFileBase64(null);
     }

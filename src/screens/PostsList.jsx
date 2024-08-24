@@ -20,7 +20,6 @@ export const PostsList = ({ setChatWith }) => {
   const [sortedPosts, setSortedPosts] = useState([]);
 
   useEffect(() => {
-    console.log(postsState);
     let sorted = [...postsState.posts];
     sorted = sorted?.sort((a, b) => {
       const statusA = a.status.mainStatus;
@@ -28,7 +27,6 @@ export const PostsList = ({ setChatWith }) => {
 
       return statusOrder[statusA] - statusOrder[statusB];
     });
-    console.log(sorted);
     setSortedPosts(sorted);
   }, [postsState]);
 

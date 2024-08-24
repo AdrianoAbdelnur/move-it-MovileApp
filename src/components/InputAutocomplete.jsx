@@ -9,7 +9,6 @@ export const InputAutocomplete = ({ placeHolder }) => {
   const autocompleteRef = useRef(null);
 
   const handleSelection = (data, details) => {
-    console.log(data, details);
     setFormData({
       ...formData,
       directions: [

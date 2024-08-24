@@ -29,7 +29,6 @@ export const DriverProfile = ({ route }) => {
           generalServiceRating,
           review: reviewDetail,
         };
-        console.log(review);
         const { data } = await clientAxios.patch(
           "/user/updateReviews/" + transport._id,
           review
@@ -78,7 +77,7 @@ export const DriverProfile = ({ route }) => {
               Name: {transport.given_name} {transport.family_name}
             </Text>
             <Text style={globalStyles.generalText}>
-              Vehicle type: {transport.transportInfo.vehicle}
+              Vehicle type: {transport?.transportInfo?.vehicle}
             </Text>
             <TouchableOpacity onPress={() => getImage("generalImg")}>
               <Text
@@ -91,16 +90,6 @@ export const DriverProfile = ({ route }) => {
               </Text>
             </TouchableOpacity>
             <TouchableOpacity onPress={() => getImage("cargoAreaImg")}>
-              <Text
-                style={[
-                  globalStyles.generalText,
-                  { marginLeft: 20, color: "blue" },
-                ]}
-              >
-                View the vehicle's cargo area
-              </Text>
-            </TouchableOpacity>
-            <TouchableOpacity onPress={() => getImage("profilePhotoImg")}>
               <Text
                 style={[
                   globalStyles.generalText,
