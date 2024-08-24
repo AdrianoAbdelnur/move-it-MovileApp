@@ -6,15 +6,17 @@ import {
   TouchableOpacity,
   View,
 } from "react-native";
-import globalStyles from "../../../../styles/globalStyles";
-import colors from "../../../../styles/colors";
-import { NextButton } from "../../../../components/ui/NextButton";
-import { FormContext } from "../../../../contexts/FormContext";
-import { useNavigation } from "@react-navigation/native";
-import { AuthContext } from "../../../../contexts/AuthContext";
 import { MaterialIcons } from "@expo/vector-icons";
 
-export const PersonalInf = () => {
+import { NextButton } from "../../../components/ui/NextButton";
+import { FormContext } from "../../../contexts/FormContext";
+import { useNavigation } from "@react-navigation/native";
+import { AuthContext } from "../../../contexts/AuthContext";
+import { GeneralButton } from "../../../components/ui/GeneralButton";
+import globalStyles from "../../../styles/globalStyles";
+import colors from "../../../styles/colors";
+
+export const PersonalInf = ({ route }) => {
   const { register } = useContext(AuthContext);
   const { formData, setFormData } = useContext(FormContext);
   const [confirmPassword, setConfirmPassword] = useState("");
@@ -22,6 +24,7 @@ export const PersonalInf = () => {
   const navigation = useNavigation();
   const [showPassword, setShowPassword] = useState(false);
   const [showConfirmPassword, setShowConfirmPassword] = useState(false);
+  const role = route?.params?.role;
 
   useEffect(() => {
     if (confirmPassword === formData.password) {
@@ -37,7 +40,11 @@ export const PersonalInf = () => {
         if (validateEmail(formData.email)) {
           if (passConfirmation) {
             register();
-            navigation.navigate("TransportInfo");
+            if (role === "transport") {
+              navigation.navigate("TransportInfo");
+            } else if (role === "user") {
+              navigation.navigate("login");
+            }
           } else alert("Passwords must match");
         } else alert("Invalid email, please enter a valid email.");
       } else alert("Last Name must have at least 3 caracters");
@@ -47,6 +54,17 @@ export const PersonalInf = () => {
   const validateEmail = (email) => {
     const emailRegex = /^[^\s@]+@[^\s@]+\.[^\s@]+$/;
     return emailRegex.test(email);
+  };
+
+  const onSubmit = () => {
+    const keyValue = Object.entries(formData.transportInfo);
+    for (const item of keyValue) {
+      const [key, value] = item;
+      if (value == true) {
+        delete formData.transportInfo[key];
+      }
+    }
+    uploadFields();
   };
 
   return (
@@ -62,7 +80,7 @@ export const PersonalInf = () => {
             setFormData({
               ...formData,
               given_name: value,
-              role: "transport",
+              role: role,
               transportInfo: {},
             })
           }
@@ -135,7 +153,13 @@ export const PersonalInf = () => {
             />
           </TouchableOpacity>
         </View>
-        <NextButton toDo={checkFields} />
+        {role === "transport" && <NextButton toDo={checkFields} />}
+        {role === "user" && (
+          <GeneralButton
+            text={"Submit"}
+            onPressFunction={() => checkFields()}
+          />
+        )}
       </View>
     </KeyboardAvoidingView>
   );
