@@ -48,6 +48,7 @@ export const Type = ({ leg }) => {
           <GeneralButton
             text={"Add a list of items"}
             secondaryText={"(optional)"}
+            icon={"add-to-list"}
             onPressFunction={addItemsList}
           />
 

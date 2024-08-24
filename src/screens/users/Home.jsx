@@ -1,4 +1,4 @@
-import { useNavigation } from "@react-navigation/native";
+import { useIsFocused, useNavigation } from "@react-navigation/native";
 import { StatusBar } from "expo-status-bar";
 import React, { useContext, useEffect, useState } from "react";
 import { StyleSheet, View } from "react-native";
@@ -10,14 +10,21 @@ import { GeneralButton } from "../../components/ui/GeneralButton";
 
 import { BellNoti } from "../../components/bell/BellNoti";
 import { NotiModal } from "../../components/ui/NotiModal";
+import { FormContext } from "../../contexts/FormContext";
 
 export const Home = ({ setChatWith }) => {
   const navigation = useNavigation();
   const { state: userState } = useContext(AuthContext);
-  const { state: postsState, getMyPosts } = useContext(PostContext);
+  const {
+    state: postsState,
+    getMyPosts,
+    uptateStatus,
+  } = useContext(PostContext);
   const [modalVisible, setModalVisible] = useState(false);
   const [notificationCount, setNotificationCount] = useState(0);
   const [notiList, setNotiList] = useState([]);
+  const isFocused = useIsFocused();
+  const { formData, setFormData } = useContext(FormContext);
 
   useEffect(() => {
     if (postsState.posts.length === 0) {
@@ -26,16 +33,51 @@ export const Home = ({ setChatWith }) => {
   }, []);
 
   useEffect(() => {
+    if (isFocused) {
+      setFormData({});
+    }
+  }, [isFocused]);
+
+  useEffect(() => {
+    const currentDate = new Date();
+    currentDate.setHours(0, 0, 0, 0);
+    postsState.posts.map((post) => {
+      const postDate = new Date(post?.date?.date);
+      if (postDate < currentDate && post.status.mainStatus === "pending") {
+        uptateStatus({
+          postId: post._id,
+          newStatus: {
+            ...post.status,
+            mainStatus: "expired",
+          },
+        });
+      }
+    });
+  }, [postsState]);
+
+  useEffect(() => {
     const newsNotiList = postsState.posts.flatMap((post) => {
       const notifications = [];
-      if (post.status.newOffers === true) {
+      if (
+        post.status.newOffers === true &&
+        post.status.mainStatus !== "cancelled"
+      ) {
         notifications.push({ type: "newOffer", post });
       }
       if (post.status.mainStatus === "transportDone") {
         notifications.push({ type: "transportDone", post });
       }
-      if (post.status.messagesStatus.newTransportMessage === true) {
+      if (post.status.mainStatus === "expired") {
+        notifications.push({ type: "postExpired", post });
+      }
+      if (
+        post.status.messagesStatus.newTransportMessage === true &&
+        post.status.mainStatus !== "cancelled"
+      ) {
         notifications.push({ type: "newMessage", post });
+      }
+      if (post.status.transportCancelled) {
+        notifications.push({ type: "transportCancelled", post });
       }
 
       return notifications;

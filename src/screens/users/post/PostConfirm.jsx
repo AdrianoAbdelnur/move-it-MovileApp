@@ -28,10 +28,6 @@ export const PostConfirm = () => {
   const [updateObj] = useUpdateObj(setFormData);
 
   useEffect(() => {
-    console.log(formData);
-  }, [formData]);
-
-  useEffect(() => {
     for (let i = 0; i < formData?.directions?.length - 1; i++) {
       getRouteInfo(
         formData?.directions[i].place_id,
@@ -76,7 +72,6 @@ export const PostConfirm = () => {
   };
 
   const getRouteInfo = async (origin, destination, currentLeg) => {
-    console.log(origin, destination, currentLeg);
     try {
       const response = await axios.get(
         `https://maps.googleapis.com/maps/api/directions/json?origin=place_id:${origin}&destination=place_id:${destination}&key=${EXPO_PUBLIC_GOOGLE_MAP_KEY}`

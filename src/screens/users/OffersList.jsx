@@ -11,21 +11,18 @@ import globalStyles from "../../styles/globalStyles";
 import colors from "../../styles/colors";
 import { clientAxios } from "../../api/ClientAxios";
 import { useNavigation } from "@react-navigation/native";
-import { OfferContext } from "../../contexts/OffersContext";
 import { PostContext } from "../../contexts/PostsContext";
+import { CustomConfirmModal } from "../../components/ui/CustomConfirmModal";
 
 export const OffersList = ({ route }) => {
   const { data } = route.params;
-  const [offers, setOffers] = useState([]);
   const navigation = useNavigation();
-  const {
-    postSelectOffer,
-    state: post,
-    uptateStatus,
-  } = useContext(PostContext);
+  const { postSelectOffer, uptateStatus } = useContext(PostContext);
+  const [showModal, setShowModal] = useState(false);
+  const [modalText, setModalText] = useState("second");
+  const [itemSelected, setItemSelected] = useState();
 
   useEffect(() => {
-    getOffers(data._id);
     if (data.status.newOffers === true) {
       uptateStatus({
         postId: data._id,
@@ -34,15 +31,6 @@ export const OffersList = ({ route }) => {
     }
   }, [data._id]);
 
-  const getOffers = async (id) => {
-    try {
-      const { data } = await clientAxios.get("/offer/getOffersForMyPost/" + id);
-      setOffers(data.myOffers);
-    } catch (error) {
-      console.log(error);
-    }
-  };
-
   const aceptOffer = async (item) => {
     try {
       const { data } = await clientAxios.patch(
@@ -50,11 +38,20 @@ export const OffersList = ({ route }) => {
       );
       if (data?.offerFound) {
         postSelectOffer({ postId: item.post, offerSelected: item._id });
+        setShowModal(false);
+        navigation.navigate("home");
       }
-      navigation.navigate("home");
     } catch (error) {
       console.log(error);
     }
+  };
+
+  const confirmSelection = (item) => {
+    setModalText(
+      `Please confirm that you accept ${item?.owner?.given_name}'s offer for $${item.price}.`
+    );
+    setItemSelected(item);
+    setShowModal(true);
   };
 
   return (
@@ -64,8 +61,8 @@ export const OffersList = ({ route }) => {
         <Text style={styles.servicesTitle}>Your offers:</Text>
         <ScrollView style={styles.services}>
           <View>
-            {offers &&
-              offers.map((item, index) => (
+            {data?.offers &&
+              data?.offers?.map((item, index) => (
                 <View key={item._id} style={styles.itemContainer}>
                   <Text style={globalStyles.generalText}>
                     {item?.owner?.given_name} offered ${item.price}
@@ -83,7 +80,7 @@ export const OffersList = ({ route }) => {
                   </TouchableOpacity>
                   <TouchableOpacity
                     style={styles.acceptOffer}
-                    onPress={() => aceptOffer(item)}
+                    onPress={() => confirmSelection(item)}
                   >
                     <Text>Accept {item?.owner?.given_name}'s offer</Text>
                   </TouchableOpacity>
@@ -92,6 +89,12 @@ export const OffersList = ({ route }) => {
           </View>
         </ScrollView>
       </View>
+      <CustomConfirmModal
+        showModal={showModal}
+        setShowModal={setShowModal}
+        text={modalText}
+        confirmFunction={() => aceptOffer(itemSelected)}
+      />
     </View>
   );
 };

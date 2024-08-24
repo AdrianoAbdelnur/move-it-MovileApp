@@ -4,10 +4,18 @@ import { TYPES } from "../actions/PostActions"
 const PostReducer = (state={}, action) => {
     switch (action.type) {
         case TYPES.ADDNEWPOST:
+            let found= false;
+            const newPostsList = state.posts.map(post => {
+                if(action.payload.newPost._id === post._id) {
+                    found = true;
+                    return action.payload.newPost;
+                }
+                return post
+            })
             return{
                 ...state,
                 alertMsg: action.payload.alertMsg,
-                posts: [...state.posts, action.payload.newPost]
+                posts: found? newPostsList: [...state.posts, action.payload.newPost]
                 }   
         case TYPES.GETPOSTS:
             return{

@@ -30,7 +30,7 @@ export const GeneralButton = ({
 
 const styles = StyleSheet.create({
   GeneralButton: {
-    width: "90%",
+    width: "80%",
     height: 60,
     backgroundColor: colors.primary,
     borderRadius: 15,
@@ -40,7 +40,7 @@ const styles = StyleSheet.create({
   },
   buttonText: {
     color: "white",
-    fontSize: 20,
+    fontSize: 16,
   },
   secondaryButtonText: {
     color: "white",

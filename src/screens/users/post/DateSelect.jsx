@@ -22,7 +22,8 @@ export const DateSelect = () => {
 
   useEffect(() => {
     if (formData?.date?.date) {
-      formatDate(formData.date.date);
+      const date = new Date(formData?.date?.date);
+      formatDate(date);
     }
     if (formData?.date?.timeDay) {
       setSelectedOption(formData.date.timeDay);
@@ -54,9 +55,15 @@ export const DateSelect = () => {
   }, [selectedOption]);
 
   const checkInfo = () => {
+    const today = new Date();
+    today.setHours(0, 0, 0, 0);
     if (formData?.date?.date) {
-      if (formData.date.timeDay) {
-        navigation.navigate("Directions");
+      if (formData?.date?.timeDay) {
+        if (formData?.date?.date >= today) {
+          if (formData?._id) {
+            navigation.navigate("Confirmation");
+          } else navigation.navigate("Directions");
+        } else alert("Please select new date");
       } else alert("Select a time of day");
     } else alert("You must select a date");
   };
@@ -115,7 +122,17 @@ export const DateSelect = () => {
           onPressFunction={() => showMode("time")}
         />
       )}
-      <Text style={globalStyles.generalText}>
+      <Text
+        style={[
+          globalStyles.generalText,
+          {
+            color:
+              new Date(formData?.date?.date) <= new Date().setHours(0, 0, 0, 0)
+                ? "red"
+                : "white",
+          },
+        ]}
+      >
         Date for your transport: {"\n"} {info}
       </Text>
       <NextButton toDo={checkInfo} />

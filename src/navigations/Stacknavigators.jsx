@@ -17,7 +17,7 @@ import { Offer } from "../screens/driver/Offer";
 import { MyOffers } from "../screens/driver/MyOffers";
 import { OffersList } from "../screens/users/OffersList";
 import { SelectRegisterType } from "../screens/auth/register/SelectRegisterType";
-import { PersonalInf } from "../screens/auth/register/transport/PersonalInf";
+
 import { TransportInfo } from "../screens/auth/register/transport/TransportInfo";
 import { CameraManager } from "../components/camera/CameraManager";
 import { DriverInfo } from "../screens/auth/register/transport/DriverInfo";
@@ -32,6 +32,7 @@ import { Title } from "../screens/users/post/Title";
 import { DetailsSelector } from "../screens/users/post/DetailsSelector";
 import { ImageDisplayer } from "../components/imageDisplayer/ImageDisplayer";
 import { DriverProfile } from "../screens/users/DriverProfile";
+import { PersonalInf } from "../screens/auth/register/PersonalInf";
 
 const Stack = createStackNavigator();
 
@@ -53,7 +54,7 @@ export const Stacknavigators = () => {
       <Stack.Navigator>
         <Stack.Screen name="login" component={Login} />
         <Stack.Screen name="SelectRegister" component={SelectRegisterType} />
-        <Stack.Screen name="PersonalTransport" component={PersonalInf} />
+        <Stack.Screen name="PersonalInfo" component={PersonalInf} />
         <Stack.Screen name="TransportInfo" component={TransportInfo} />
       </Stack.Navigator>
     );

@@ -21,12 +21,31 @@ export const DetailsSelector = () => {
   const [updateObj] = useUpdateObj(setFormData);
 
   useEffect(() => {
-    const newItemsDetails = {};
-    for (let i = 0; i < formData?.directions?.length - 1; i++) {
-      const key = `leg${i + 1}`;
-      newItemsDetails[key] = { description: "" };
+    if (!formData?.itemsDetails) {
+      const newItemsDetails = {};
+      for (let i = 0; i < formData?.directions?.length - 1; i++) {
+        const key = `leg${i + 1}`;
+        newItemsDetails[key] = { description: "" };
+      }
+      updateObj("itemsDetails", newItemsDetails);
+    } else {
+      const newItemsDetails = formData.itemsDetails;
+      for (let i = 0; i < formData?.directions?.length - 1; i++) {
+        const key = `leg${i + 1}`;
+        if (!newItemsDetails[key]?.description) {
+          newItemsDetails[key] = { description: "" };
+        }
+        for (
+          let i = formData?.directions?.length;
+          i <= Object.keys(newItemsDetails).length;
+          i++
+        ) {
+          const key = `leg${i}`;
+          delete newItemsDetails[key];
+        }
+      }
+      updateObj("itemsDetails", newItemsDetails);
     }
-    updateObj("itemsDetails", newItemsDetails);
   }, []);
 
   const handleArrowPress = (selection) => {
