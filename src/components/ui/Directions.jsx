@@ -4,7 +4,7 @@ import { ScrollView } from "react-native-gesture-handler";
 
 const Directions = ({ directions }) => {
   return (
-    <ScrollView style={styles.directionsContainer}>
+    <View style={styles.directionsContainer}>
       <FlatList
         data={directions}
         keyExtractor={(item, index) => index.toString()}
@@ -42,7 +42,7 @@ const Directions = ({ directions }) => {
           </View>
         )}
       />
-    </ScrollView>
+    </View>
   );
 };
 
