@@ -15,8 +15,9 @@ const PostReducer = (state={}, action) => {
             return{
                 ...state,
                 alertMsg: action.payload.alertMsg,
-                posts: found? newPostsList: [...state.posts, action.payload.newPost]
-                }   
+                posts: found? newPostsList: [...state.posts, action.payload.newPost],
+                isLoading: false    
+            }   
         case TYPES.GETPOSTS:
             return{
                 ...state,
@@ -60,6 +61,11 @@ const PostReducer = (state={}, action) => {
                 post._id === action.payload.postId? {...post, status: action.payload.newStatus}: post
             ) 
         }
+        case TYPES.LOADING :
+            return {
+                ...state,
+                isLoading: action.payload.isLoading
+            }
     default:
         return state
 }

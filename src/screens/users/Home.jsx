@@ -60,7 +60,8 @@ export const Home = ({ setChatWith }) => {
       const notifications = [];
       if (
         post.status.newOffers === true &&
-        post.status.mainStatus !== "cancelled"
+        post.status.mainStatus !== "cancelled" &&
+        post.status.mainStatus !== "expired"
       ) {
         notifications.push({ type: "newOffer", post });
       }

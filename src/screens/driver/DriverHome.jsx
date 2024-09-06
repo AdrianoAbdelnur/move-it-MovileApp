@@ -39,7 +39,9 @@ export const DriverHome = ({ setChatWith }) => {
       const pendings = postsState.posts.filter(
         (post) =>
           post.status.mainStatus === "pending" &&
-          !post.transportCancel.find((id) => id === userState.user.id)
+          !post.transportCancel.find(
+            (cancel) => cancel._id === userState.user.id
+          )
       );
       setPendingPost(pendings);
     }
@@ -48,7 +50,11 @@ export const DriverHome = ({ setChatWith }) => {
       if (post.status.messagesStatus.newUserMessage === true) {
         notifications.push({ type: "newMessage", post });
       }
-      if (post.status.offerAcepted === true) {
+      if (
+        post.status.offerAcepted === true &&
+        post.status.mainStatus !== "expired" &&
+        post.status.mainStatus !== "cancelled"
+      ) {
         notifications.push({ type: "offerAcepted", post });
       }
       if (

@@ -322,12 +322,7 @@ export const PostDetails = ({ route }) => {
           data?.status?.mainStatus === "inProgress" && (
             <GeneralButton
               text="Service completed"
-              onPressFunction={
-                () => confirmCompletedFuction() /* () => {
-                
-                navigation.navigate("driverHome");
-              } */
-              }
+              onPressFunction={() => confirmCompletedFuction()}
             />
           )}
         {data?.offers?.find(

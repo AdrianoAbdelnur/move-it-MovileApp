@@ -5,7 +5,7 @@ import { PostContext } from "../../contexts/PostsContext";
 import { useNavigation } from "@react-navigation/native";
 
 export const CustomCancelModal = ({ showModal, setShowModal, post }) => {
-  const { state: userState } = useContext(AuthContext);
+  const { state: userState, addCancellation } = useContext(AuthContext);
   const { addPost, uptateStatus } = useContext(PostContext);
   const navigation = useNavigation();
 
@@ -26,6 +26,7 @@ export const CustomCancelModal = ({ showModal, setShowModal, post }) => {
         transportCancel: [userState?.user?.id, ...(post.transportCancel || [])],
       };
       addPost(newPost);
+
       navigation.navigate("driverHome");
     } else if (
       userState.user.role === "user" &&
@@ -53,6 +54,12 @@ export const CustomCancelModal = ({ showModal, setShowModal, post }) => {
       });
       navigation.navigate("PostsList");
     }
+    const cancellationInfo = {
+      serviceId: post._id,
+      cancelledDate: new Date().toISOString(),
+      ...(userState?.user?.role === "user" && { refunded: false }),
+    };
+    addCancellation(cancellationInfo);
     setShowModal(false);
   };
 
