@@ -44,6 +44,15 @@ const AuthReducer = (state={}, action) => {
                 },
                 isLoading: false
             }
+           case TYPES.ADDCANCELATION : 
+            return {
+                ...state,
+                user: {
+                    ...state.user, 
+                    accountSuspended: action.payload.suspension? [action.payload.suspension, ... (state.user.accountSuspended||[])] : state.user.accountSuspended
+                },
+                isLoading: false
+            }
    
        default:
            return state;
