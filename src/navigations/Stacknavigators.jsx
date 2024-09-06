@@ -1,5 +1,5 @@
 import { createStackNavigator } from "@react-navigation/stack";
-import React, { useContext, useState } from "react";
+import React, { useContext, useEffect, useState } from "react";
 import { Home } from "../screens/users/Home";
 import { Directions } from "../screens/users/post/Directions";
 import { DateSelect } from "../screens/users/post/DateSelect";
@@ -33,17 +33,34 @@ import { DetailsSelector } from "../screens/users/post/DetailsSelector";
 import { ImageDisplayer } from "../components/imageDisplayer/ImageDisplayer";
 import { DriverProfile } from "../screens/users/DriverProfile";
 import { PersonalInf } from "../screens/auth/register/PersonalInf";
+import { AccountSuspended } from "../screens/driver/AccountSuspended";
 
 const Stack = createStackNavigator();
 
 export const Stacknavigators = () => {
   const { state } = useContext(AuthContext);
   const [chatWith, setChatWith] = useState({});
+  const [activeSuspensions, setActiveSuspensions] = useState([]);
+  const [hasActiveSuspension, setHasActiveSuspension] = useState(false);
 
   const isLogged = state.isLogged;
   const role = state?.user?.role;
   const infoCompletedFlag = state?.user?.infoCompletedFlag;
   const authorizedTransport = state?.user?.authorizedTransport;
+  const accountSuspended = state?.user?.accountSuspended;
+
+  useEffect(() => {
+    const currentDate = new Date();
+    const suspensions = accountSuspended?.filter((suspension) => {
+      const suspensionEndDate = suspension.suspensionEndDate
+        ? new Date(suspension.suspensionEndDate)
+        : null;
+      return !suspensionEndDate || suspensionEndDate > currentDate;
+    });
+
+    setActiveSuspensions(suspensions);
+    setHasActiveSuspension(suspensions?.length > 0);
+  }, [state]);
 
   if (state.isLoading) {
     return <LoadingComponent />;
@@ -88,6 +105,21 @@ export const Stacknavigators = () => {
         <Stack.Screen name="TransporConfirm" component={TransportConfirm} />
         <Stack.Screen name="Camera" component={CameraManager} />
         <Stack.Screen name="Image" component={ImageDisplayer} />
+      </Stack.Navigator>
+    );
+  }
+
+  if (isLogged && role === "transport" && hasActiveSuspension) {
+    const suspensionReason = activeSuspensions[0]?.reason;
+    const suspensionEndDate = activeSuspensions[0]?.suspensionEndDate;
+
+    return (
+      <Stack.Navigator>
+        <Stack.Screen
+          name="AccountSuspended"
+          component={AccountSuspended}
+          initialParams={{ reason: suspensionReason, suspensionEndDate }}
+        />
       </Stack.Navigator>
     );
   }
