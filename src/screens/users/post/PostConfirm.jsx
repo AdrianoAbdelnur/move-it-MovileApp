@@ -18,6 +18,7 @@ import { GeneralButton } from "../../../components/ui/GeneralButton";
 import { ItemsListShower } from "../../../components/itemsList/ItemsListShower";
 import axios from "axios";
 import { useUpdateObj } from "../../../hooks/useUpdateObj";
+import { LoadingComponent } from "../../../components/ui/LoadingComponent";
 
 export const PostConfirm = () => {
   const navigation = useNavigation();
@@ -85,6 +86,10 @@ export const PostConfirm = () => {
       console.log("Error fetching route details:", error);
     }
   };
+
+  if (postsState.isLoading) {
+    return <LoadingComponent />;
+  }
 
   return (
     <View style={[globalStyles.container, { alignItems: "flex-start" }]}>
