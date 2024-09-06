@@ -17,7 +17,7 @@ import { CustomModal } from "../../components/ui/CustomModal";
 
 export const Login = () => {
   const navigation = useNavigation();
-  const { login, state } = useContext(AuthContext);
+  const { login } = useContext(AuthContext);
   const { formState, getInput } = useForm();
   const [showPassword, setShowPassword] = useState(false);
 
