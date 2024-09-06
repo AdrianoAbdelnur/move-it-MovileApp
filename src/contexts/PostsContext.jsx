@@ -11,6 +11,7 @@ const PostsProvider = ({ children }) => {
   const initialValues = {
     alertMsg: "",
     posts: [],
+    isLoading: false,
   };
 
   const [state, dispatch] = useReducer(PostReducer, initialValues);
@@ -67,6 +68,10 @@ const PostsProvider = ({ children }) => {
   };
 
   const addPost = async (postData) => {
+    dispatch({
+      type: TYPES.LOADING,
+      payload: { isLoading: true },
+    });
     try {
       const { data } = await clientAxios.post("/userPost/addPost", postData);
       const { newPost } = data;
