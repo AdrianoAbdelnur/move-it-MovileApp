@@ -58,6 +58,7 @@ const AuthProvider = ({ children }) => {
               given_name: dataUser.userFound.given_name,
               family_name: dataUser.userFound.family_name,
               authorizedTransport: dataUser.userFound.authorizedTransport,
+              accountSuspended: dataUser.userFound.accountSuspended,
               transportInfo: status,
             },
             isLogged: true,
@@ -110,6 +111,7 @@ const AuthProvider = ({ children }) => {
                 given_name: dataUser.userFound.given_name,
                 family_name: dataUser.userFound.family_name,
                 authorizedTransport: dataUser.userFound.authorizedTransport,
+                accountSuspended: dataUser.userFound.accountSuspended,
                 transportInfo: status,
               },
               isLogged: true,
@@ -182,6 +184,23 @@ const AuthProvider = ({ children }) => {
     });
   };
 
+  const addCancellation = async (cancellationinfo) => {
+    try {
+      const { data } = await clientAxios.patch(
+        "/user/addCancelation/" + state.user.id,
+        cancellationinfo
+      );
+      if (data) {
+        dispatch({
+          type: TYPES.ADDCANCELATION,
+          payload: { cancellationinfo, suspension: data.suspension },
+        });
+      }
+    } catch (error) {
+      console.log(error);
+    }
+  };
+
   return (
     <AuthContext.Provider
       value={{
@@ -192,6 +211,7 @@ const AuthProvider = ({ children }) => {
         register,
         uploadFields,
         changeStatus,
+        addCancellation,
       }}
     >
       {children}
