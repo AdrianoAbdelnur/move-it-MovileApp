@@ -90,6 +90,7 @@ export const PostDetails = ({ route }) => {
       date: { ...data.date, date: new Date(data.date.date) },
       status: { ...data.status, mainStatus: "pending" },
       offerSelected: null,
+      offers: [],
     });
     navigation.navigate("Date");
   };
@@ -310,12 +311,7 @@ export const PostDetails = ({ route }) => {
           data?.status?.mainStatus === "offerSelected" && (
             <GeneralButton
               text="initiate service"
-              onPressFunction={
-                () => confirmInitiateFuction() /* () => {
-                
-                setShowConfirmModal(false);
-              } */
-              }
+              onPressFunction={() => confirmInitiateFuction()}
             />
           )}
         {userState.user.role === "transport" &&
@@ -333,12 +329,10 @@ export const PostDetails = ({ route }) => {
             )
           : userState.user.role == "transport" &&
             data?.status?.mainStatus === "pending" && (
-              <TouchableOpacity
-                style={globalStyles.OptionsButton}
-                onPress={() => navigation.navigate("Offer", { data })}
-              >
-                <Text style={globalStyles.textButtons}>Make an offer</Text>
-              </TouchableOpacity>
+              <GeneralButton
+                text="Make an offer"
+                onPressFunction={() => navigation.navigate("Offer", { data })}
+              />
             )}
         {userState.user.role === "user" &&
           data?.status?.mainStatus === "pending" &&
@@ -361,7 +355,12 @@ export const PostDetails = ({ route }) => {
           )}
         {userState.user.role === "user" &&
           data?.status?.mainStatus === "expired" && (
-            <View>
+            <View
+              style={{
+                alignItems: "center",
+                marginTop: 20,
+              }}
+            >
               <GeneralButton text="Change Date" onPressFunction={changeDate} />
               <GeneralButton text="cancel Post" onPressFunction={cancelPost} />
             </View>
