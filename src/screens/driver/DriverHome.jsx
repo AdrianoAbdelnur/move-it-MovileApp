@@ -16,6 +16,7 @@ import { PostShower } from "../../components/post/PostShower";
 import { AuthContext } from "../../contexts/AuthContext";
 import { BellNoti } from "../../components/bell/BellNoti";
 import { NotiModal } from "../../components/ui/NotiModal";
+import { GeneralButton } from "../../components/ui/GeneralButton";
 
 export const DriverHome = ({ setChatWith }) => {
   const navigation = useNavigation();
@@ -73,23 +74,6 @@ export const DriverHome = ({ setChatWith }) => {
     setNotificationCount(notiList?.length);
   }, [notiList]);
 
-  let fDate = "";
-  let fTime = "";
-
-  const formatDate = (dateToFormat) => {
-    const date = new Date(dateToFormat);
-    const day = date.getDate().toString().padStart(2, "0");
-    const month = (date.getMonth() + 1).toString().padStart(2, "0");
-    const year = date.getFullYear();
-    let hours = date.getHours();
-    const minutes = date.getMinutes();
-    const ampm = hours >= 12 ? "PM" : "AM";
-    hours = hours % 12 || 12;
-
-    fDate = `${day}/${month}/${year}`;
-    fTime = `${hours}:${minutes.toString().padStart(2, "0")} ${ampm}`;
-  };
-
   const toggleModal = () => {
     setModalVisible(!modalVisible);
   };
@@ -98,12 +82,12 @@ export const DriverHome = ({ setChatWith }) => {
     <View style={globalStyles.container}>
       <StatusBar style="auto" backgroundColor="gray" translucent={false} />
       <BellNoti openModal={toggleModal} notificationCount={notificationCount} />
-      <TouchableOpacity
-        style={globalStyles.OptionsButton}
-        onPress={() => navigation.navigate("MyOffers")}
-      >
-        <Text style={styles.buttonText}>See my accepted offers</Text>
-      </TouchableOpacity>
+      <View style={{ marginTop: 25 }}>
+        <GeneralButton
+          text="My accepted offers"
+          onPressFunction={() => navigation.navigate("MyOffers")}
+        />
+      </View>
       <View style={styles.services_container}>
         <Text style={styles.servicesTitle}>Requested services:</Text>
         <ScrollView style={styles.services}>
