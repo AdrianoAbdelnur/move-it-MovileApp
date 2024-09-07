@@ -68,7 +68,10 @@ export const Home = ({ setChatWith }) => {
       if (post.status.mainStatus === "transportDone") {
         notifications.push({ type: "transportDone", post });
       }
-      if (post.status.mainStatus === "expired") {
+      if (
+        post.status.mainStatus === "expired" &&
+        post.status.mainStatus !== "cancelled"
+      ) {
         notifications.push({ type: "postExpired", post });
       }
       if (

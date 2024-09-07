@@ -1,5 +1,5 @@
 import { useNavigation } from "@react-navigation/native";
-import React, { useContext, useEffect, useState } from "react";
+import React, { useContext } from "react";
 import {
   Modal,
   PanResponder,
@@ -54,7 +54,12 @@ export const NotiModal = ({
                       We're sorry, but {noti.post.transportCancel[0].given_name}{" "}
                       canceled the service for your post {noti.post.title}.
                     </Text>
-                    {noti.post.offers.length > 0 ? (
+                    {noti.post.status.mainStatus === "expired" ? (
+                      <Text style={styles.secondaryNotiText}>
+                        And the post has also expired. Please update the date to
+                        receive new offers or cancel it
+                      </Text>
+                    ) : noti.post.offers.length > 0 ? (
                       <Text style={styles.secondaryNotiText}>
                         Please choose another offer or wait for new ones.
                       </Text>
