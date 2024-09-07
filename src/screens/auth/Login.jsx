@@ -1,5 +1,6 @@
 import React, { useContext, useEffect, useState } from "react";
 import {
+  Image,
   KeyboardAvoidingView,
   StyleSheet,
   Text,
@@ -28,7 +29,10 @@ export const Login = () => {
   return (
     <KeyboardAvoidingView style={globalStyles.KeyboardAvoidingView}>
       <View style={globalStyles.container}>
-        <Text style={styles.text}>LOGIN</Text>
+        <Image
+          source={require("./../../assetsApp/callacar.jpeg")}
+          style={styles.image}
+        />
         <TextInput
           autoCapitalize="none"
           placeholder="email"
@@ -146,5 +150,10 @@ const styles = StyleSheet.create({
     position: "absolute",
     right: 10,
     top: 15,
+  },
+  image: {
+    width: 150,
+    height: 180,
+    marginBottom: 20,
   },
 });

@@ -203,7 +203,9 @@ export const PostConfirm = () => {
             </View>
           );
         })}
-        <GeneralButton text="Confirm" onPressFunction={onSubmit} />
+        <View style={{ alignItems: "center", marginTop: 20 }}>
+          <GeneralButton text="Confirm" onPressFunction={onSubmit} />
+        </View>
       </ScrollView>
     </View>
   );

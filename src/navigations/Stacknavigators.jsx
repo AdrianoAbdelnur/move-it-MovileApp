@@ -34,6 +34,7 @@ import { ImageDisplayer } from "../components/imageDisplayer/ImageDisplayer";
 import { DriverProfile } from "../screens/users/DriverProfile";
 import { PersonalInf } from "../screens/auth/register/PersonalInf";
 import { AccountSuspended } from "../screens/driver/AccountSuspended";
+import { Image } from "react-native";
 
 const Stack = createStackNavigator();
 
@@ -79,11 +80,34 @@ export const Stacknavigators = () => {
 
   if (isLogged && role == "user") {
     return (
-      <Stack.Navigator>
-        <Stack.Screen name="home">
+      <Stack.Navigator
+        screenOptions={{
+          headerStyle: {
+            backgroundColor: colors.border,
+          },
+          headerTintColor: "#FFF",
+          headerRight: () => (
+            <Image
+              source={require("../assetsApp/callacar.jpeg")}
+              style={{ width: 44, height: 44, marginRight: 15 }}
+            />
+          ),
+        }}
+      >
+        <Stack.Screen
+          name="home"
+          options={{
+            title: "Home",
+          }}
+        >
           {(props) => <Home {...props} setChatWith={setChatWith} />}
         </Stack.Screen>
-        <Stack.Screen name="PostsList">
+        <Stack.Screen
+          name="PostsList"
+          options={{
+            title: "Posts list",
+          }}
+        >
           {(props) => <PostsList {...props} setChatWith={setChatWith} />}
         </Stack.Screen>
         <Stack.Screen
@@ -135,6 +159,12 @@ export const Stacknavigators = () => {
               backgroundColor: colors.border,
             },
             headerTintColor: "#FFF",
+            headerRight: () => (
+              <Image
+                source={require("../assetsApp/callacar.jpeg")}
+                style={{ width: 40, height: 40, marginRight: 15 }}
+              />
+            ),
           }}
         >
           {(props) => <DriverHome {...props} setChatWith={setChatWith} />}
