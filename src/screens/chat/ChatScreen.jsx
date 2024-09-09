@@ -10,6 +10,7 @@ import {
 import { AuthContext } from "../../contexts/AuthContext";
 import { PostContext } from "../../contexts/PostsContext";
 import { SocketContext } from "../../contexts/SocketContext";
+import { usePushNotifications } from "../../hooks/usePushNotifications";
 
 export const ChatScreen = ({ route }) => {
   const [messages, setMessages] = useState([]);
@@ -21,7 +22,8 @@ export const ChatScreen = ({ route }) => {
     updateMessage,
     uptateStatus,
   } = useContext(PostContext);
-  const { socket, newMessage, removeNewMessage, sendPrivateMessage } =
+  const { sendPushNotification } = usePushNotifications();
+  const { newMessage, removeNewMessage, sendPrivateMessage } =
     useContext(SocketContext);
 
   useEffect(() => {
@@ -75,6 +77,13 @@ export const ChatScreen = ({ route }) => {
         postId: route.params.post?._id,
       };
       sendPrivateMessage(messageData);
+      sendPushNotification(
+        userState.user.role === "user"
+          ? route.params.post?.offerSelected?.owner.expoPushToken
+          : route.params.post?.owner.expoPushToken,
+        "New Message",
+        `${userState?.user?.given_name} sent you a message`
+      );
       setCurrentMessage("");
       updateMessage({ postId: route.params.post?._id, newMessage });
     }

@@ -35,11 +35,13 @@ import { DriverProfile } from "../screens/users/DriverProfile";
 import { PersonalInf } from "../screens/auth/register/PersonalInf";
 import { AccountSuspended } from "../screens/driver/AccountSuspended";
 import { Image } from "react-native";
+import { usePushNotifications } from "../hooks/usePushNotifications";
 
 const Stack = createStackNavigator();
 
 export const Stacknavigators = () => {
-  const { state } = useContext(AuthContext);
+  const { state, updateExpoPushToken } = useContext(AuthContext);
+  const { expoPushToken } = usePushNotifications();
   const [chatWith, setChatWith] = useState({});
   const [activeSuspensions, setActiveSuspensions] = useState([]);
   const [hasActiveSuspension, setHasActiveSuspension] = useState(false);
@@ -50,6 +52,7 @@ export const Stacknavigators = () => {
   const authorizedTransport = state?.user?.authorizedTransport;
   const accountSuspended = state?.user?.accountSuspended;
 
+  console.log(expoPushToken);
   useEffect(() => {
     const currentDate = new Date();
     const suspensions = accountSuspended?.filter((suspension) => {
@@ -61,6 +64,10 @@ export const Stacknavigators = () => {
 
     setActiveSuspensions(suspensions);
     setHasActiveSuspension(suspensions?.length > 0);
+
+    if (expoPushToken !== state?.user?.expoPushToken) {
+      updateExpoPushToken(expoPushToken);
+    }
   }, [state]);
 
   if (state.isLoading) {

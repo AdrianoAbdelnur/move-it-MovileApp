@@ -63,7 +63,7 @@ const styles = StyleSheet.create({
     maxHeight: "90%",
     justifyContent: "center",
     alignItems: "center",
-    backgroundColor: colors.secondary,
+    backgroundColor: colors.primary,
     borderRadius: 15,
   },
   servicesTitle: {

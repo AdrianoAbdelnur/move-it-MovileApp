@@ -12,11 +12,13 @@ import { FormContext } from "../../../contexts/FormContext";
 import { clientAxios } from "../../../api/ClientAxios";
 import { CustomCancelModal } from "../../../components/ui/CustomCancelModal";
 import { CustomConfirmModal } from "../../../components/ui/CustomConfirmModal";
+import { usePushNotifications } from "../../../hooks/usePushNotifications";
 
 export const PostDetails = ({ route }) => {
   const navigation = useNavigation();
   const { state: userState } = useContext(AuthContext);
   const { state: postsState, uptateStatus } = useContext(PostContext);
+  const { sendPushNotification } = usePushNotifications();
   const [isOpen, setIsOpen] = useState(false);
   const { formData, setFormData } = useContext(FormContext);
   const [showCancelModal, setShowCancelModal] = useState(false);
@@ -119,6 +121,11 @@ export const PostDetails = ({ route }) => {
           mainStatus: "inProgress",
         },
       });
+      sendPushNotification(
+        data?.owner.expoPushToken,
+        "Service started",
+        `${userState?.user?.given_name} has started the service for ${data?.title}`
+      );
       setConfirmationFuction(null);
       setShowConfirmModal(false);
     });
@@ -137,6 +144,11 @@ export const PostDetails = ({ route }) => {
           mainStatus: "transportDone",
         },
       });
+      sendPushNotification(
+        data?.owner.expoPushToken,
+        "Service completed",
+        `${userState?.user?.given_name} reports that the service for ${data?.title} has been completed`
+      );
       setShowConfirmModal(false);
       navigation.navigate("driverHome");
     });

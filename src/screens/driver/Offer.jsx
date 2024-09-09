@@ -6,10 +6,12 @@ import { useNavigation } from "@react-navigation/native";
 import { GeneralButton } from "../../components/ui/GeneralButton";
 import { PostContext } from "../../contexts/PostsContext";
 import { clientAxios } from "../../api/ClientAxios";
+import { usePushNotifications } from "../../hooks/usePushNotifications";
 
 export const Offer = ({ route }) => {
   const { state: userState } = useContext(AuthContext);
   const { addOfferInPost } = useContext(PostContext);
+  const { sendPushNotification } = usePushNotifications();
   const { data } = route.params;
   const [price, setPrice] = useState("");
   const [isValid, setIsValid] = useState(true);
@@ -31,6 +33,12 @@ export const Offer = ({ route }) => {
       price: price,
       post: data._id,
     });
+    console.log(data);
+    sendPushNotification(
+      data.owner.expoPushToken,
+      "New Offer",
+      "You have recieved a new offer for a post"
+    );
     navigation.navigate("driverHome");
   };
 

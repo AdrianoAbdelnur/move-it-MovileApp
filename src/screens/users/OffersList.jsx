@@ -13,11 +13,15 @@ import { clientAxios } from "../../api/ClientAxios";
 import { useNavigation } from "@react-navigation/native";
 import { PostContext } from "../../contexts/PostsContext";
 import { CustomConfirmModal } from "../../components/ui/CustomConfirmModal";
+import { AuthContext } from "../../contexts/AuthContext";
+import { usePushNotifications } from "../../hooks/usePushNotifications";
 
 export const OffersList = ({ route }) => {
   const { data } = route.params;
   const navigation = useNavigation();
+  const { state: userState } = useContext(AuthContext);
   const { postSelectOffer, uptateStatus } = useContext(PostContext);
+  const { sendPushNotification } = usePushNotifications();
   const [showModal, setShowModal] = useState(false);
   const [modalText, setModalText] = useState("second");
   const [itemSelected, setItemSelected] = useState();
@@ -39,6 +43,11 @@ export const OffersList = ({ route }) => {
       if (data?.offerFound) {
         postSelectOffer({ postId: item.post, offerSelected: item._id });
         setShowModal(false);
+        sendPushNotification(
+          item?.owner.expoPushToken,
+          "Offer selected",
+          `${userState?.user?.given_name} has selected your offer`
+        );
         navigation.navigate("home");
       }
     } catch (error) {

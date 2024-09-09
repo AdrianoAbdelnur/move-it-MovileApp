@@ -6,6 +6,7 @@ import { clientAxios } from "../api/ClientAxios";
 import AuthReducer from "../reducers/AuthReducer";
 import { FormContext } from "./FormContext";
 import { TYPES } from "../actions/AuthActions";
+import axios from "axios";
 
 const AuthProvider = ({ children }) => {
   const initialValues = {
@@ -59,6 +60,7 @@ const AuthProvider = ({ children }) => {
               family_name: dataUser.userFound.family_name,
               authorizedTransport: dataUser.userFound.authorizedTransport,
               accountSuspended: dataUser.userFound.accountSuspended,
+              expoPushNotification: dataUser.userFound.expoPushNotification,
               transportInfo: status,
             },
             isLogged: true,
@@ -112,6 +114,7 @@ const AuthProvider = ({ children }) => {
                 family_name: dataUser.userFound.family_name,
                 authorizedTransport: dataUser.userFound.authorizedTransport,
                 accountSuspended: dataUser.userFound.accountSuspended,
+                expoPushNotification: dataUser.userFound.expoPushNotification,
                 transportInfo: status,
               },
               isLogged: true,
@@ -201,6 +204,19 @@ const AuthProvider = ({ children }) => {
     }
   };
 
+  const updateExpoPushToken = async (newExpoPushToken) => {
+    if (newExpoPushToken && state.user.id) {
+      try {
+        const { data } = await clientAxios.patch(
+          "/user/updateExpoPushToken/" + state.user.id,
+          { newExpoPushToken }
+        );
+      } catch (error) {
+        console.log("es este=", error);
+      }
+    }
+  };
+
   return (
     <AuthContext.Provider
       value={{
@@ -212,6 +228,7 @@ const AuthProvider = ({ children }) => {
         uploadFields,
         changeStatus,
         addCancellation,
+        updateExpoPushToken,
       }}
     >
       {children}
