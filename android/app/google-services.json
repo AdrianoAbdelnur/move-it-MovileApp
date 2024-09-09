@@ -1,0 +1,29 @@
+{
+  "project_info": {
+    "project_number": "117141896651",
+    "project_id": "callacar-197ce",
+    "storage_bucket": "callacar-197ce.appspot.com"
+  },
+  "client": [
+    {
+      "client_info": {
+        "mobilesdk_app_id": "1:117141896651:android:bfb252d21eb034c8150a4e",
+        "android_client_info": {
+          "package_name": "com.adna88.moveit"
+        }
+      },
+      "oauth_client": [],
+      "api_key": [
+        {
+          "current_key": "AIzaSyA1fIjtGvSNDF_FoVQfP3fZTPCkSkSFws8"
+        }
+      ],
+      "services": {
+        "appinvite_service": {
+          "other_platform_oauth_client": []
+        }
+      }
+    }
+  ],
+  "configuration_version": "1"
+}

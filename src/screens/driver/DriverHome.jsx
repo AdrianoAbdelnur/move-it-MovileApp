@@ -1,12 +1,6 @@
 import React, { useContext, useEffect, useState } from "react";
 
-import {
-  ScrollView,
-  StyleSheet,
-  Text,
-  TouchableOpacity,
-  View,
-} from "react-native";
+import { ScrollView, StyleSheet, Text, View } from "react-native";
 import globalStyles from "../../styles/globalStyles";
 import { StatusBar } from "expo-status-bar";
 import colors from "../../styles/colors";
@@ -34,6 +28,7 @@ export const DriverHome = ({ setChatWith }) => {
   }, []);
 
   useEffect(() => {
+    console.log(postsState);
     const currentDate = new Date();
     currentDate.setHours(0, 0, 0, 0);
     if (postsState.posts.length !== 0) {

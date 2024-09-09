@@ -3,10 +3,12 @@ import { Modal, Pressable, StyleSheet, Text, View } from "react-native";
 import { AuthContext } from "../../contexts/AuthContext";
 import { PostContext } from "../../contexts/PostsContext";
 import { useNavigation } from "@react-navigation/native";
+import { usePushNotifications } from "../../hooks/usePushNotifications";
 
 export const CustomCancelModal = ({ showModal, setShowModal, post }) => {
   const { state: userState, addCancellation } = useContext(AuthContext);
   const { addPost, uptateStatus } = useContext(PostContext);
+  const { sendPushNotification } = usePushNotifications();
   const navigation = useNavigation();
 
   const cancelService = () => {
@@ -26,7 +28,11 @@ export const CustomCancelModal = ({ showModal, setShowModal, post }) => {
         transportCancel: [userState?.user?.id, ...(post.transportCancel || [])],
       };
       addPost(newPost);
-
+      sendPushNotification(
+        post?.owner.expoPushToken,
+        "Service Canceled",
+        `${userState?.user?.given_name} has canceled the service for a ${post.title}`
+      );
       navigation.navigate("driverHome");
     } else if (
       userState.user.role === "user" &&
@@ -40,6 +46,11 @@ export const CustomCancelModal = ({ showModal, setShowModal, post }) => {
           userCancelled: true,
         },
       });
+      sendPushNotification(
+        post?.offerSelected.owner.expoPushToken,
+        "Service Canceled",
+        `${userState?.user?.given_name} has canceled the service for a ${post.title}`
+      );
       navigation.navigate("PostsList");
     } else if (
       userState.user.role === "user" &&
