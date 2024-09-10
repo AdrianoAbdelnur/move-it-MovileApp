@@ -5,7 +5,7 @@ import { AuthContext } from "../../contexts/AuthContext";
 
 export const CustomModal = () => {
   const [showModal, setShowModal] = useState(false);
-  const { state: AuthState } = useContext(AuthContext);
+  const { state: AuthState, updateMessage } = useContext(AuthContext);
 
   useEffect(() => {
     if (AuthState?.message?.message) {
@@ -29,7 +29,12 @@ export const CustomModal = () => {
             </Text>
           )}
           <Text style={styles.modalText}>{AuthState?.message?.message}</Text>
-          <Pressable onPress={() => setShowModal(false)}>
+          <Pressable
+            onPress={() => {
+              setShowModal(false);
+              updateMessage();
+            }}
+          >
             <Text style={styles.modalButton}>Ok</Text>
           </Pressable>
         </View>

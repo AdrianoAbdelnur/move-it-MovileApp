@@ -53,6 +53,11 @@ const AuthReducer = (state={}, action) => {
                 },
                 isLoading: false
             }
+            case TYPES.UPDATEMESSAGE : 
+            return {
+                ...state,
+                message: action.payload.message
+            }
    
        default:
            return state;

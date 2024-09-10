@@ -293,7 +293,7 @@ export const PostDetails = ({ route }) => {
               <Text
                 style={[
                   globalStyles.generalText,
-                  { marginLeft: 20, color: "blue" },
+                  { marginLeft: 20, color: "#FFFF00" },
                 ]}
               >
                 View {data?.offerSelected?.owner?.given_name} profile photo
@@ -470,7 +470,7 @@ const styles = StyleSheet.create({
   },
   pressHereText: {
     fontSize: 14,
-    color: "#0000FF",
+    color: "#FFFF00",
     fontWeight: "bold",
   },
 });

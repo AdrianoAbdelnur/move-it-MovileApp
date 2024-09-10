@@ -6,7 +6,6 @@ import { DateSelect } from "../screens/users/post/DateSelect";
 import { PostConfirm } from "../screens/users/post/PostConfirm";
 import { Login } from "../screens/auth/Login";
 import { AuthContext } from "../contexts/AuthContext";
-
 import { LoadingComponent } from "../components/ui/LoadingComponent";
 import { ChatScreen } from "../screens/chat/ChatScreen";
 import { DriverHome } from "../screens/driver/DriverHome";
@@ -36,6 +35,7 @@ import { AccountSuspended } from "../screens/driver/AccountSuspended";
 import { Image, TouchableOpacity } from "react-native";
 import { usePushNotifications } from "../hooks/usePushNotifications";
 import { Entypo } from "@expo/vector-icons";
+import { MailValidation } from "../screens/auth/register/MailValidation";
 
 const Stack = createStackNavigator();
 
@@ -52,6 +52,7 @@ export const Stacknavigators = () => {
   const infoCompletedFlag = state?.user?.infoCompletedFlag;
   const authorizedTransport = state?.user?.authorizedTransport;
   const accountSuspended = state?.user?.accountSuspended;
+  const validatedMail = state?.user?.validatedMail;
 
   useEffect(() => {
     checkToken();
@@ -85,6 +86,14 @@ export const Stacknavigators = () => {
         <Stack.Screen name="SelectRegister" component={SelectRegisterType} />
         <Stack.Screen name="PersonalInfo" component={PersonalInf} />
         <Stack.Screen name="TransportInfo" component={TransportInfo} />
+      </Stack.Navigator>
+    );
+  }
+  console.log(isLogged, validatedMail);
+  if (isLogged && !validatedMail) {
+    return (
+      <Stack.Navigator>
+        <Stack.Screen name="Validation" component={MailValidation} />
       </Stack.Navigator>
     );
   }
