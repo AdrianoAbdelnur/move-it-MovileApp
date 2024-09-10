@@ -6,7 +6,6 @@ import { clientAxios } from "../api/ClientAxios";
 import AuthReducer from "../reducers/AuthReducer";
 import { FormContext } from "./FormContext";
 import { TYPES } from "../actions/AuthActions";
-import axios from "axios";
 
 const AuthProvider = ({ children }) => {
   const initialValues = {
@@ -81,14 +80,14 @@ const AuthProvider = ({ children }) => {
   };
 
   const checkToken = async () => {
+    dispatch({
+      type: TYPES.LOADING,
+      payload: { isLoading: true },
+    });
     const token = await AsyncStorage.getItem("jwtoken");
     if (!token) {
       dispatch({
         type: TYPES.LOGOUT,
-        payload: {
-          message: "Incorrect Token. Logout !",
-          type: "Error",
-        },
       });
     } else {
       try {
@@ -118,7 +117,7 @@ const AuthProvider = ({ children }) => {
                 transportInfo: status,
               },
               isLogged: true,
-              token: dataToken.token,
+              token: token,
             },
           });
         }
@@ -129,7 +128,7 @@ const AuthProvider = ({ children }) => {
   };
 
   const logout = () => {
-    localStorage.removeItem("jwtoken");
+    AsyncStorage.removeItem("jwtoken");
     dispatch({
       type: TYPES.LOGOUT,
       payload: {
@@ -205,7 +204,7 @@ const AuthProvider = ({ children }) => {
   };
 
   const updateExpoPushToken = async (newExpoPushToken) => {
-    if (newExpoPushToken && state.user.id) {
+    if (newExpoPushToken && state?.user?.id) {
       try {
         const { data } = await clientAxios.patch(
           "/user/updateExpoPushToken/" + state.user.id,

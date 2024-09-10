@@ -1,20 +1,19 @@
 import { useIsFocused, useNavigation } from "@react-navigation/native";
 import { StatusBar } from "expo-status-bar";
 import React, { useContext, useEffect, useState } from "react";
-import { StyleSheet, View } from "react-native";
+import { StyleSheet, TouchableOpacity, View } from "react-native";
 import globalStyles from "../../styles/globalStyles";
 import { PostContext } from "../../contexts/PostsContext";
 import { AuthContext } from "../../contexts/AuthContext";
 import colors from "../../styles/colors";
 import { GeneralButton } from "../../components/ui/GeneralButton";
-
 import { BellNoti } from "../../components/bell/BellNoti";
 import { NotiModal } from "../../components/ui/NotiModal";
 import { FormContext } from "../../contexts/FormContext";
 
 export const Home = ({ setChatWith }) => {
   const navigation = useNavigation();
-  const { state: userState } = useContext(AuthContext);
+  const { state: userState, logout } = useContext(AuthContext);
   const {
     state: postsState,
     getMyPosts,

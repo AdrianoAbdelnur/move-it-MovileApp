@@ -17,7 +17,6 @@ import { Offer } from "../screens/driver/Offer";
 import { MyOffers } from "../screens/driver/MyOffers";
 import { OffersList } from "../screens/users/OffersList";
 import { SelectRegisterType } from "../screens/auth/register/SelectRegisterType";
-
 import { TransportInfo } from "../screens/auth/register/transport/TransportInfo";
 import { CameraManager } from "../components/camera/CameraManager";
 import { DriverInfo } from "../screens/auth/register/transport/DriverInfo";
@@ -34,13 +33,15 @@ import { ImageDisplayer } from "../components/imageDisplayer/ImageDisplayer";
 import { DriverProfile } from "../screens/users/DriverProfile";
 import { PersonalInf } from "../screens/auth/register/PersonalInf";
 import { AccountSuspended } from "../screens/driver/AccountSuspended";
-import { Image } from "react-native";
+import { Image, TouchableOpacity } from "react-native";
 import { usePushNotifications } from "../hooks/usePushNotifications";
+import { Entypo } from "@expo/vector-icons";
 
 const Stack = createStackNavigator();
 
 export const Stacknavigators = () => {
-  const { state, updateExpoPushToken } = useContext(AuthContext);
+  const { state, updateExpoPushToken, checkToken, logout } =
+    useContext(AuthContext);
   const { expoPushToken } = usePushNotifications();
   const [chatWith, setChatWith] = useState({});
   const [activeSuspensions, setActiveSuspensions] = useState([]);
@@ -52,7 +53,10 @@ export const Stacknavigators = () => {
   const authorizedTransport = state?.user?.authorizedTransport;
   const accountSuspended = state?.user?.accountSuspended;
 
-  console.log(expoPushToken);
+  useEffect(() => {
+    checkToken();
+  }, []);
+
   useEffect(() => {
     const currentDate = new Date();
     const suspensions = accountSuspended?.filter((suspension) => {
@@ -93,18 +97,22 @@ export const Stacknavigators = () => {
             backgroundColor: colors.border,
           },
           headerTintColor: "#FFF",
-          headerRight: () => (
-            <Image
-              source={require("../assetsApp/callacar.jpeg")}
-              style={{ width: 44, height: 44, marginRight: 15 }}
-            />
-          ),
         }}
       >
         <Stack.Screen
           name="home"
           options={{
             title: "Home",
+            headerRight: () => (
+              <TouchableOpacity style={styles.logoutButton} onPress={logout}>
+                <Entypo
+                  name="log-out"
+                  size={18}
+                  color="white"
+                  style={{ marginRight: 15 }}
+                />
+              </TouchableOpacity>
+            ),
           }}
         >
           {(props) => <Home {...props} setChatWith={setChatWith} />}
@@ -162,16 +170,20 @@ export const Stacknavigators = () => {
           name="driverHome"
           options={{
             title: "Home",
+            headerRight: () => (
+              <TouchableOpacity style={styles.logoutButton} onPress={logout}>
+                <Entypo
+                  name="log-out"
+                  size={18}
+                  color="white"
+                  style={{ marginRight: 15 }}
+                />
+              </TouchableOpacity>
+            ),
             headerStyle: {
-              backgroundColor: colors.border,
+              backgroundColor: "grey",
             },
             headerTintColor: "#FFF",
-            headerRight: () => (
-              <Image
-                source={require("../assetsApp/callacar.jpeg")}
-                style={{ width: 40, height: 40, marginRight: 15 }}
-              />
-            ),
           }}
         >
           {(props) => <DriverHome {...props} setChatWith={setChatWith} />}
