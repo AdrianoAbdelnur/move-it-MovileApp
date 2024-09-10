@@ -71,11 +71,11 @@ export const PostShower = ({ item, setChatWith }) => {
         item.offers.find(
           (offer) => offer?.owner?._id === userState?.user?.id
         ) &&
-        userState.user.role == "transport" && (
+        userState?.user?.role == "transport" && (
           <Text>You have already offered for this job</Text>
         )
       )}
-      {userState.user.role === "user" &&
+      {userState?.user?.role === "user" &&
         (item.status.mainStatus === "offerSelected" ||
           item.status.mainStatus === "inProgress") && (
           <TouchableOpacity
@@ -96,7 +96,7 @@ export const PostShower = ({ item, setChatWith }) => {
             </Text>
           </TouchableOpacity>
         )}
-      {userState.user.role === "transport" &&
+      {userState?.user?.role === "transport" &&
         (item.status.mainStatus === "offerSelected" ||
           item.status.mainStatus === "inProgress") && (
           <TouchableOpacity

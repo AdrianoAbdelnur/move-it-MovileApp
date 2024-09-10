@@ -15,7 +15,7 @@ import { GeneralButton } from "../../components/ui/GeneralButton";
 export const DriverHome = ({ setChatWith }) => {
   const navigation = useNavigation();
   const { state: postsState, getPendingPosts } = useContext(PostContext);
-  const { state: userState } = useContext(AuthContext);
+  const { state: userState, logout } = useContext(AuthContext);
   const [pendingPost, setPendingPost] = useState([]);
   const [modalVisible, setModalVisible] = useState(false);
   const [notificationCount, setNotificationCount] = useState(0);
@@ -126,6 +126,7 @@ const styles = StyleSheet.create({
   },
   services: {
     width: "85%",
+    height: "70%",
     borderWidth: 2,
     borderColor: "#000",
     borderRadius: 10,

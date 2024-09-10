@@ -90,7 +90,7 @@ export const PostDetails = ({ route }) => {
     setFormData({
       ...data,
       date: { ...data.date, date: new Date(data.date.date) },
-      status: { ...data.status, mainStatus: "pending" },
+      status: { ...data.status, mainStatus: "pending", newOffers: false },
       offerSelected: null,
       offers: [],
     });

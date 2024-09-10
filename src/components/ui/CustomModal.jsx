@@ -11,7 +11,7 @@ export const CustomModal = () => {
     if (AuthState?.message?.message) {
       setShowModal(true);
     }
-  }, [AuthState.message.message]);
+  }, [AuthState?.message?.message]);
 
   return (
     <Modal transparent={true} visible={showModal} animationType="fade">
@@ -25,10 +25,10 @@ export const CustomModal = () => {
                   : ""
               }
             >
-              {AuthState.message.type} !
+              {AuthState?.message?.type} !
             </Text>
           )}
-          <Text style={styles.modalText}>{AuthState.message.message}</Text>
+          <Text style={styles.modalText}>{AuthState?.message?.message}</Text>
           <Pressable onPress={() => setShowModal(false)}>
             <Text style={styles.modalButton}>Ok</Text>
           </Pressable>
