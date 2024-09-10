@@ -60,6 +60,7 @@ const AuthProvider = ({ children }) => {
               authorizedTransport: dataUser.userFound.authorizedTransport,
               accountSuspended: dataUser.userFound.accountSuspended,
               expoPushNotification: dataUser.userFound.expoPushNotification,
+              validatedMail: dataUser.userFound.validatedMail,
               transportInfo: status,
             },
             isLogged: true,
@@ -114,6 +115,7 @@ const AuthProvider = ({ children }) => {
                 authorizedTransport: dataUser.userFound.authorizedTransport,
                 accountSuspended: dataUser.userFound.accountSuspended,
                 expoPushNotification: dataUser.userFound.expoPushNotification,
+                validatedMail: dataUser.userFound.validatedMail,
                 transportInfo: status,
               },
               isLogged: true,
@@ -123,6 +125,13 @@ const AuthProvider = ({ children }) => {
         }
       } catch (error) {
         console.log(error);
+        dispatch({
+          type: TYPES.LOGOUT,
+          payload: {
+            message: error.response.data.message || "Login failed !",
+            type: "Error",
+          },
+        });
       }
     }
   };
@@ -139,11 +148,13 @@ const AuthProvider = ({ children }) => {
   };
 
   const register = async () => {
+    console.log("1", formData);
     dispatch({
       type: "LOADING",
       payload: { isLoading: true },
     });
     try {
+      console.log("2", formData);
       const { data } = await clientAxios.post("/user/register", formData);
       if (data.message === "User successfully created.") {
         login(formData.email, formData.password);
@@ -216,6 +227,52 @@ const AuthProvider = ({ children }) => {
     }
   };
 
+  const generateNewValidationCode = async () => {
+    try {
+      const { data } = await clientAxios.patch(
+        "/user/generateNewValidationCode/" + state.user.id
+      );
+    } catch (error) {
+      console.log(error);
+    }
+  };
+
+  const validateMail = async (verificationCode) => {
+    try {
+      const { data: dataUser } = await clientAxios.patch(
+        "/user/validateMail/" + state.user.id,
+        { verificationCode }
+      );
+      console.log(dataUser);
+      if (dataUser) {
+        checkToken();
+      }
+    } catch (error) {
+      console.log(error);
+      dispatch({
+        type: TYPES.UPDATEMESSAGE,
+        payload: {
+          message: {
+            message: error.response.data.message || "Invalid code !",
+            type: "Error",
+          },
+        },
+      });
+    }
+  };
+
+  const updateMessage = (message, type) => {
+    dispatch({
+      type: TYPES.UPDATEMESSAGE,
+      payload: {
+        message: {
+          message: message || "",
+          type: type || "",
+        },
+      },
+    });
+  };
+
   return (
     <AuthContext.Provider
       value={{
@@ -228,6 +285,9 @@ const AuthProvider = ({ children }) => {
         changeStatus,
         addCancellation,
         updateExpoPushToken,
+        validateMail,
+        updateMessage,
+        generateNewValidationCode,
       }}
     >
       {children}
