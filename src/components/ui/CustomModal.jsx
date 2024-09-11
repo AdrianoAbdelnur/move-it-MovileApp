@@ -8,7 +8,8 @@ export const CustomModal = () => {
   const { state: AuthState, updateMessage } = useContext(AuthContext);
 
   useEffect(() => {
-    if (AuthState?.message?.message) {
+    if (AuthState?.message?.message && AuthState?.message?.message !== "") {
+      console.log("Aqui", AuthState?.message?.message);
       setShowModal(true);
     }
   }, [AuthState?.message?.message]);

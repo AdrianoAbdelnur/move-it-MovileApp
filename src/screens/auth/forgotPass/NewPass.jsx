@@ -1,47 +1,50 @@
 import React, { useContext, useEffect, useState } from "react";
 import {
-  Image,
   KeyboardAvoidingView,
   StyleSheet,
   Text,
+  TextInput,
   TouchableOpacity,
   View,
 } from "react-native";
-import { TextInput } from "react-native-gesture-handler";
-import globalStyles from "../../styles/globalStyles";
-import { AuthContext } from "../../contexts/AuthContext";
-import { useForm } from "../../hooks/useForm";
-import colors from "../../styles/colors";
-import { useNavigation } from "@react-navigation/native";
+import globalStyles from "../../../styles/globalStyles";
 import { MaterialIcons } from "@expo/vector-icons";
-import { CustomModal } from "../../components/ui/CustomModal";
+import { useNavigation } from "@react-navigation/native";
+import colors from "../../../styles/colors";
+import { GeneralButton } from "../../../components/ui/GeneralButton";
+import { AuthContext } from "../../../contexts/AuthContext";
 
-export const Login = () => {
+export const NewPass = ({ route }) => {
+  const { email, otp: verificationCode } = route.params;
+  const [password, setPassword] = useState("");
+  const [confirmPassword, setConfirmPassword] = useState("");
+  const [passConfirmation, setPassConfirmation] = useState(false);
   const navigation = useNavigation();
-  const { login } = useContext(AuthContext);
-  const { formState, getInput } = useForm();
   const [showPassword, setShowPassword] = useState(false);
+  const [showConfirmPassword, setShowConfirmPassword] = useState(false);
+  const { updatePass } = useContext(AuthContext);
 
-  const onSubmit = () => {
-    login(formState?.email, formState?.password);
+  useEffect(() => {
+    if (confirmPassword === password) {
+      setPassConfirmation(true);
+    } else {
+      setPassConfirmation(false);
+    }
+  }, [confirmPassword, password]);
+
+  const checkFields = () => {
+    if (passConfirmation) {
+      console.log("PASSWORD", password);
+      updatePass(email, verificationCode, password);
+    } else alert("Passwords must match");
   };
 
   return (
     <KeyboardAvoidingView style={globalStyles.KeyboardAvoidingView}>
       <View style={globalStyles.container}>
-        <Image
-          source={require("./../../assetsApp/callacar.jpeg")}
-          style={styles.image}
-        />
-        <TextInput
-          autoCapitalize="none"
-          placeholder="email"
-          keyboardType="email-address"
-          textContentType="username"
-          inputMode="email"
-          style={globalStyles.input}
-          onChangeText={(value) => getInput("email", value)}
-        />
+        <Text style={globalStyles.generalText}>
+          Please enter the new password for the email {email}
+        </Text>
         <View style={styles.passwordContainer}>
           <TextInput
             autoCapitalize="none"
@@ -51,7 +54,7 @@ export const Login = () => {
             secureTextEntry={!showPassword}
             inputMode="text"
             style={[globalStyles.input, { paddingRight: 45 }]}
-            onChangeText={(value) => getInput("password", value)}
+            onChangeText={(value) => setPassword(value)}
           />
           <TouchableOpacity
             style={styles.eyeButton}
@@ -64,23 +67,32 @@ export const Login = () => {
             />
           </TouchableOpacity>
         </View>
-        <View style={styles.buttonContainer}>
-          <TouchableOpacity style={styles.button} onPress={() => onSubmit()}>
-            <Text style={styles.buttonText}>Login</Text>
+        <View style={styles.passwordContainer}>
+          <TextInput
+            autoCapitalize="none"
+            placeholder="confirm password"
+            keyboardType="default"
+            textContentType="password"
+            secureTextEntry={!showConfirmPassword}
+            inputMode="text"
+            style={[globalStyles.input, { paddingRight: 45 }]}
+            onChangeText={(value) => {
+              setConfirmPassword(value);
+            }}
+          />
+          <TouchableOpacity
+            style={styles.eyeButton}
+            onPress={() => setShowConfirmPassword(!showConfirmPassword)}
+          >
+            <MaterialIcons
+              name={showConfirmPassword ? "visibility" : "visibility-off"}
+              size={24}
+              color={colors.textSecondary}
+            />
           </TouchableOpacity>
-          <View style={styles.otherOptionsContainer}>
-            <TouchableOpacity onPress={() => navigation.navigate("EnterMail")}>
-              <Text style={styles.buttonText}>Forgot your password?</Text>
-            </TouchableOpacity>
-            <TouchableOpacity
-              onPress={() => navigation.navigate("SelectRegister")}
-            >
-              <Text style={styles.buttonText}>Register</Text>
-            </TouchableOpacity>
-          </View>
         </View>
+        <GeneralButton text="confirm" onPressFunction={() => checkFields()} />
       </View>
-      <CustomModal />
     </KeyboardAvoidingView>
   );
 };
@@ -144,16 +156,10 @@ const styles = StyleSheet.create({
   passwordContainer: {
     position: "relative",
     width: "100%",
-    marginBottom: 15,
   },
   eyeButton: {
     position: "absolute",
     right: 10,
     top: 15,
-  },
-  image: {
-    width: 150,
-    height: 180,
-    marginBottom: 20,
   },
 });

@@ -36,6 +36,8 @@ import { Image, TouchableOpacity } from "react-native";
 import { usePushNotifications } from "../hooks/usePushNotifications";
 import { Entypo } from "@expo/vector-icons";
 import { MailValidation } from "../screens/auth/register/MailValidation";
+import { EnterMail } from "../screens/auth/forgotPass/EnterMail";
+import { NewPass } from "../screens/auth/forgotPass/NewPass";
 
 const Stack = createStackNavigator();
 
@@ -86,6 +88,9 @@ export const Stacknavigators = () => {
         <Stack.Screen name="SelectRegister" component={SelectRegisterType} />
         <Stack.Screen name="PersonalInfo" component={PersonalInf} />
         <Stack.Screen name="TransportInfo" component={TransportInfo} />
+        <Stack.Screen name="EnterMail" component={EnterMail} />
+        <Stack.Screen name="Validation" component={MailValidation} />
+        <Stack.Screen name="NewPass" component={NewPass} />
       </Stack.Navigator>
     );
   }
