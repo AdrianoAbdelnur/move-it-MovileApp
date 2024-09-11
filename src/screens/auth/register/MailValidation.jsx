@@ -5,19 +5,32 @@ import OtpInput from "../../../components/ui/OtpInput";
 import globalStyles from "../../../styles/globalStyles";
 import { AuthContext } from "../../../contexts/AuthContext";
 import { CustomModal } from "../../../components/ui/CustomModal";
+import { useNavigation } from "@react-navigation/native";
 
-export const MailValidation = () => {
+export const MailValidation = ({ route }) => {
   const [otp, setOtp] = useState("");
-  const { validateMail, generateNewValidationCode } = useContext(AuthContext);
+  let email = "";
+
+  if (route?.params?.email) {
+    email = route.params.email;
+  }
+
+  const {
+    state: userState,
+    validateMail,
+    generateNewValidationCode,
+    checkValidationCode,
+  } = useContext(AuthContext);
   const [isDisabled, setIsDisabled] = useState(false);
   const [message, setMessage] = useState("");
+  const navigation = useNavigation();
 
   const handleOtpChange = (value) => {
     setOtp(value);
   };
 
   const handlePress = () => {
-    generateNewValidationCode();
+    generateNewValidationCode(email);
     setIsDisabled(true);
     setMessage("We have sent the new code to your email.");
 
@@ -27,8 +40,15 @@ export const MailValidation = () => {
     }, 120000);
   };
 
-  const handleSubmit = () => {
-    validateMail(otp);
+  const handleSubmit = async () => {
+    if (userState?.user && !userState?.user?.validatedMail) {
+      validateMail(otp);
+    } else {
+      const isValid = await checkValidationCode(email, otp);
+      if (isValid) {
+        navigation.navigate("NewPass", { email, otp });
+      }
+    }
   };
 
   return (
@@ -48,18 +68,7 @@ export const MailValidation = () => {
       )}
 
       {message ? <Text>{message}</Text> : null}
-      {/* <Text
-        style={{
-          fontSize: 14,
-          color: "#FFFF00",
-          fontWeight: "bold",
-          marginTop: 30,
-        }}
-        onPress={() => generateNewValidationCode()}
-      >
-        regenerate code
-      </Text> */}
-      <CustomModal />
+      {!route?.params?.email && <CustomModal />}
     </View>
   );
 };
