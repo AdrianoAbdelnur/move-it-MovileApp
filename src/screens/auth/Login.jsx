@@ -69,7 +69,7 @@ export const Login = () => {
             <Text style={styles.buttonText}>Login</Text>
           </TouchableOpacity>
           <View style={styles.otherOptionsContainer}>
-            <TouchableOpacity onPress={() => {}}>
+            <TouchableOpacity onPress={() => navigation.navigate("EnterMail")}>
               <Text style={styles.buttonText}>Forgot your password?</Text>
             </TouchableOpacity>
             <TouchableOpacity

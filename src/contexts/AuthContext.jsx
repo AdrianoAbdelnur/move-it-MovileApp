@@ -227,11 +227,16 @@ const AuthProvider = ({ children }) => {
     }
   };
 
-  const generateNewValidationCode = async () => {
+  const generateNewValidationCode = async (email) => {
     try {
-      const { data } = await clientAxios.patch(
-        "/user/generateNewValidationCode/" + state.user.id
-      );
+      const userId = state?.user?.id;
+      let url = "/user/generateNewValidationCode";
+      if (userId) {
+        url += `/${userId}`;
+      }
+      const payload = email ? { email } : {};
+
+      const { data } = await clientAxios.patch(url, payload);
     } catch (error) {
       console.log(error);
     }
@@ -243,7 +248,6 @@ const AuthProvider = ({ children }) => {
         "/user/validateMail/" + state.user.id,
         { verificationCode }
       );
-      console.log(dataUser);
       if (dataUser) {
         checkToken();
       }
@@ -262,15 +266,71 @@ const AuthProvider = ({ children }) => {
   };
 
   const updateMessage = (message, type) => {
+    console.log(message, type);
     dispatch({
       type: TYPES.UPDATEMESSAGE,
       payload: {
         message: {
-          message: message || "",
-          type: type || "",
+          message: message || null,
+          type: type || null,
         },
       },
     });
+  };
+
+  const checkValidationCode = async (email, verificationCode) => {
+    try {
+      const userId = state?.user?.id;
+      let url = "/user/checkValidationCode";
+      if (userId) {
+        url += `/${userId}`;
+      }
+      const payload = email
+        ? { email, verificationCode }
+        : { verificationCode };
+
+      console.log(url, payload);
+      const { data } = await clientAxios.patch(url, payload);
+      console.log(data);
+      if (data?.message === "Code verified succesfully.") {
+        return true;
+      } else {
+        return false;
+      }
+    } catch (error) {
+      console.log(error);
+      dispatch({
+        type: TYPES.UPDATEMESSAGE,
+        payload: {
+          message: {
+            message: error.response.data.message || "Invalid code !",
+            type: "Error",
+          },
+        },
+      });
+      return false;
+    }
+  };
+
+  const updatePass = async (email, verificationCode, password) => {
+    try {
+      const userId = state?.user?.id;
+      let url = "/user/updatePass";
+      if (userId) {
+        url += `/${userId}`;
+      }
+      const payload = email
+        ? { email, verificationCode, password }
+        : { verificationCode, password };
+
+      const { data } = await clientAxios.patch(url, payload);
+      if (data.message === "password updated successfully.") {
+        login(email, password);
+      }
+      console.log(data);
+    } catch (error) {
+      console.log(error);
+    }
   };
 
   return (
@@ -288,6 +348,8 @@ const AuthProvider = ({ children }) => {
         validateMail,
         updateMessage,
         generateNewValidationCode,
+        checkValidationCode,
+        updatePass,
       }}
     >
       {children}
