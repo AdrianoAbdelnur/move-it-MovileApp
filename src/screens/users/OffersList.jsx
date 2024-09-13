@@ -15,6 +15,7 @@ import { PostContext } from "../../contexts/PostsContext";
 import { CustomConfirmModal } from "../../components/ui/CustomConfirmModal";
 import { AuthContext } from "../../contexts/AuthContext";
 import { usePushNotifications } from "../../hooks/usePushNotifications";
+import { useStripe } from "@stripe/stripe-react-native";
 
 export const OffersList = ({ route }) => {
   const { data } = route.params;
@@ -25,6 +26,7 @@ export const OffersList = ({ route }) => {
   const [showModal, setShowModal] = useState(false);
   const [modalText, setModalText] = useState("second");
   const [itemSelected, setItemSelected] = useState();
+  const { initPaymentSheet, presentPaymentSheet } = useStripe();
 
   useEffect(() => {
     if (data.status.newOffers === true) {
@@ -40,6 +42,7 @@ export const OffersList = ({ route }) => {
       const { data } = await clientAxios.patch(
         "/offer/selectOffer/" + item._id
       );
+
       if (data?.offerFound) {
         postSelectOffer({ postId: item.post, offerSelected: item._id });
         setShowModal(false);
@@ -48,19 +51,58 @@ export const OffersList = ({ route }) => {
           "Offer selected",
           `${userState?.user?.given_name} has selected your offer`
         );
-        navigation.navigate("home");
+        navigation.navigate("PostsList");
       }
     } catch (error) {
       console.log(error);
     }
   };
 
-  const confirmSelection = (item) => {
-    setModalText(
-      `Please confirm that you accept ${item?.owner?.given_name}'s offer for $${item.price}.`
-    );
+  const confirmSelection = async (item) => {
     setItemSelected(item);
-    setShowModal(true);
+    try {
+      const { data } = await clientAxios.post(
+        "https://move-it-backend-3.onrender.com/api/payment/intent",
+        {
+          amount: Math.floor(item.price * 100),
+          email: userState?.user?.email,
+        },
+        {
+          headers: {
+            "Content-Type": "application/json",
+          },
+        }
+      );
+
+      // 2. Initialize the Payment sheet
+      const initResponse = await initPaymentSheet({
+        merchantDisplayName: "ADRIANO",
+        paymentIntentClientSecret: data.paymentIntent,
+        defaultBillingDetails: {
+          address: {
+            country: "AU", // 'AU' es el código de país para Australia
+          },
+        },
+      });
+      if (initResponse.error) {
+        Alert.alert("Something went wrong");
+        return;
+      }
+
+      const paymentResponse = await presentPaymentSheet();
+
+      if (paymentResponse.error) {
+        Alert.alert(
+          `Error code: ${paymentResponse.error.code}`,
+          paymentResponse.error.message
+        );
+        return;
+      }
+    } catch (error) {
+      console.log(error);
+    }
+
+    aceptOffer(item);
   };
 
   return (

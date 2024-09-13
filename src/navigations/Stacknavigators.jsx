@@ -94,7 +94,6 @@ export const Stacknavigators = () => {
       </Stack.Navigator>
     );
   }
-  console.log(isLogged, validatedMail);
   if (isLogged && !validatedMail) {
     return (
       <Stack.Navigator>
