@@ -9,7 +9,6 @@ export const CustomModal = () => {
 
   useEffect(() => {
     if (AuthState?.message?.message && AuthState?.message?.message !== "") {
-      console.log("Aqui", AuthState?.message?.message);
       setShowModal(true);
     }
   }, [AuthState?.message?.message]);

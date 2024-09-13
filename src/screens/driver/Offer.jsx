@@ -33,7 +33,6 @@ export const Offer = ({ route }) => {
       price: price,
       post: data._id,
     });
-    console.log(data);
     sendPushNotification(
       data.owner.expoPushToken,
       "New Offer",

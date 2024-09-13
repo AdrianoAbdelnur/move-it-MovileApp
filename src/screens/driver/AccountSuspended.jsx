@@ -8,7 +8,6 @@ export const AccountSuspended = ({ route }) => {
   const differenceInMillis = new Date(suspensionEndDate) - new Date();
 
   const daysRemaining = Math.ceil(differenceInMillis / (1000 * 60 * 60 * 24));
-  console.log(daysRemaining);
 
   return (
     <View style={globalStyles.container}>

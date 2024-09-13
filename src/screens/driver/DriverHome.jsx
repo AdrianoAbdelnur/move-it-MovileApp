@@ -28,7 +28,6 @@ export const DriverHome = ({ setChatWith }) => {
   }, []);
 
   useEffect(() => {
-    console.log(postsState);
     const currentDate = new Date();
     currentDate.setHours(0, 0, 0, 0);
     if (postsState.posts.length !== 0) {

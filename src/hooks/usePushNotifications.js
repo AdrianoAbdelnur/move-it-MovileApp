@@ -52,7 +52,6 @@ export const usePushNotifications = () => {
       }
       return token;
     } else {
-      console.log("Error: please use a physical device");
     }
   }
 
@@ -73,7 +72,6 @@ export const usePushNotifications = () => {
 
     responseListener.current =
       Notifications.addNotificationResponseReceivedListener((response) => {
-        console.log(response);
       });
 
     return () => {

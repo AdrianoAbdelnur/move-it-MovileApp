@@ -148,13 +148,11 @@ const AuthProvider = ({ children }) => {
   };
 
   const register = async () => {
-    console.log("1", formData);
     dispatch({
       type: "LOADING",
       payload: { isLoading: true },
     });
     try {
-      console.log("2", formData);
       const { data } = await clientAxios.post("/user/register", formData);
       if (data.message === "User successfully created.") {
         login(formData.email, formData.password);
@@ -222,7 +220,7 @@ const AuthProvider = ({ children }) => {
           { newExpoPushToken }
         );
       } catch (error) {
-        console.log("es este=", error);
+        console.log(error);
       }
     }
   };
@@ -266,7 +264,6 @@ const AuthProvider = ({ children }) => {
   };
 
   const updateMessage = (message, type) => {
-    console.log(message, type);
     dispatch({
       type: TYPES.UPDATEMESSAGE,
       payload: {
@@ -289,7 +286,6 @@ const AuthProvider = ({ children }) => {
         ? { email, verificationCode }
         : { verificationCode };
 
-      console.log(url, payload);
       const { data } = await clientAxios.patch(url, payload);
       console.log(data);
       if (data?.message === "Code verified succesfully.") {

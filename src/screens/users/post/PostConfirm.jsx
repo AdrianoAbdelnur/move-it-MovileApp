@@ -83,7 +83,7 @@ export const PostConfirm = () => {
       updateObj(`itemsDetails.${currentLeg}.duration`, duration);
       updateObj(`itemsDetails.${currentLeg}.distance`, distance);
     } catch (error) {
-      console.log("Error fetching route details:", error);
+      console.log(error);
     }
   };
 

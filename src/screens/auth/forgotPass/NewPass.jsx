@@ -34,7 +34,6 @@ export const NewPass = ({ route }) => {
 
   const checkFields = () => {
     if (passConfirmation) {
-      console.log("PASSWORD", password);
       updatePass(email, verificationCode, password);
     } else alert("Passwords must match");
   };
