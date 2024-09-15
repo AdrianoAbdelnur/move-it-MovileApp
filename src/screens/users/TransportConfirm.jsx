@@ -41,7 +41,10 @@ export const TransportConfirm = ({ route }) => {
       <Text style={globalStyles.generalText}>
         I am not satisfied with the work, initiate a complaint.
       </Text>
-      <GeneralButton text="initiate a complaint" onPressFunction={() => {}} />
+      <GeneralButton
+        text="initiate a complaint"
+        onPressFunction={() => navidation.navigate("Complaint", { post: data })}
+      />
     </View>
   );
 };

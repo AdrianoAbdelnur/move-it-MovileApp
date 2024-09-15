@@ -36,6 +36,7 @@ const PostReducer = (state={}, action) => {
         case TYPES.UPDATEPOST:
             return {
                 ...state,
+                alertMsg: action.payload.alertMsg || "",
                 posts: state.posts.map((post)=>
                     post._id === action.payload.newPost._id? action.payload.newPost : post
                 ) 

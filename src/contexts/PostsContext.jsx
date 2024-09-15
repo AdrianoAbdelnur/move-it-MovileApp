@@ -165,6 +165,21 @@ const PostsProvider = ({ children }) => {
     });
   };
 
+  const addComplaint = async ({ postId, complaintText }) => {
+    try {
+      const { data } = await clientAxios.patch(
+        "/userPost/addComplaint/" + postId,
+        { complaintText }
+      );
+      dispatch({
+        type: TYPES.UPDATEPOST,
+        payload: { newPost: data.newPost, alertMsg: data.message },
+      });
+    } catch (error) {
+      console.log(error);
+    }
+  };
+
   return (
     <PostContext.Provider
       value={{
@@ -180,6 +195,7 @@ const PostsProvider = ({ children }) => {
         addMessage,
         updateMessage,
         uptateMyStatus,
+        addComplaint,
       }}
     >
       {children}

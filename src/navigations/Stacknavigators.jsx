@@ -38,6 +38,7 @@ import { Entypo } from "@expo/vector-icons";
 import { MailValidation } from "../screens/auth/register/MailValidation";
 import { EnterMail } from "../screens/auth/forgotPass/EnterMail";
 import { NewPass } from "../screens/auth/forgotPass/NewPass";
+import { ComplaintScreen } from "../screens/ComplaintScreen";
 
 const Stack = createStackNavigator();
 
@@ -157,6 +158,7 @@ export const Stacknavigators = () => {
         <Stack.Screen name="TransporConfirm" component={TransportConfirm} />
         <Stack.Screen name="Camera" component={CameraManager} />
         <Stack.Screen name="Image" component={ImageDisplayer} />
+        <Stack.Screen name="Complaint" component={ComplaintScreen} />
       </Stack.Navigator>
     );
   }

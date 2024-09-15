@@ -320,6 +320,13 @@ export const PostDetails = ({ route }) => {
           </TouchableOpacity>
         )}
         {userState.user.role === "transport" &&
+          data?.status?.mainStatus === "complaint" && (
+            <Text style={globalStyles.generalInformationText}>
+              This service has an ongoing complaint. We will help you resolve it
+              as soon as possible.{" "}
+            </Text>
+          )}
+        {userState.user.role === "transport" &&
           data?.status?.mainStatus === "offerSelected" && (
             <GeneralButton
               text="initiate service"

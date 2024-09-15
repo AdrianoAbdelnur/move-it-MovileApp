@@ -10,6 +10,8 @@ import {
 } from "react-native";
 import { AuthContext } from "../../contexts/AuthContext";
 import { ScrollView } from "react-native-gesture-handler";
+import { useConfirmPayment } from "@stripe/stripe-react-native";
+import { PostContext } from "../../contexts/PostsContext";
 
 export const NotiModal = ({
   modalVisible,
@@ -19,6 +21,7 @@ export const NotiModal = ({
 }) => {
   const navigation = useNavigation();
   const { state: userState } = useContext(AuthContext);
+  const { uptateStatus } = useContext(PostContext);
 
   const panResponder = PanResponder.create({
     onStartShouldSetPanResponder: () => true,
@@ -187,6 +190,35 @@ export const NotiModal = ({
                     <Text style={styles.secondaryNotiText}>
                       You can initiate it when you are ready or cancel it asking
                       for help if you have a problem
+                    </Text>
+                  </View>
+                </TouchableOpacity>
+              );
+            }
+            if (noti.type === "complaint") {
+              return (
+                <TouchableOpacity
+                  key={noti.post._id + noti.type}
+                  onPress={() => {
+                    uptateStatus({
+                      postId: noti.post._id,
+                      newStatus: {
+                        ...noti.post.status,
+                        newComplaint: false,
+                      },
+                    });
+                    navigation.navigate("Details", { data: noti.post });
+
+                    closeNotiModal();
+                  }}
+                >
+                  <View style={styles.notiContainer}>
+                    <Text>
+                      {noti.post.owner.given_name} has initiated a complaint for
+                      the service of {noti.post.title}.
+                    </Text>
+                    <Text style={styles.secondaryNotiText}>
+                      See post details
                     </Text>
                   </View>
                 </TouchableOpacity>
