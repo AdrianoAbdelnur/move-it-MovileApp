@@ -15,7 +15,7 @@ import { GeneralButton } from "../../components/ui/GeneralButton";
 export const DriverHome = ({ setChatWith }) => {
   const navigation = useNavigation();
   const { state: postsState, getPendingPosts } = useContext(PostContext);
-  const { state: userState, logout } = useContext(AuthContext);
+  const { state: userState } = useContext(AuthContext);
   const [pendingPost, setPendingPost] = useState([]);
   const [modalVisible, setModalVisible] = useState(false);
   const [notificationCount, setNotificationCount] = useState(0);
@@ -51,6 +51,9 @@ export const DriverHome = ({ setChatWith }) => {
         post.status.mainStatus !== "cancelled"
       ) {
         notifications.push({ type: "offerAcepted", post });
+      }
+      if (post.status.newComplaint) {
+        notifications.push({ type: "complaint", post });
       }
       if (
         post.status.offerSelected &&

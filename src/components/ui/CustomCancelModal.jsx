@@ -101,15 +101,16 @@ export const CustomCancelModal = ({ showModal, setShowModal, post }) => {
                 cancel, so we won't charge you anything this time. However,
                 fulfilling our commitments is a priority, so please be aware
                 that frequent cancellations may result in a temporary or
-                permanent suspension of your account. Please let us know if
-                there's anything we can do to assist you.
+                permanent suspension of your account.{" "}
+                {/* Please let us know if
+                there's anything we can do to assist you. */}
               </Text>
-              <Text
+              {/* <Text
                 style={{ color: "blue", textAlign: "right" }}
                 onPress={() => console.log("ask")}
               >
                 Ask for help
-              </Text>
+              </Text> */}
             </View>
           )}
           <View style={styles.buttonsContainer}>

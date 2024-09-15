@@ -14,6 +14,7 @@ const statusColors = {
   expired: "#F44336",
   cancelled: "#6C757D",
   transportDone: "blue",
+  complaint: "#222222",
 };
 
 export const PostShower = ({ item, setChatWith }) => {

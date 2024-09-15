@@ -6,13 +6,14 @@ import { PostContext } from "../contexts/PostsContext";
 import { PostShower } from "../components/post/PostShower";
 
 const statusOrder = {
-  transportDone: 0,
-  inProgress: 1,
-  expired: 2,
-  offerSelected: 3,
-  pending: 4,
-  confirmed: 5,
-  cancelled: 6,
+  complaint: 0,
+  transportDone: 1,
+  inProgress: 2,
+  expired: 3,
+  offerSelected: 4,
+  pending: 5,
+  confirmed: 6,
+  cancelled: 7,
 };
 
 export const PostsList = ({ setChatWith }) => {
