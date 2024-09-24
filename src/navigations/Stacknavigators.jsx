@@ -39,6 +39,9 @@ import { MailValidation } from "../screens/auth/register/MailValidation";
 import { EnterMail } from "../screens/auth/forgotPass/EnterMail";
 import { NewPass } from "../screens/auth/forgotPass/NewPass";
 import { ComplaintScreen } from "../screens/ComplaintScreen";
+import { WhenSelector } from "../screens/users/post/WhenSelector";
+import { GetAJobNow } from "../screens/driver/GetAJobNow";
+import { JobsMap } from "../components/ui/JobsMap";
 
 const Stack = createStackNavigator();
 
@@ -108,7 +111,7 @@ export const Stacknavigators = () => {
       <Stack.Navigator
         screenOptions={{
           headerStyle: {
-            backgroundColor: colors.border,
+            backgroundColor: "grey",
           },
           headerTintColor: "#FFF",
         }}
@@ -145,9 +148,18 @@ export const Stacknavigators = () => {
           options={{ title: `Chat with ${chatWith}` }}
         />
         <Stack.Screen name="Title" component={Title} />
+        <Stack.Screen name="When" component={WhenSelector} />
         <Stack.Screen name="Date" component={DateSelect} />
-        <Stack.Screen name="Directions" component={Directions} />
-        <Stack.Screen name="DetailsSelector" component={DetailsSelector} />
+        <Stack.Screen
+          name="Directions"
+          component={Directions}
+          options={{ title: "Addresses" }}
+        />
+        <Stack.Screen
+          name="DetailsSelector"
+          component={DetailsSelector}
+          options={{ title: "Details" }}
+        />
         <Stack.Screen name="ItemsList" component={ItemsList} />
         <Stack.Screen name="ItemDetails" component={ItemDetails} />
         <Stack.Screen name="Confirmation" component={PostConfirm} />
@@ -203,12 +215,18 @@ export const Stacknavigators = () => {
         >
           {(props) => <DriverHome {...props} setChatWith={setChatWith} />}
         </Stack.Screen>
-        <Stack.Screen name="Details" component={PostDetails} />
+        <Stack.Screen
+          name="Details"
+          component={PostDetails}
+          options={{ title: "Post details" }}
+        />
         <Stack.Screen name="Offer" component={Offer} />
-        <Stack.Screen name="MyOffers">
+        <Stack.Screen name="MyOffers" options={{ title: "My offers" }}>
           {(props) => <MyOffers {...props} setChatWith={setChatWith} />}
         </Stack.Screen>
+        <Stack.Screen name="JobNow" component={GetAJobNow} />
         <Stack.Screen name="Maps" component={Maps} />
+        <Stack.Screen name="JobsMaps" component={JobsMap} />
         <Stack.Screen
           name="chat"
           component={ChatScreen}

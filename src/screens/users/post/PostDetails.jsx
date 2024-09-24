@@ -1,5 +1,5 @@
 import React, { useContext, useEffect, useState } from "react";
-import { StyleSheet, Text, TouchableOpacity, View } from "react-native";
+import { Alert, StyleSheet, Text, TouchableOpacity, View } from "react-native";
 import globalStyles from "../../../styles/globalStyles";
 import { AuthContext } from "../../../contexts/AuthContext";
 import { useNavigation } from "@react-navigation/native";
@@ -13,11 +13,18 @@ import { clientAxios } from "../../../api/ClientAxios";
 import { CustomCancelModal } from "../../../components/ui/CustomCancelModal";
 import { CustomConfirmModal } from "../../../components/ui/CustomConfirmModal";
 import { usePushNotifications } from "../../../hooks/usePushNotifications";
+import CountdownTimer from "../../../components/ui/CountdownTimer ";
 
 export const PostDetails = ({ route }) => {
   const navigation = useNavigation();
+
   const { state: userState } = useContext(AuthContext);
-  const { state: postsState, uptateStatus } = useContext(PostContext);
+  const {
+    state: postsState,
+    uptateStatus,
+    addPost,
+    clearAlertMsg,
+  } = useContext(PostContext);
   const { sendPushNotification } = usePushNotifications();
   const [isOpen, setIsOpen] = useState(false);
   const { formData, setFormData } = useContext(FormContext);
@@ -27,13 +34,13 @@ export const PostDetails = ({ route }) => {
   const [showConfirmModal, setShowConfirmModal] = useState(false);
   const [modalText, setModalText] = useState("");
   const [confirmationFuction, setConfirmationFuction] = useState(null);
+  const [myActiveOffer, setMyActiveOffer] = useState(false);
 
   useEffect(() => {
     setData(postsState?.posts?.find((post) => post._id === dato._id));
   }, [postsState]);
 
   useEffect(() => {
-    setData(postsState?.posts?.find((post) => post._id === dato._id));
     if (data?.status?.transportCancelled) {
       uptateStatus({
         postId: data._id,
@@ -51,6 +58,9 @@ export const PostDetails = ({ route }) => {
           offerAcepted: false,
         },
       });
+    }
+    if (userState.user.role === "transport" && data?.offers?.length > 0) {
+      setMyActiveOffer(checkOffer());
     }
   }, [data]);
 
@@ -86,15 +96,32 @@ export const PostDetails = ({ route }) => {
     navigation.navigate("home");
   };
 
-  const changeDate = () => {
-    setFormData({
-      ...data,
-      date: { ...data.date, date: new Date(data.date.date) },
-      status: { ...data.status, mainStatus: "pending", newOffers: false },
-      offerSelected: null,
-      offers: [],
-    });
-    navigation.navigate("Date");
+  const changeDate = async () => {
+    try {
+      await clientAxios.patch("/offer/modifyStatus", {
+        offerId: data.offers,
+        newStatus: "expired",
+      });
+    } catch (error) {
+      console.log(error);
+    }
+    if (data?.date?.timeDay !== "now") {
+      setFormData({
+        ...data,
+        date: { ...data.date, date: new Date(data.date.date) },
+        status: { ...data.status, mainStatus: "pending", newOffers: false },
+        offerSelected: null,
+      });
+      navigation.navigate("Date");
+    } else {
+      const formData = {
+        ...data,
+        date: { ...data.date, date: new Date() },
+        status: { ...data.status, mainStatus: "pending", newOffers: false },
+        offerSelected: null,
+      };
+      addPost(formData);
+    }
   };
 
   const getImage = async (imageType) => {
@@ -108,6 +135,23 @@ export const PostDetails = ({ route }) => {
     } catch (error) {
       console.log(error);
     }
+  };
+
+  useEffect(() => {
+    if (postsState.alertMsg === "New Post added") {
+      Alert.alert("POST INFORMATION", postsState.alertMsg, [
+        {
+          text: "OK",
+          onPress: () => handleOk(),
+        },
+      ]);
+    }
+  }, [postsState]);
+
+  const handleOk = () => {
+    clearAlertMsg();
+    navigation.navigate("home");
+    setFormData({});
   };
 
   const confirmInitiateFuction = () => {
@@ -152,6 +196,43 @@ export const PostDetails = ({ route }) => {
       setShowConfirmModal(false);
       navigation.navigate("driverHome");
     });
+  };
+
+  const checkOffer = () => {
+    const myOfferFound = data.offers.find((offer) => {
+      return (
+        offer?.owner?._id === userState?.user?.id && offer.status === "Pending"
+      );
+    });
+    if (myOfferFound) {
+      const now = new Date().getTime();
+
+      if (new Date(myOfferFound?.expiredTime).getTime() < now) {
+        updateOfferStatus(myOfferFound._id);
+        return false;
+      } else return myOfferFound;
+    } else return false;
+  };
+
+  const updateOfferStatus = async (id) => {
+    try {
+      const { data } = await clientAxios.patch("/offer/modifyStatus", {
+        offerId: id,
+        newStatus: "expired",
+      });
+      const { updatedOffers: newOffer } = data;
+      modifyOfferInPost({
+        ownerId: userState.user.id,
+        ownerName: userState.user.given_name,
+        postId: newOffer.post,
+        newOfferId: newOffer._id,
+        expiredTime: newOffer.expiredTime,
+        status: newOffer.status,
+        price: newOffer.price,
+      });
+    } catch (error) {
+      console.log(error);
+    }
   };
 
   return (
@@ -340,11 +421,23 @@ export const PostDetails = ({ route }) => {
               onPressFunction={() => confirmCompletedFuction()}
             />
           )}
-        {data?.offers?.find(
-          (offer) => offer?.owner?._id === userState?.user?.id
-        )
+        {myActiveOffer
           ? userState.user.role == "transport" && (
-              <Text>You have already offered for this job</Text>
+              <View>
+                <Text style={globalStyles.generalText}>
+                  You have already made an offer for this job, and your offer
+                  was {myActiveOffer?.price} AUD
+                </Text>
+                <View style={styles.expireContainer}>
+                  <Text style={[globalStyles.generalText, { marginRight: 5 }]}>
+                    Expire in:
+                  </Text>
+                  <CountdownTimer
+                    expiredTime={myActiveOffer.expiredTime}
+                    onExpire={() => setMyActiveOffer(checkOffer())}
+                  />
+                </View>
+              </View>
             )
           : userState.user.role == "transport" &&
             data?.status?.mainStatus === "pending" && (
@@ -380,7 +473,12 @@ export const PostDetails = ({ route }) => {
                 marginTop: 20,
               }}
             >
-              <GeneralButton text="Change Date" onPressFunction={changeDate} />
+              <GeneralButton
+                text={
+                  data?.date?.timeDay === "now" ? "Repost now" : "Change Date"
+                }
+                onPressFunction={changeDate}
+              />
               <GeneralButton text="cancel Post" onPressFunction={cancelPost} />
             </View>
           )}
@@ -479,5 +577,9 @@ const styles = StyleSheet.create({
     fontSize: 14,
     color: "#FFFF00",
     fontWeight: "bold",
+  },
+  expireContainer: {
+    flexDirection: "row",
+    alignItems: "center",
   },
 });

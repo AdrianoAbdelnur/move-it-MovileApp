@@ -1,9 +1,12 @@
-import React, { useContext } from "react";
-import { StyleSheet, Text, TouchableOpacity } from "react-native";
+import React, { useContext, useEffect, useState } from "react";
+import { StyleSheet, Text, TouchableOpacity, View } from "react-native";
 import globalStyles from "../../styles/globalStyles";
 import { useNavigation } from "@react-navigation/native";
 import colors from "../../styles/colors";
 import { AuthContext } from "../../contexts/AuthContext";
+import { clientAxios } from "../../api/ClientAxios";
+import CountdownTimer from "../ui/CountdownTimer ";
+import { PostContext } from "../../contexts/PostsContext";
 
 const statusColors = {
   pending: "#388E3C",
@@ -19,7 +22,9 @@ const statusColors = {
 
 export const PostShower = ({ item, setChatWith }) => {
   const { state: userState } = useContext(AuthContext);
+  const { modifyOfferInPost } = useContext(PostContext);
   const cardColor = statusColors[item.status.mainStatus];
+  const [myActiveOffer, setMyActiveOffer] = useState(false);
   const navigation = useNavigation();
   let fDate = "";
   let fTime = "";
@@ -38,6 +43,47 @@ export const PostShower = ({ item, setChatWith }) => {
     fTime = `${hours}:${minutes.toString().padStart(2, "0")} ${ampm}`;
   };
 
+  useEffect(() => {
+    const offerChecked = checkOffer();
+    setMyActiveOffer(offerChecked);
+  }, [item]);
+
+  const checkOffer = () => {
+    const myOfferFound = item.offers.find((offer) => {
+      return (
+        offer?.owner?._id === userState?.user?.id && offer.status === "Pending"
+      );
+    });
+    if (myOfferFound) {
+      const now = new Date().getTime();
+      if (new Date(myOfferFound?.expiredTime).getTime() < now) {
+        updateOfferStatus(myOfferFound._id);
+        return false;
+      } else return myOfferFound;
+    } else return false;
+  };
+
+  const updateOfferStatus = async (id) => {
+    try {
+      const { data } = await clientAxios.patch("/offer/modifyStatus", {
+        offerId: id,
+        newStatus: "expired",
+      });
+      const { updatedOffers: newOffer } = data;
+      modifyOfferInPost({
+        ownerId: userState.user.id,
+        ownerName: userState.user.given_name,
+        postId: newOffer.post,
+        newOfferId: newOffer._id,
+        expiredTime: newOffer.expiredTime,
+        status: newOffer.status,
+        price: newOffer.price,
+      });
+    } catch (error) {
+      console.log(error);
+    }
+  };
+
   return (
     <TouchableOpacity
       style={[styles.itemContainer, { backgroundColor: cardColor }]}
@@ -45,18 +91,18 @@ export const PostShower = ({ item, setChatWith }) => {
         navigation.navigate("Details", { data: item });
       }}
     >
-      {formatDate(item.date.date)}
+      {formatDate(item?.date?.date)}
       <Text style={globalStyles.generalText}>title: {item.title}</Text>
-      {item.date.timeDay === "specificTime" ? (
+      {item?.date?.timeDay === "specificTime" ? (
         <Text style={globalStyles.generalInformationText}>
           Date: {fDate} at {fTime}
         </Text>
       ) : (
         <Text style={globalStyles.generalInformationText}>Date: {fDate}</Text>
       )}
-      {item.date.timeDay !== "specificTime" && (
+      {item?.date?.timeDay !== "specificTime" && (
         <Text style={globalStyles.generalInformationText}>
-          time of day: {item.date.timeDay}
+          time of day: {item?.date?.timeDay}
         </Text>
       )}
       <Text style={{ alignSelf: "flex-end", color: "black" }}>
@@ -69,11 +115,23 @@ export const PostShower = ({ item, setChatWith }) => {
           You have {item.offers.length} offers for this post
         </Text>
       ) : (
-        item.offers.find(
-          (offer) => offer?.owner?._id === userState?.user?.id
-        ) &&
+        myActiveOffer &&
         userState?.user?.role == "transport" && (
-          <Text>You have already offered for this job</Text>
+          <View>
+            <Text>
+              You have already made an offer for this job, and your offer was{" "}
+              {myActiveOffer?.price} AUD
+            </Text>
+            <View style={styles.expireContainer}>
+              <Text style={[globalStyles.generalText, { marginRight: 5 }]}>
+                Expire in:
+              </Text>
+              <CountdownTimer
+                expiredTime={myActiveOffer.expiredTime}
+                onExpire={() => setMyActiveOffer(checkOffer())}
+              />
+            </View>
+          </View>
         )
       )}
       {userState?.user?.role === "user" &&
@@ -147,5 +205,9 @@ const styles = StyleSheet.create({
     backgroundColor: colors.background,
     padding: 8,
     borderRadius: 12,
+  },
+  expireContainer: {
+    flexDirection: "row",
+    alignItems: "center",
   },
 });

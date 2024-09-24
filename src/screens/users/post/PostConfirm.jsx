@@ -96,7 +96,13 @@ export const PostConfirm = () => {
       <ScrollView style={{ width: "100%" }}>
         <Text style={globalStyles.generalText}>Title : {formData?.title}</Text>
         <Text style={globalStyles.generalText}>date : {fDate}</Text>
-        <Text style={globalStyles.generalText}>time : {fTime}</Text>
+        {formData?.date?.timeDay === "specificTime" ? (
+          <Text style={globalStyles.generalText}>time : {fTime}</Text>
+        ) : (
+          <Text style={globalStyles.generalText}>
+            time: {formData?.date?.timeDay}
+          </Text>
+        )}
         {formData?.directions?.map((dir, index) => {
           const splitedDir = dir.description.split(",");
           const currentLeg = `leg${index + 1}`;

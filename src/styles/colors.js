@@ -10,7 +10,7 @@
 
   export default {
     primary: '#74ACDF', // Celeste (Argentina)
-    secondary: '#D52B1E', // Celeste (Argentina)
+    secondary: '#D52B1E', // rojo (Australia)
     background: '#002A8F', // Azul Oscuro (Australia)
     textPrimary: '#000000', // Blanco (presente en todas las banderas)
     textSecondary: '#CCCCCC', // Gris Claro (neutral)
