@@ -7,6 +7,7 @@ import {
   StyleSheet,
   Modal,
   TouchableWithoutFeedback,
+  Keyboard,
 } from "react-native";
 import { Entypo } from "@expo/vector-icons";
 
@@ -19,7 +20,12 @@ export const DropDownCustom = ({
   const [isVisible, setIsVisible] = useState(false);
   const [selectedItem, setSelectedItem] = useState(null);
 
-  const toggleDropdown = () => setIsVisible(!isVisible);
+  const toggleDropdown = () => {
+    if (!isVisible) {
+      Keyboard.dismiss();
+    }
+    setIsVisible(!isVisible);
+  };
 
   useEffect(() => {
     if (prevItem) {
@@ -42,7 +48,7 @@ export const DropDownCustom = ({
         <Entypo
           name={isVisible ? "chevron-up" : "chevron-down"}
           size={20}
-          color={"#f1f1f1"}
+          color={"#000000"}
         />
       </TouchableOpacity>
       {isVisible && (
