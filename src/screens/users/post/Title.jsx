@@ -31,7 +31,7 @@ export const Title = () => {
 
   const checkInfo = () => {
     if (formData?.title?.length > 4) {
-      navigation.navigate("Date");
+      navigation.navigate("When");
     } else alert("Title must have at least 5 caracters");
   };
 

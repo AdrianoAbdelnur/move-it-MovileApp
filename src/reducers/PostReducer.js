@@ -44,10 +44,52 @@ const PostReducer = (state={}, action) => {
         case TYPES.ADDOFFERINPOST:
             return {
                 ...state,
-                posts: state.posts.map((post)=>
-                    post._id === action.payload.postId? {...post, offers:[...post.offers, {_id: action.payload.newOfferId, owner:{_id:action.payload.ownerId, given_name:action.payload.ownerName}}]}: post
-               ) 
-            }
+                posts: state.posts.map((post) => {
+                    if (post._id === action.payload.postId) {
+                    const existingOfferIndex = post.offers.findIndex(
+                      (offer) => offer._id === action.payload.newOfferId
+                    );
+                    if (existingOfferIndex !== -1) {
+                      const updatedOffers = post.offers.map((offer, index) =>
+                        index === existingOfferIndex
+                          ? {
+                              ...offer,
+                              expiredTime: action.payload.expiredTime,
+                              price: action.payload.price,
+                              status: action.payload.status,
+                              owner: {
+                                _id: action.payload.ownerId,
+                                given_name: action.payload.ownerName,
+                              },
+                            }
+                          : offer
+                      );
+                      return {
+                        ...post,
+                        offers: updatedOffers,
+                      };
+                    } else {
+                      return {
+                        ...post,
+                        offers: [
+                          ...post.offers,
+                          {
+                            _id: action.payload.newOfferId,
+                            expiredTime: action.payload.expiredTime,
+                            price: action.payload.price,
+                            status: action.payload.status,
+                            owner: {
+                              _id: action.payload.ownerId,
+                              given_name: action.payload.ownerName,
+                            },
+                          },
+                        ],
+                      };
+                    }
+                  }
+                  return post;
+                }),
+              };
         case TYPES.ADDMESSAGE:
         return {
             ...state,

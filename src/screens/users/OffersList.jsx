@@ -1,5 +1,6 @@
 import React, { useContext, useEffect, useState } from "react";
 import {
+  Alert,
   ScrollView,
   StatusBar,
   StyleSheet,
@@ -12,10 +13,10 @@ import colors from "../../styles/colors";
 import { clientAxios } from "../../api/ClientAxios";
 import { useNavigation } from "@react-navigation/native";
 import { PostContext } from "../../contexts/PostsContext";
-import { CustomConfirmModal } from "../../components/ui/CustomConfirmModal";
 import { AuthContext } from "../../contexts/AuthContext";
 import { usePushNotifications } from "../../hooks/usePushNotifications";
 import { useStripe } from "@stripe/stripe-react-native";
+import CountdownTimer from "../../components/ui/CountdownTimer ";
 
 export const OffersList = ({ route }) => {
   const { data } = route.params;
@@ -27,6 +28,7 @@ export const OffersList = ({ route }) => {
   const [modalText, setModalText] = useState("second");
   const [itemSelected, setItemSelected] = useState();
   const { initPaymentSheet, presentPaymentSheet } = useStripe();
+  const [activeOffers, setActiveOffers] = useState([]);
 
   useEffect(() => {
     if (data.status.newOffers === true) {
@@ -35,7 +37,9 @@ export const OffersList = ({ route }) => {
         newStatus: { ...data.status, newOffers: false },
       });
     }
-  }, [data._id]);
+
+    checkExpiredOffers();
+  }, [data]);
 
   const aceptOffer = async (item) => {
     try {
@@ -74,13 +78,12 @@ export const OffersList = ({ route }) => {
         }
       );
 
-      // 2. Initialize the Payment sheet
       const initResponse = await initPaymentSheet({
         merchantDisplayName: "ADRIANO",
         paymentIntentClientSecret: data.paymentIntent,
         defaultBillingDetails: {
           address: {
-            country: "AU", // 'AU' es el código de país para Australia
+            country: "AU",
           },
         },
       });
@@ -98,11 +101,49 @@ export const OffersList = ({ route }) => {
         );
         return;
       }
+      aceptOffer(item);
     } catch (error) {
       console.log(error);
     }
+  };
 
-    aceptOffer(item);
+  const handleOfferExpired = async (item) => {
+    const filteredOffers = data.offers.filter(
+      (offer) => offer._id !== item._id
+    );
+    setActiveOffers(filteredOffers);
+    try {
+      await clientAxios.patch("/offer/modifyStatus", {
+        offerId: item._id,
+        newStatus: "expired",
+      });
+    } catch (error) {
+      console.log(error);
+    }
+  };
+
+  const checkExpiredOffers = async () => {
+    const now = new Date().getTime();
+    const filteredOffers = data.offers.filter(
+      (offer) => new Date(offer.expiredTime).getTime() > now
+    );
+    setActiveOffers(filteredOffers);
+    const expiredOffers = data.offers.filter(
+      (offer) =>
+        new Date(offer.expiredTime).getTime() <= now &&
+        offer.status === "Pending"
+    );
+    if (expiredOffers.length > 0) {
+      const expiredOfferIds = expiredOffers.map((offer) => offer._id);
+      try {
+        await clientAxios.patch("/offer/modifyStatus", {
+          offerId: expiredOfferIds,
+          newStatus: "expired",
+        });
+      } catch (error) {
+        console.log(error);
+      }
+    }
   };
 
   return (
@@ -112,12 +153,23 @@ export const OffersList = ({ route }) => {
         <Text style={styles.servicesTitle}>Your offers:</Text>
         <ScrollView style={styles.services}>
           <View>
-            {data?.offers &&
-              data?.offers?.map((item, index) => (
+            {activeOffers &&
+              activeOffers.map((item, index) => (
                 <View key={item._id} style={styles.itemContainer}>
                   <Text style={globalStyles.generalText}>
                     {item?.owner?.given_name} offered ${item.price}
                   </Text>
+                  <View style={styles.expireContainer}>
+                    <Text
+                      style={[globalStyles.generalText, { marginRight: 5 }]}
+                    >
+                      Expire in:
+                    </Text>
+                    <CountdownTimer
+                      expiredTime={item.expiredTime}
+                      onExpire={() => handleOfferExpired(item)}
+                    />
+                  </View>
                   <TouchableOpacity
                     onPress={() =>
                       navigation.navigate("DriverProfile", {
@@ -140,12 +192,6 @@ export const OffersList = ({ route }) => {
           </View>
         </ScrollView>
       </View>
-      <CustomConfirmModal
-        showModal={showModal}
-        setShowModal={setShowModal}
-        text={modalText}
-        confirmFunction={() => aceptOffer(itemSelected)}
-      />
     </View>
   );
 };
@@ -206,5 +252,12 @@ const styles = StyleSheet.create({
     borderRadius: 20,
     justifyContent: "center",
     alignItems: "center",
+  },
+  expireContainer: {
+    flexDirection: "row",
+    alignItems: "center",
+  },
+  label: {
+    marginRight: 5,
   },
 });

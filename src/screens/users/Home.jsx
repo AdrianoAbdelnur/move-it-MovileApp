@@ -13,17 +13,18 @@ import { FormContext } from "../../contexts/FormContext";
 
 export const Home = ({ setChatWith }) => {
   const navigation = useNavigation();
-  const { state: userState, logout } = useContext(AuthContext);
+  const { state: userState } = useContext(AuthContext);
   const {
     state: postsState,
     getMyPosts,
-    uptateStatus,
+    checkExpiredPost,
   } = useContext(PostContext);
   const [modalVisible, setModalVisible] = useState(false);
   const [notificationCount, setNotificationCount] = useState(0);
   const [notiList, setNotiList] = useState([]);
   const isFocused = useIsFocused();
-  const { formData, setFormData } = useContext(FormContext);
+  const { setFormData } = useContext(FormContext);
+  const [checkedDay, setCheckedDay] = useState();
 
   useEffect(() => {
     if (postsState.posts.length === 0) {
@@ -38,20 +39,10 @@ export const Home = ({ setChatWith }) => {
   }, [isFocused]);
 
   useEffect(() => {
-    const currentDate = new Date();
-    currentDate.setHours(0, 0, 0, 0);
-    postsState.posts.map((post) => {
-      const postDate = new Date(post?.date?.date);
-      if (postDate < currentDate && post.status.mainStatus === "pending") {
-        uptateStatus({
-          postId: post._id,
-          newStatus: {
-            ...post.status,
-            mainStatus: "expired",
-          },
-        });
-      }
-    });
+    if (checkedDay?.toDateString() === new Date().toDateString()) {
+      setCheckedDay(new Date());
+      checkExpiredPost(postsState.posts);
+    }
   }, [postsState]);
 
   useEffect(() => {

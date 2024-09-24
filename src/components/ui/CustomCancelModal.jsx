@@ -4,6 +4,7 @@ import { AuthContext } from "../../contexts/AuthContext";
 import { PostContext } from "../../contexts/PostsContext";
 import { useNavigation } from "@react-navigation/native";
 import { usePushNotifications } from "../../hooks/usePushNotifications";
+import { clientAxios } from "../../api/ClientAxios";
 
 export const CustomCancelModal = ({ showModal, setShowModal, post }) => {
   const { state: userState, addCancellation } = useContext(AuthContext);
@@ -11,29 +12,41 @@ export const CustomCancelModal = ({ showModal, setShowModal, post }) => {
   const { sendPushNotification } = usePushNotifications();
   const navigation = useNavigation();
 
-  const cancelService = () => {
+  const cancelService = async () => {
     if (userState.user.role === "transport") {
-      const newOffersList = post.offers.filter(
-        (offer) => offer != post.offerSelected._id
-      );
-      const newPost = {
-        ...post,
-        offers: newOffersList,
-        status: {
-          ...post?.status,
-          mainStatus: "pending",
-          transportCancelled: true,
-        },
-        offerSelected: null,
-        transportCancel: [userState?.user?.id, ...(post.transportCancel || [])],
-      };
-      addPost(newPost);
-      sendPushNotification(
-        post?.owner.expoPushToken,
-        "Service Canceled",
-        `${userState?.user?.given_name} has canceled the service for a ${post.title}`
-      );
-      navigation.navigate("driverHome");
+      try {
+        await clientAxios.patch("/offer/modifyStatus", {
+          offerId: post.offerSelected._id,
+          newStatus: "cancelled",
+        });
+
+        const newOffersList = post.offers.filter(
+          (offer) => offer != post.offerSelected._id
+        );
+        const newPost = {
+          ...post,
+          offers: newOffersList,
+          status: {
+            ...post?.status,
+            mainStatus: "pending",
+            transportCancelled: true,
+          },
+          offerSelected: null,
+          transportCancel: [
+            userState?.user?.id,
+            ...(post.transportCancel || []),
+          ],
+        };
+        addPost(newPost);
+        sendPushNotification(
+          post?.owner.expoPushToken,
+          "Service Canceled",
+          `${userState?.user?.given_name} has canceled the service for a ${post.title}`
+        );
+        navigation.navigate("driverHome");
+      } catch (error) {
+        console.log(error);
+      }
     } else if (
       userState.user.role === "user" &&
       post.status.mainStatus === "offerSelected"

@@ -11,15 +11,21 @@ import { AuthContext } from "../../contexts/AuthContext";
 import { BellNoti } from "../../components/bell/BellNoti";
 import { NotiModal } from "../../components/ui/NotiModal";
 import { GeneralButton } from "../../components/ui/GeneralButton";
+import * as Location from "expo-location";
 
 export const DriverHome = ({ setChatWith }) => {
   const navigation = useNavigation();
-  const { state: postsState, getPendingPosts } = useContext(PostContext);
+  const {
+    state: postsState,
+    getPendingPosts,
+    checkExpiredPost,
+  } = useContext(PostContext);
   const { state: userState } = useContext(AuthContext);
   const [pendingPost, setPendingPost] = useState([]);
   const [modalVisible, setModalVisible] = useState(false);
   const [notificationCount, setNotificationCount] = useState(0);
   const [notiList, setNotiList] = useState([]);
+  const [userLocation, setUserLocation] = useState(null);
 
   useEffect(() => {
     if (postsState.posts.length === 0) {
@@ -28,6 +34,7 @@ export const DriverHome = ({ setChatWith }) => {
   }, []);
 
   useEffect(() => {
+    checkExpiredPost(postsState.posts);
     const currentDate = new Date();
     currentDate.setHours(0, 0, 0, 0);
     if (postsState.posts.length !== 0) {
@@ -65,6 +72,8 @@ export const DriverHome = ({ setChatWith }) => {
       return notifications;
     });
     setNotiList(newsNotiList);
+
+    getUserLocation();
   }, [postsState]);
 
   useEffect(() => {
@@ -75,6 +84,17 @@ export const DriverHome = ({ setChatWith }) => {
     setModalVisible(!modalVisible);
   };
 
+  const getUserLocation = async () => {
+    const { status } = await Location.requestForegroundPermissionsAsync();
+    if (status !== "granted") {
+      console.error("Permission to access location was denied");
+      return;
+    }
+
+    const { coords } = await Location.getCurrentPositionAsync({});
+    const { latitude: yourLatitude, longitude: yourLongitude } = coords;
+    setUserLocation({ latitude: yourLatitude, longitude: yourLongitude });
+  };
   return (
     <View style={globalStyles.container}>
       <StatusBar style="auto" backgroundColor="gray" translucent={false} />
@@ -83,6 +103,10 @@ export const DriverHome = ({ setChatWith }) => {
         <GeneralButton
           text="My accepted offers"
           onPressFunction={() => navigation.navigate("MyOffers")}
+        />
+        <GeneralButton
+          text="Get a job now"
+          onPressFunction={() => navigation.navigate("JobNow")}
         />
       </View>
       <View style={styles.services_container}>
@@ -96,6 +120,16 @@ export const DriverHome = ({ setChatWith }) => {
           </View>
         </ScrollView>
       </View>
+      <Text
+        onPress={() => {
+          navigation.navigate("JobsMaps", {
+            userLocation,
+            postsToShow: pendingPost,
+          });
+        }}
+      >
+        View in map
+      </Text>
       <NotiModal
         modalVisible={modalVisible}
         closeNotiModal={toggleModal}
@@ -117,7 +151,7 @@ const styles = StyleSheet.create({
     maxHeight: "80%",
     justifyContent: "center",
     alignItems: "center",
-    backgroundColor: colors.secondary,
+    backgroundColor: "grey",
     borderRadius: 15,
   },
   servicesTitle: {

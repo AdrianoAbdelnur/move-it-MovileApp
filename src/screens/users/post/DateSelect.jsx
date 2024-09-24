@@ -1,5 +1,5 @@
 import React, { useContext, useEffect, useState } from "react";
-import { Text, TouchableOpacity, View } from "react-native";
+import { Alert, Text, TouchableOpacity, View } from "react-native";
 import globalStyles from "../../../styles/globalStyles";
 import RNDateTimePicker from "@react-native-community/datetimepicker";
 import { useNavigation } from "@react-navigation/native";
@@ -60,9 +60,16 @@ export const DateSelect = () => {
     if (formData?.date?.date) {
       if (formData?.date?.timeDay) {
         if (formData?.date?.date >= today) {
-          if (formData?._id) {
-            navigation.navigate("Confirmation");
-          } else navigation.navigate("Directions");
+          if (isTimeOfDayValid(formData.date.timeDay, formData.date.date)) {
+            if (formData?._id) {
+              navigation.navigate("Confirmation");
+            } else navigation.navigate("Directions");
+          } else {
+            Alert.alert(
+              "Invalid Time Selection",
+              "The selected time of day has already passed."
+            );
+          }
         } else alert("Please select new date");
       } else alert("Select a time of day");
     } else alert("You must select a date");
@@ -78,6 +85,34 @@ export const DateSelect = () => {
   const showMode = (currentMode) => {
     setShow(true);
     setMode(currentMode);
+  };
+
+  const isTimeOfDayValid = (selectedOption, date) => {
+    const now = new Date();
+    if (date.toDateString() !== now.toDateString()) {
+      return true;
+    }
+
+    const morningEnd = new Date();
+    morningEnd.setHours(12, 0, 0, 0);
+    const afternoonEnd = new Date();
+    afternoonEnd.setHours(17, 0, 0, 0);
+    const eveningEnd = new Date();
+    eveningEnd.setHours(23, 59, 59, 999);
+
+    switch (selectedOption) {
+      case "Morning":
+        return now <= morningEnd;
+      case "Afternoon":
+        return now <= afternoonEnd;
+      case "Evening":
+        return now <= eveningEnd;
+      case "At Any Time":
+      case "specificTime":
+        return true;
+      default:
+        return false;
+    }
   };
 
   return (
@@ -127,7 +162,13 @@ export const DateSelect = () => {
           globalStyles.generalText,
           {
             color:
-              new Date(formData?.date?.date) <= new Date().setHours(0, 0, 0, 0)
+              new Date(formData?.date?.date) <=
+                new Date().setHours(0, 0, 0, 0) ||
+              (selectedOption &&
+                !isTimeOfDayValid(
+                  selectedOption,
+                  new Date(formData?.date?.date)
+                ))
                 ? "red"
                 : "white",
           },

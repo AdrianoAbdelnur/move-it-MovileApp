@@ -287,7 +287,6 @@ const AuthProvider = ({ children }) => {
         : { verificationCode };
 
       const { data } = await clientAxios.patch(url, payload);
-      console.log(data);
       if (data?.message === "Code verified succesfully.") {
         return true;
       } else {
@@ -323,7 +322,6 @@ const AuthProvider = ({ children }) => {
       if (data.message === "password updated successfully.") {
         login(email, password);
       }
-      console.log(data);
     } catch (error) {
       console.log(error);
     }

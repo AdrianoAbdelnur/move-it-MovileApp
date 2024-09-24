@@ -180,6 +180,56 @@ const PostsProvider = ({ children }) => {
     }
   };
 
+  const checkExpiredPost = (posts) => {
+    const currentDate = new Date();
+    const endOfCurrentDay = new Date(currentDate.setHours(0, 0, 0, 0));
+    posts.map((post) => {
+      const postDate = new Date(post?.date?.date);
+      if (postDate < endOfCurrentDay && post.status.mainStatus === "pending") {
+        uptateStatus({
+          postId: post._id,
+          newStatus: {
+            ...post.status,
+            mainStatus: "expired",
+          },
+        });
+      }
+    });
+  };
+
+  const isExpired = (post) => {
+    const currentDate = new Date();
+    const postDate = new Date(post.date.date);
+    const timeDay = post.date.timeDay;
+    const isSameDay = postDate.toDateString() === currentDate.toDateString();
+    if (isSameDay) {
+      if (timeDay === "At Any Time") {
+        return false;
+      }
+      const currentHours = currentDate.getHours();
+      const timeRanges = {
+        Morning: 12,
+        Afternoon: 18,
+        Evening: 23,
+      };
+
+      if (currentHours > timeRanges[timeDay]) {
+        return true;
+      }
+    } else if (postDate > currentDate) {
+      return true;
+    } else if (postDate < currentDate) {
+      return false;
+    }
+  };
+
+  const modifyOfferInPost = (offerInfo) => {
+    dispatch({
+      type: TYPES.ADDOFFERINPOST,
+      payload: offerInfo,
+    });
+  };
+
   return (
     <PostContext.Provider
       value={{
@@ -196,6 +246,8 @@ const PostsProvider = ({ children }) => {
         updateMessage,
         uptateMyStatus,
         addComplaint,
+        checkExpiredPost,
+        modifyOfferInPost,
       }}
     >
       {children}
