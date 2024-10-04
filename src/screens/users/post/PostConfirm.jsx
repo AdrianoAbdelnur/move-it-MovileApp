@@ -48,7 +48,7 @@ export const PostConfirm = () => {
   }, []);
 
   useEffect(() => {
-    if (postsState.alertMsg === "Post added successfully") {
+    if (postsState.alertMsg === "New Post added successfully") {
       Alert.alert("POST INFORMATION", postsState.alertMsg, [
         {
           text: "OK",
