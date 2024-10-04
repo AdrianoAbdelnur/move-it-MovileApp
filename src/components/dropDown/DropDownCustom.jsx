@@ -29,7 +29,7 @@ export const DropDownCustom = ({
 
   useEffect(() => {
     if (prevItem) {
-      setSelectedItem({ label: prevItem, value: prevItem });
+      setSelectedItem({ label: prevItem.label, value: prevItem.value });
     }
   }, [prevItem]);
 
@@ -104,7 +104,7 @@ const styles = StyleSheet.create({
     maxHeight: 200,
   },
   item: {
-    padding: 8,
+    padding: 3,
   },
   itemText: {
     fontSize: 16,

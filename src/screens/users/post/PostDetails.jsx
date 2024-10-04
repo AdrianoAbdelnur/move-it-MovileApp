@@ -138,7 +138,7 @@ export const PostDetails = ({ route }) => {
   };
 
   useEffect(() => {
-    if (postsState.alertMsg === "New Post added") {
+    if (postsState.alertMsg === "Post updated successfully") {
       Alert.alert("POST INFORMATION", postsState.alertMsg, [
         {
           text: "OK",

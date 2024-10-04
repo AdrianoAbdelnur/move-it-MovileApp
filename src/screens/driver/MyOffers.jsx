@@ -3,7 +3,6 @@ import { ScrollView, StatusBar, StyleSheet, Text, View } from "react-native";
 import globalStyles from "../../styles/globalStyles";
 import colors from "../../styles/colors";
 import { PostContext } from "../../contexts/PostsContext";
-import { useNavigation } from "@react-navigation/native";
 import { PostShower } from "../../components/post/PostShower";
 
 const statusOrder = {
@@ -13,17 +12,19 @@ const statusOrder = {
   confirmed: 3,
   cancelled: 4,
   expired: 5,
+  complaint: 6,
 };
 
 export const MyOffers = ({ setChatWith }) => {
-  const { state: postState, uptateStatus } = useContext(PostContext);
-  const navigation = useNavigation();
+  const { state: postState } = useContext(PostContext);
   const [mySelectedOffers, setMySelectedOffers] = useState([]);
   const [sortedPosts, setSortedPosts] = useState([]);
 
   useEffect(() => {
     setMySelectedOffers(
-      postState?.posts?.filter((post) => post?.offerSelected?._id)
+      postState?.posts?.filter((post) => {
+        return post?.offerSelected?._id;
+      })
     );
   }, [postState]);
 

@@ -15,7 +15,7 @@ const PostReducer = (state={}, action) => {
             return{
                 ...state,
                 alertMsg: action.payload.alertMsg,
-                posts: found? newPostsList: [...state.posts, action.payload.newPost],
+                posts: found? newPostsList : [...state.posts, action.payload.newPost],
                 isLoading: false    
             }   
         case TYPES.GETPOSTS:
