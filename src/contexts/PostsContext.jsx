@@ -75,10 +75,11 @@ const PostsProvider = ({ children }) => {
     try {
       const { data } = await clientAxios.post("/userPost/addPost", postData);
       const { newPost } = data;
+      const { message } = data;
       if (newPost) {
         dispatch({
           type: TYPES.ADDNEWPOST,
-          payload: { alertMsg: "New Post added", newPost },
+          payload: { alertMsg: message, newPost },
         });
       }
     } catch (error) {

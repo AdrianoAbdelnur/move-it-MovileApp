@@ -12,11 +12,12 @@ import { BellNoti } from "../../components/bell/BellNoti";
 import { NotiModal } from "../../components/ui/NotiModal";
 import { GeneralButton } from "../../components/ui/GeneralButton";
 import * as Location from "expo-location";
+import { FilterPostsModal } from "../../components/ui/FilterPostsModal";
 
 export const DriverHome = ({ setChatWith }) => {
   const navigation = useNavigation();
   const {
-    state: postsState,
+    state: postsTState,
     getPendingPosts,
     checkExpiredPost,
   } = useContext(PostContext);
@@ -26,19 +27,27 @@ export const DriverHome = ({ setChatWith }) => {
   const [notificationCount, setNotificationCount] = useState(0);
   const [notiList, setNotiList] = useState([]);
   const [userLocation, setUserLocation] = useState(null);
+  const [showFilter, setShowFilter] = useState(false);
+  const [filteredPosts, setFilteredPosts] = useState([]);
+
+  const [centerLocation, setCenterLocation] = useState("any");
+  const [maxDistance, setMaxDistance] = useState({
+    label: "any distance",
+    value: "any",
+  });
 
   useEffect(() => {
-    if (postsState.posts.length === 0) {
+    if (postsTState.posts.length === 0) {
       getPendingPosts(userState.user.id);
     }
   }, []);
 
   useEffect(() => {
-    checkExpiredPost(postsState.posts);
+    checkExpiredPost(postsTState.posts);
     const currentDate = new Date();
     currentDate.setHours(0, 0, 0, 0);
-    if (postsState.posts.length !== 0) {
-      const pendings = postsState.posts.filter(
+    if (postsTState.posts.length !== 0) {
+      const pendings = postsTState.posts.filter(
         (post) =>
           post.status.mainStatus === "pending" &&
           !post.transportCancel.find(
@@ -46,8 +55,9 @@ export const DriverHome = ({ setChatWith }) => {
           )
       );
       setPendingPost(pendings);
+      setFilteredPosts(pendings);
     }
-    const newsNotiList = postsState.posts.flatMap((post) => {
+    const newsNotiList = postsTState.posts.flatMap((post) => {
       const notifications = [];
       if (post.status.messagesStatus.newUserMessage === true) {
         notifications.push({ type: "newMessage", post });
@@ -74,7 +84,7 @@ export const DriverHome = ({ setChatWith }) => {
     setNotiList(newsNotiList);
 
     getUserLocation();
-  }, [postsState]);
+  }, [postsTState]);
 
   useEffect(() => {
     setNotificationCount(notiList?.length);
@@ -85,16 +95,22 @@ export const DriverHome = ({ setChatWith }) => {
   };
 
   const getUserLocation = async () => {
-    const { status } = await Location.requestForegroundPermissionsAsync();
-    if (status !== "granted") {
-      console.error("Permission to access location was denied");
-      return;
-    }
+    try {
+      const { status } = await Location.requestForegroundPermissionsAsync();
+      if (status !== "granted") {
+        console.error("Permission to access location was denied");
+        return;
+      }
 
-    const { coords } = await Location.getCurrentPositionAsync({});
-    const { latitude: yourLatitude, longitude: yourLongitude } = coords;
-    setUserLocation({ latitude: yourLatitude, longitude: yourLongitude });
+      const { coords } = await Location.getCurrentPositionAsync({});
+      const { latitude: yourLatitude, longitude: yourLongitude } = coords;
+
+      setUserLocation({ latitude: yourLatitude, longitude: yourLongitude });
+    } catch (error) {
+      console.error("An error occurred while trying to get location:", error);
+    }
   };
+
   return (
     <View style={globalStyles.container}>
       <StatusBar style="auto" backgroundColor="gray" translucent={false} />
@@ -111,10 +127,21 @@ export const DriverHome = ({ setChatWith }) => {
       </View>
       <View style={styles.services_container}>
         <Text style={styles.servicesTitle}>Requested services:</Text>
+        <Text
+          onPress={() => setShowFilter(true)}
+          style={{
+            alignSelf: "flex-end",
+            marginHorizontal: 20,
+            textDecorationLine: "underline",
+            color: "blue",
+          }}
+        >
+          Filter
+        </Text>
         <ScrollView style={styles.services}>
           <View>
-            {pendingPost &&
-              pendingPost.map((item, index) => (
+            {filteredPosts &&
+              filteredPosts.map((item, index) => (
                 <PostShower key={item._id} item={item} />
               ))}
           </View>
@@ -123,8 +150,10 @@ export const DriverHome = ({ setChatWith }) => {
       <Text
         onPress={() => {
           navigation.navigate("JobsMaps", {
-            userLocation,
+            userLocation:
+              centerLocation !== "any" ? centerLocation : userLocation,
             postsToShow: pendingPost,
+            maxDistance: maxDistance.value,
           });
         }}
       >
@@ -135,6 +164,16 @@ export const DriverHome = ({ setChatWith }) => {
         closeNotiModal={toggleModal}
         notiList={notiList}
         setChatWith={setChatWith}
+      />
+      <FilterPostsModal
+        showModal={showFilter}
+        setShowModal={setShowFilter}
+        pendingPost={pendingPost}
+        setFilteredPosts={setFilteredPosts}
+        centerLocation={centerLocation}
+        setCenterLocation={setCenterLocation}
+        maxDistance={maxDistance}
+        setMaxDistance={setMaxDistance}
       />
     </View>
   );
@@ -162,7 +201,7 @@ const styles = StyleSheet.create({
   },
   services: {
     width: "85%",
-    height: "70%",
+    height: "60%",
     borderWidth: 2,
     borderColor: "#000",
     borderRadius: 10,
