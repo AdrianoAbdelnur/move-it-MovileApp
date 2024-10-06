@@ -22,9 +22,9 @@ export const Home = ({ setChatWith }) => {
   const [modalVisible, setModalVisible] = useState(false);
   const [notificationCount, setNotificationCount] = useState(0);
   const [notiList, setNotiList] = useState([]);
+  const [checkedDay, setCheckedDay] = useState();
   const isFocused = useIsFocused();
   const { setFormData } = useContext(FormContext);
-  const [checkedDay, setCheckedDay] = useState();
 
   useEffect(() => {
     if (postsState.posts.length === 0) {
@@ -39,7 +39,7 @@ export const Home = ({ setChatWith }) => {
   }, [isFocused]);
 
   useEffect(() => {
-    if (checkedDay?.toDateString() === new Date().toDateString()) {
+    if (checkedDay?.toDateString() !== new Date().toDateString()) {
       setCheckedDay(new Date());
       checkExpiredPost(postsState.posts);
     }
