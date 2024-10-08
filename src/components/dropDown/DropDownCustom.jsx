@@ -5,7 +5,6 @@ import {
   TouchableOpacity,
   FlatList,
   StyleSheet,
-  Modal,
   TouchableWithoutFeedback,
   Keyboard,
 } from "react-native";
@@ -16,9 +15,12 @@ export const DropDownCustom = ({
   items,
   onSelect,
   placeholder,
+  multiSelection = false,
 }) => {
   const [isVisible, setIsVisible] = useState(false);
-  const [selectedItem, setSelectedItem] = useState(null);
+  const [selectedItems, setSelectedItems] = useState(
+    multiSelection ? [] : null
+  );
 
   const toggleDropdown = () => {
     if (!isVisible) {
@@ -29,22 +31,57 @@ export const DropDownCustom = ({
 
   useEffect(() => {
     if (prevItem) {
-      setSelectedItem({ label: prevItem.label, value: prevItem.value });
+      if (multiSelection && Array.isArray(prevItem)) {
+        setSelectedItems(prevItem);
+      } else {
+        setSelectedItems({ label: prevItem.label, value: prevItem.value });
+      }
     }
   }, [prevItem]);
 
   const handleSelect = (item) => {
-    setSelectedItem(item);
-    onSelect(item);
-    setIsVisible(false);
+    if (multiSelection) {
+      const index = selectedItems.findIndex((i) => i.value === item.value);
+      let updatedItems;
+      if (index === -1) {
+        updatedItems = [...selectedItems, item];
+      } else {
+        updatedItems = selectedItems.filter((i) => i.value !== item.value);
+      }
+
+      setSelectedItems(updatedItems);
+      onSelect(updatedItems);
+    } else {
+      setSelectedItems(item);
+      onSelect(item);
+      setIsVisible(false);
+    }
+  };
+
+  const isItemSelected = (item) => {
+    if (multiSelection && Array.isArray(selectedItems)) {
+      return (
+        selectedItems.find((selected) => selected.value === item.value) !==
+        undefined
+      );
+    }
+    return selectedItems?.value === item.value;
+  };
+
+  const renderSelectedLabel = () => {
+    if (multiSelection) {
+      if (selectedItems.length > 0) {
+        return selectedItems.map((item) => item.label).join(", ");
+      }
+      return placeholder;
+    }
+    return selectedItems ? selectedItems.label : placeholder;
   };
 
   return (
     <View style={styles.container}>
       <TouchableOpacity style={styles.button} onPress={toggleDropdown}>
-        <Text style={styles.buttonText}>
-          {selectedItem ? selectedItem.label : placeholder}
-        </Text>
+        <Text style={styles.buttonText}>{renderSelectedLabel()}</Text>
         <Entypo
           name={isVisible ? "chevron-up" : "chevron-down"}
           size={20}
@@ -63,6 +100,9 @@ export const DropDownCustom = ({
                   onPress={() => handleSelect(item)}
                 >
                   <Text style={styles.itemText}>{item.label}</Text>
+                  {isItemSelected(item) && (
+                    <Entypo name="check" size={20} color={"green"} />
+                  )}
                 </TouchableOpacity>
               )}
             />
@@ -101,10 +141,13 @@ const styles = StyleSheet.create({
     borderRadius: 5,
     elevation: 3,
     zIndex: 1,
-    maxHeight: 200,
+    maxHeight: 220,
   },
   item: {
-    padding: 3,
+    padding: 10,
+    flexDirection: "row",
+    justifyContent: "space-between",
+    alignItems: "center",
   },
   itemText: {
     fontSize: 16,

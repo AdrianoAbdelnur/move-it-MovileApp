@@ -150,7 +150,7 @@ export const PostDetails = ({ route }) => {
 
   const handleOk = () => {
     clearAlertMsg();
-    navigation.navigate("home");
+    navigation.navigate("PostsList");
     setFormData({});
   };
 
