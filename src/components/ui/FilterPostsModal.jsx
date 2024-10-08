@@ -71,7 +71,7 @@ const AccordionItem = ({
 export const FilterPostsModal = ({
   showModal,
   setShowModal,
-  pendingPost,
+  posts,
   setFilteredPosts,
   centerLocation,
   setCenterLocation,
@@ -150,11 +150,11 @@ export const FilterPostsModal = ({
   };
 
   const filter = () => {
-    let filtered = pendingPost;
+    let filtered = posts;
 
     if (date.when === "Now") {
       const currentTimeDay = getCurrentTimeDay();
-      filtered = pendingPost.filter((post) => {
+      filtered = posts.filter((post) => {
         return (
           isToday(post?.date?.date) &&
           (post?.date?.timeDay === "now" ||
@@ -165,7 +165,7 @@ export const FilterPostsModal = ({
         );
       });
     } else if (date.when === "Specific") {
-      filtered = pendingPost.filter((post) => {
+      filtered = posts.filter((post) => {
         return (
           new Date(post?.date?.date).setHours(0, 0, 0, 0) ===
             new Date(date.date).setHours(0, 0, 0, 0) &&

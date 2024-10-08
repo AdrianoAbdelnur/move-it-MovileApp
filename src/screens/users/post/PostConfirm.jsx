@@ -60,7 +60,7 @@ export const PostConfirm = () => {
 
   const handleOk = () => {
     clearAlertMsg();
-    navigation.navigate("home");
+    navigation.navigate("PostsList");
     setFormData({});
   };
 

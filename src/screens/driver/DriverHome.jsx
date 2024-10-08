@@ -168,7 +168,7 @@ export const DriverHome = ({ setChatWith }) => {
       <FilterPostsModal
         showModal={showFilter}
         setShowModal={setShowFilter}
-        pendingPost={pendingPost}
+        posts={pendingPost}
         setFilteredPosts={setFilteredPosts}
         centerLocation={centerLocation}
         setCenterLocation={setCenterLocation}
