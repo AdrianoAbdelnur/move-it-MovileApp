@@ -15,14 +15,17 @@ import colors from "../../styles/colors";
 import { useNavigation } from "@react-navigation/native";
 import { MaterialIcons } from "@expo/vector-icons";
 import { CustomModal } from "../../components/ui/CustomModal";
+import { PostContext } from "../../contexts/PostsContext";
 
 export const Login = () => {
   const navigation = useNavigation();
   const { login } = useContext(AuthContext);
+  const { removeAllPosts } = useContext(PostContext);
   const { formState, getInput } = useForm();
   const [showPassword, setShowPassword] = useState(false);
 
   const onSubmit = () => {
+    removeAllPosts();
     login(formState?.email, formState?.password);
   };
 

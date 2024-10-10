@@ -116,12 +116,12 @@ export const DropDownCustom = ({
 const styles = StyleSheet.create({
   container: {
     position: "relative",
-    width: "100%",
+    width: "96%",
     marginBottom: 10,
   },
   button: {
     padding: 10,
-    backgroundColor: "#ddd",
+    backgroundColor: "#A9A9A9",
     borderRadius: 5,
     alignItems: "center",
     justifyContent: "center",

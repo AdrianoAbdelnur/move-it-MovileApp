@@ -231,6 +231,12 @@ const PostsProvider = ({ children }) => {
     });
   };
 
+  const removeAllPosts = () => {
+    dispatch({
+      type: TYPES.REMOVEPOSTS,
+    });
+  };
+
   return (
     <PostContext.Provider
       value={{
@@ -249,6 +255,7 @@ const PostsProvider = ({ children }) => {
         addComplaint,
         checkExpiredPost,
         modifyOfferInPost,
+        removeAllPosts,
       }}
     >
       {children}

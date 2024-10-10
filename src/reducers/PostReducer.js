@@ -109,6 +109,12 @@ const PostReducer = (state={}, action) => {
                 ...state,
                 isLoading: action.payload.isLoading
             }
+        case TYPES.REMOVEPOSTS :
+            return {
+              alertMsg: "",
+              posts: [],
+              isLoading: false,
+            }
     default:
         return state
 }
