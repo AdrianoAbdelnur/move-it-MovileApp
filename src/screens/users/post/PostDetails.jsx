@@ -150,7 +150,7 @@ export const PostDetails = ({ route }) => {
 
   const handleOk = () => {
     clearAlertMsg();
-    navigation.navigate("PostsList");
+    navigation.navigate("home");
     setFormData({});
   };
 
@@ -233,6 +233,13 @@ export const PostDetails = ({ route }) => {
     } catch (error) {
       console.log(error);
     }
+  };
+
+  const nonExpiredOffers = (offers) => {
+    const nonExpired = offers.find((offer) => offer.status === "Pending");
+    if (nonExpired) {
+      return true;
+    } else return false;
   };
 
   return (
@@ -448,7 +455,7 @@ export const PostDetails = ({ route }) => {
             )}
         {userState.user.role === "user" &&
           data?.status?.mainStatus === "pending" &&
-          data?.offers?.length !== 0 && (
+          nonExpiredOffers(data?.offers) && (
             <TouchableOpacity
               style={globalStyles.OptionsButton}
               onPress={() => navigation.navigate("OffersList", { data })}

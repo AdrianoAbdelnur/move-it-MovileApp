@@ -36,8 +36,8 @@ export const Offer = ({ route }) => {
   const navigation = useNavigation();
 
   useEffect(() => {
-    if (offerDuration) {
-      const now = new Date();
+    const now = new Date();
+    if (new Date(data.date.date).toDateString() === now.toDateString()) {
       const calculatedEndTime = new Date(now.getTime() + offerDuration * 60000);
       setEndTime(calculatedEndTime);
     } else {
@@ -85,7 +85,7 @@ export const Offer = ({ route }) => {
       );
       navigation.navigate("driverHome");
     } else {
-      Alert.alert("Invalid Input", "Please enter a valid number.", [
+      Alert.alert("Invalid Input", "Please enter a valid price.", [
         { text: "OK" },
       ]);
     }

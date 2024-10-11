@@ -51,7 +51,8 @@ export const Home = ({ setChatWith }) => {
       if (
         post.status.newOffers === true &&
         post.status.mainStatus !== "cancelled" &&
-        post.status.mainStatus !== "expired"
+        post.status.mainStatus !== "expired" &&
+        nonExpiredOffers(post.offers)
       ) {
         notifications.push({ type: "newOffer", post });
       }
@@ -85,6 +86,13 @@ export const Home = ({ setChatWith }) => {
 
   const toggleModal = () => {
     setModalVisible(!modalVisible);
+  };
+
+  const nonExpiredOffers = (offers) => {
+    const nonExpired = offers.find((offer) => offer.status === "Pending");
+    if (nonExpired) {
+      return true;
+    } else return false;
   };
   return (
     <View style={globalStyles.container}>

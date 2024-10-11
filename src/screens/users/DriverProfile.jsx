@@ -77,6 +77,7 @@ export const DriverProfile = ({ route }) => {
               Name: {transport.given_name} {transport.family_name}
             </Text>
             <Text style={globalStyles.generalText}>
+              {console.log(transport)}
               Vehicle type: {transport?.transportInfo?.vehicle}
             </Text>
             <TouchableOpacity onPress={() => getImage("generalImg")}>

@@ -9,7 +9,6 @@ import { AuthContext } from "../contexts/AuthContext";
 import { LoadingComponent } from "../components/ui/LoadingComponent";
 import { ChatScreen } from "../screens/chat/ChatScreen";
 import { DriverHome } from "../screens/driver/DriverHome";
-import colors from "../styles/colors";
 import { PostDetails } from "../screens/users/post/PostDetails";
 import { Maps } from "../components/ui/Maps";
 import { Offer } from "../screens/driver/Offer";
@@ -166,7 +165,11 @@ export const Stacknavigators = () => {
         <Stack.Screen name="Details" component={PostDetails} />
         <Stack.Screen name="OffersList" component={OffersList} />
         <Stack.Screen name="Reviews" component={DriversReviews} />
-        <Stack.Screen name="DriverProfile" component={DriverProfile} />
+        <Stack.Screen
+          name="DriverProfile"
+          component={DriverProfile}
+          options={{ title: "Driver Profile" }}
+        />
         <Stack.Screen name="TransporConfirm" component={TransportConfirm} />
         <Stack.Screen name="Camera" component={CameraManager} />
         <Stack.Screen name="Image" component={ImageDisplayer} />
