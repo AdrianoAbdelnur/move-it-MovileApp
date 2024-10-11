@@ -1,11 +1,37 @@
 import React from "react";
-import { ActivityIndicator, View } from "react-native";
+import { ActivityIndicator, Image, StyleSheet, View } from "react-native";
 import globalStyles from "../../styles/globalStyles";
 
 export const LoadingComponent = () => {
   return (
     <View style={globalStyles.container}>
-      <ActivityIndicator size={"large"} color={"red"} />
+      <View style={styles.imageContainer}>
+        <Image
+          source={require("../../assetsApp/callacar.jpeg")}
+          style={styles.image}
+        />
+        <ActivityIndicator
+          size={"large"}
+          color={"blue"}
+          style={styles.activityIndicator}
+        />
+      </View>
     </View>
   );
 };
+
+const styles = StyleSheet.create({
+  imageContainer: {
+    width: 300,
+    height: 300,
+    justifyContent: "center",
+    alignItems: "center",
+  },
+  image: {
+    width: 250,
+    height: 300,
+  },
+  activityIndicator: {
+    position: "absolute",
+  },
+});
