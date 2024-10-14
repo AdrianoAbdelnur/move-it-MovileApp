@@ -63,7 +63,6 @@ const AuthProvider = ({ children }) => {
               validatedMail: dataUser.userFound.validatedMail,
               transportInfo: status,
             },
-            isLogged: true,
             token: dataToken.token,
           },
         });

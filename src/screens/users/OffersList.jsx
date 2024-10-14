@@ -25,7 +25,6 @@ export const OffersList = ({ route }) => {
   const { postSelectOffer, uptateStatus } = useContext(PostContext);
   const { sendPushNotification } = usePushNotifications();
   const [showModal, setShowModal] = useState(false);
-  const [modalText, setModalText] = useState("second");
   const [itemSelected, setItemSelected] = useState();
   const { initPaymentSheet, presentPaymentSheet } = useStripe();
   const [activeOffers, setActiveOffers] = useState([]);
@@ -79,7 +78,7 @@ export const OffersList = ({ route }) => {
       );
 
       const initResponse = await initPaymentSheet({
-        merchantDisplayName: "ADRIANO",
+        merchantDisplayName: "CallaCar",
         paymentIntentClientSecret: data.paymentIntent,
         defaultBillingDetails: {
           address: {

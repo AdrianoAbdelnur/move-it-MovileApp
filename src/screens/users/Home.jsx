@@ -39,9 +39,11 @@ export const Home = ({ setChatWith }) => {
   }, [isFocused]);
 
   useEffect(() => {
-    if (checkedDay?.toDateString() !== new Date().toDateString()) {
-      setCheckedDay(new Date());
-      checkExpiredPost(postsState.posts);
+    if (postsState.posts.length !== 0) {
+      if (checkedDay?.toDateString() !== new Date().toDateString()) {
+        setCheckedDay(new Date());
+        checkExpiredPost(postsState.posts);
+      }
     }
   }, [postsState]);
 

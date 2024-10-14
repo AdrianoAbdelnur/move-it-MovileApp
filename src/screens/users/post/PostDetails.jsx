@@ -35,6 +35,7 @@ export const PostDetails = ({ route }) => {
   const [modalText, setModalText] = useState("");
   const [confirmationFuction, setConfirmationFuction] = useState(null);
   const [myActiveOffer, setMyActiveOffer] = useState(false);
+  const [lastOfferExpired, setLastOfferExpired] = useState(false);
 
   useEffect(() => {
     setData(postsState?.posts?.find((post) => post._id === dato._id));
@@ -236,8 +237,27 @@ export const PostDetails = ({ route }) => {
   };
 
   const nonExpiredOffers = (offers) => {
-    const nonExpired = offers.find((offer) => offer.status === "Pending");
+    const now = new Date().getTime();
+    const nonExpired = offers.find(
+      (offer) => new Date(offer.expiredTime).getTime() > now
+    );
     if (nonExpired) {
+      return true;
+    } else {
+      if (data.status.newOffers === true) {
+        uptateStatus({
+          postId: data._id,
+          newStatus: { ...data.status, newOffers: false },
+        });
+      }
+      return false;
+    }
+  };
+
+  const checkLastOffer = () => {
+    const now = new Date().getTime();
+    const expiredTimeLastOffer = offers[offers.length - 1].expiredTime;
+    if (new Date(expiredTimeLastOffer).getTime() < now) {
       return true;
     } else return false;
   };
@@ -453,6 +473,13 @@ export const PostDetails = ({ route }) => {
                 onPressFunction={() => navigation.navigate("Offer", { data })}
               />
             )}
+        {userState.user.role === "user" &&
+          data?.status?.mainStatus === "pending" &&
+          checkLastOffer && (
+            <Text style={[globalStyles.generalInformationText, { margin: 10 }]}>
+              Some of your offers have expired
+            </Text>
+          )}
         {userState.user.role === "user" &&
           data?.status?.mainStatus === "pending" &&
           nonExpiredOffers(data?.offers) && (
