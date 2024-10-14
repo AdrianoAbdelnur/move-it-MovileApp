@@ -163,8 +163,16 @@ export const Stacknavigators = () => {
         <Stack.Screen name="ItemDetails" component={ItemDetails} />
         <Stack.Screen name="Confirmation" component={PostConfirm} />
         <Stack.Screen name="Details" component={PostDetails} />
-        <Stack.Screen name="OffersList" component={OffersList} />
-        <Stack.Screen name="Reviews" component={DriversReviews} />
+        <Stack.Screen
+          name="OffersList"
+          component={OffersList}
+          options={{ title: "Offers list" }}
+        />
+        <Stack.Screen
+          name="Reviews"
+          component={DriversReviews}
+          options={{ title: "Driver Reviews" }}
+        />
         <Stack.Screen
           name="DriverProfile"
           component={DriverProfile}

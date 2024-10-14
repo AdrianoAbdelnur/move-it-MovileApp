@@ -77,14 +77,13 @@ export const DriverProfile = ({ route }) => {
               Name: {transport.given_name} {transport.family_name}
             </Text>
             <Text style={globalStyles.generalText}>
-              {console.log(transport)}
               Vehicle type: {transport?.transportInfo?.vehicle}
             </Text>
             <TouchableOpacity onPress={() => getImage("generalImg")}>
               <Text
                 style={[
                   globalStyles.generalText,
-                  { marginLeft: 20, color: "blue" },
+                  { marginLeft: 20, color: colors.primary },
                 ]}
               >
                 View vehicle overview photo
@@ -94,7 +93,7 @@ export const DriverProfile = ({ route }) => {
               <Text
                 style={[
                   globalStyles.generalText,
-                  { marginLeft: 20, color: "blue" },
+                  { marginLeft: 20, color: colors.primary },
                 ]}
               >
                 View the vehicle's cargo area
@@ -169,7 +168,11 @@ export const DriverProfile = ({ route }) => {
                 <Text
                   style={[
                     globalStyles.generalText,
-                    { marginLeft: 20, color: "blue", alignSelf: "flex-end" },
+                    {
+                      marginLeft: 20,
+                      color: colors.primary,
+                      alignSelf: "flex-end",
+                    },
                   ]}
                 >
                   See more reviews
