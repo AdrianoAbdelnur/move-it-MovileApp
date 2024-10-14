@@ -7,12 +7,12 @@ export const LoadingComponent = () => {
     <View style={globalStyles.container}>
       <View style={styles.imageContainer}>
         <Image
-          source={require("../../assetsApp/callacar.jpeg")}
+          source={require("../../assetsApp/CallacarLogo.png")}
           style={styles.image}
         />
         <ActivityIndicator
           size={"large"}
-          color={"blue"}
+          color={"white"}
           style={styles.activityIndicator}
         />
       </View>
