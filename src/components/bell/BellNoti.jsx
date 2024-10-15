@@ -37,7 +37,7 @@ const styles = StyleSheet.create({
   bellIconContainer: {
     position: "absolute",
     flexDirection: "row",
-    right: 18,
+    right: 16,
     top: 15,
   },
   notificationBadge: {

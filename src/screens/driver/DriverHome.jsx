@@ -1,6 +1,6 @@
 import React, { useContext, useEffect, useState } from "react";
 
-import { ScrollView, StyleSheet, Text, View } from "react-native";
+import { Image, ScrollView, StyleSheet, Text, View } from "react-native";
 import globalStyles from "../../styles/globalStyles";
 import { StatusBar } from "expo-status-bar";
 import colors from "../../styles/colors";
@@ -13,6 +13,8 @@ import { NotiModal } from "../../components/ui/NotiModal";
 import { GeneralButton } from "../../components/ui/GeneralButton";
 import * as Location from "expo-location";
 import { FilterPostsModal } from "../../components/ui/FilterPostsModal";
+import { TouchableOpacity } from "react-native-gesture-handler";
+import { MapButton } from "../../components/ui/MapButton";
 
 export const DriverHome = ({ setChatWith }) => {
   const navigation = useNavigation();
@@ -147,8 +149,8 @@ export const DriverHome = ({ setChatWith }) => {
           </View>
         </ScrollView>
       </View>
-      <Text
-        onPress={() => {
+      <MapButton
+        onPressFunction={() => {
           navigation.navigate("JobsMaps", {
             userLocation:
               centerLocation !== "any" ? centerLocation : userLocation,
@@ -156,9 +158,7 @@ export const DriverHome = ({ setChatWith }) => {
             maxDistance: maxDistance.value,
           });
         }}
-      >
-        View in map
-      </Text>
+      />
       <NotiModal
         modalVisible={modalVisible}
         closeNotiModal={toggleModal}
@@ -195,9 +195,9 @@ const styles = StyleSheet.create({
   },
   servicesTitle: {
     color: "black",
-    fontSize: 25,
+    fontSize: 20,
     alignSelf: "flex-start",
-    margin: 5,
+    margin: 3,
   },
   services: {
     width: "85%",
@@ -205,7 +205,7 @@ const styles = StyleSheet.create({
     borderWidth: 2,
     borderColor: "#000",
     borderRadius: 10,
-    margin: 10,
+    margin: 8,
     backgroundColor: colors.primary,
   },
   text: {
@@ -220,5 +220,17 @@ const styles = StyleSheet.create({
     borderRadius: 8,
     margin: 2,
     padding: 3,
+  },
+  mapButtonContainer: {
+    flexDirection: "row",
+    margin: 10,
+    padding: 8,
+    backgroundColor: "grey",
+    borderRadius: 12,
+  },
+  image: {
+    width: 30,
+    height: 30,
+    marginHorizontal: 5,
   },
 });
