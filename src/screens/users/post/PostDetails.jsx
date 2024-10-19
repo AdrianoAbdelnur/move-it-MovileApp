@@ -14,6 +14,7 @@ import { CustomCancelModal } from "../../../components/ui/CustomCancelModal";
 import { CustomConfirmModal } from "../../../components/ui/CustomConfirmModal";
 import { usePushNotifications } from "../../../hooks/usePushNotifications";
 import CountdownTimer from "../../../components/ui/CountdownTimer ";
+import { MapButton } from "../../../components/ui/MapButton";
 
 export const PostDetails = ({ route }) => {
   const navigation = useNavigation();
@@ -27,7 +28,7 @@ export const PostDetails = ({ route }) => {
   } = useContext(PostContext);
   const { sendPushNotification } = usePushNotifications();
   const [isOpen, setIsOpen] = useState(false);
-  const { formData, setFormData } = useContext(FormContext);
+  const { setFormData } = useContext(FormContext);
   const [showCancelModal, setShowCancelModal] = useState(false);
   const [data, setData] = useState({});
   const { data: dato } = route.params;
@@ -35,7 +36,6 @@ export const PostDetails = ({ route }) => {
   const [modalText, setModalText] = useState("");
   const [confirmationFuction, setConfirmationFuction] = useState(null);
   const [myActiveOffer, setMyActiveOffer] = useState(false);
-  const [lastOfferExpired, setLastOfferExpired] = useState(false);
 
   useEffect(() => {
     setData(postsState?.posts?.find((post) => post._id === dato._id));
@@ -410,22 +410,13 @@ export const PostDetails = ({ route }) => {
           </>
         )}
         {userState.user.role === "transport" && (
-          <TouchableOpacity
-            onPress={() =>
+          <MapButton
+            onPressFunction={() =>
               navigation.navigate("Maps", {
                 directions: data.directions,
               })
             }
-          >
-            <Text
-              style={[
-                globalStyles.generalText,
-                { marginLeft: 20, color: "blue" },
-              ]}
-            >
-              View map
-            </Text>
-          </TouchableOpacity>
+          />
         )}
         {userState.user.role === "transport" &&
           data?.status?.mainStatus === "complaint" && (
