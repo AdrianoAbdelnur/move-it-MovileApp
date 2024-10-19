@@ -28,6 +28,7 @@ export const OffersList = ({ route }) => {
   const [itemSelected, setItemSelected] = useState();
   const { initPaymentSheet, presentPaymentSheet } = useStripe();
   const [activeOffers, setActiveOffers] = useState([]);
+  const profitMargin = 0.2;
 
   useEffect(() => {
     if (data.status.newOffers === true) {
@@ -67,7 +68,7 @@ export const OffersList = ({ route }) => {
       const { data } = await clientAxios.post(
         "https://move-it-backend-3.onrender.com/api/payment/intent",
         {
-          amount: Math.floor(item.price * 100),
+          amount: Math.floor(item.price + profitMargin * item.price) * 100,
           email: userState?.user?.email,
         },
         {
@@ -156,7 +157,8 @@ export const OffersList = ({ route }) => {
               activeOffers.map((item, index) => (
                 <View key={item._id} style={styles.itemContainer}>
                   <Text style={globalStyles.generalText}>
-                    {item?.owner?.given_name} offered ${item.price}
+                    {item?.owner?.given_name} offered $
+                    {Math.floor(item.price + profitMargin * item.price)}
                   </Text>
                   <View style={styles.expireContainer}>
                     <Text
@@ -206,7 +208,7 @@ const styles = StyleSheet.create({
     maxHeight: "60%",
     justifyContent: "center",
     alignItems: "center",
-    backgroundColor: colors.secondary,
+    backgroundColor: colors.primary,
     borderRadius: 15,
   },
   servicesTitle: {
