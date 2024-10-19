@@ -184,7 +184,7 @@ const PostsProvider = ({ children }) => {
   const checkExpiredPost = (posts) => {
     const currentDate = new Date();
     const endOfCurrentDay = new Date(currentDate.setHours(0, 0, 0, 0));
-    posts.map((post) => {
+    posts.forEach((post) => {
       const postDate = new Date(post?.date?.date);
       if (postDate < endOfCurrentDay && post.status.mainStatus === "pending") {
         uptateStatus({

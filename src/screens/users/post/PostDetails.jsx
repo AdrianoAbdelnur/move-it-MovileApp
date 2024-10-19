@@ -14,6 +14,7 @@ import { CustomCancelModal } from "../../../components/ui/CustomCancelModal";
 import { CustomConfirmModal } from "../../../components/ui/CustomConfirmModal";
 import { usePushNotifications } from "../../../hooks/usePushNotifications";
 import CountdownTimer from "../../../components/ui/CountdownTimer ";
+import { MapButton } from "../../../components/ui/MapButton";
 
 export const PostDetails = ({ route }) => {
   const navigation = useNavigation();
@@ -27,7 +28,7 @@ export const PostDetails = ({ route }) => {
   } = useContext(PostContext);
   const { sendPushNotification } = usePushNotifications();
   const [isOpen, setIsOpen] = useState(false);
-  const { formData, setFormData } = useContext(FormContext);
+  const { setFormData } = useContext(FormContext);
   const [showCancelModal, setShowCancelModal] = useState(false);
   const [data, setData] = useState({});
   const { data: dato } = route.params;
@@ -236,8 +237,27 @@ export const PostDetails = ({ route }) => {
   };
 
   const nonExpiredOffers = (offers) => {
-    const nonExpired = offers.find((offer) => offer.status === "Pending");
+    const now = new Date().getTime();
+    const nonExpired = offers.find(
+      (offer) => new Date(offer.expiredTime).getTime() > now
+    );
     if (nonExpired) {
+      return true;
+    } else {
+      if (data.status.newOffers === true) {
+        uptateStatus({
+          postId: data._id,
+          newStatus: { ...data.status, newOffers: false },
+        });
+      }
+      return false;
+    }
+  };
+
+  const checkLastOffer = () => {
+    const now = new Date().getTime();
+    const expiredTimeLastOffer = offers[offers.length - 1].expiredTime;
+    if (new Date(expiredTimeLastOffer).getTime() < now) {
       return true;
     } else return false;
   };
@@ -390,22 +410,13 @@ export const PostDetails = ({ route }) => {
           </>
         )}
         {userState.user.role === "transport" && (
-          <TouchableOpacity
-            onPress={() =>
+          <MapButton
+            onPressFunction={() =>
               navigation.navigate("Maps", {
                 directions: data.directions,
               })
             }
-          >
-            <Text
-              style={[
-                globalStyles.generalText,
-                { marginLeft: 20, color: "blue" },
-              ]}
-            >
-              View map
-            </Text>
-          </TouchableOpacity>
+          />
         )}
         {userState.user.role === "transport" &&
           data?.status?.mainStatus === "complaint" && (
@@ -453,6 +464,13 @@ export const PostDetails = ({ route }) => {
                 onPressFunction={() => navigation.navigate("Offer", { data })}
               />
             )}
+        {userState.user.role === "user" &&
+          data?.status?.mainStatus === "pending" &&
+          checkLastOffer && (
+            <Text style={[globalStyles.generalInformationText, { margin: 10 }]}>
+              Some of your offers have expired
+            </Text>
+          )}
         {userState.user.role === "user" &&
           data?.status?.mainStatus === "pending" &&
           nonExpiredOffers(data?.offers) && (

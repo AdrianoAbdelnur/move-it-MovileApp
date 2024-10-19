@@ -9,6 +9,7 @@ import { DropDownCustom } from "../../components/dropDown/DropDownCustom";
 import * as Location from "expo-location";
 import { useNavigation } from "@react-navigation/native";
 import { AuthContext } from "../../contexts/AuthContext";
+import { MapButton } from "../../components/ui/MapButton";
 
 const items = [
   { label: "1 km", value: 1 },
@@ -156,24 +157,25 @@ export const GetAJobNow = () => {
         <Text style={styles.servicesTitle}>Available services:</Text>
         <ScrollView style={styles.services}>
           <View>
-            {filteredPosts?.length !== 0 &&
+            {filteredPosts?.length > 0 ? (
               filteredPosts?.map((item) => (
                 <PostShower key={item._id} item={item} />
-              ))}
+              ))
+            ) : (
+              <Text style={{ margin: 10 }}> There are no posts to display</Text>
+            )}
           </View>
         </ScrollView>
       </View>
-      <Text
-        onPress={() =>
+      <MapButton
+        onPressFunction={() =>
           navigation.navigate("JobsMaps", {
             userLocation,
             postsToShow: nowPosts,
             maxDistance,
           })
         }
-      >
-        View in map
-      </Text>
+      />
     </View>
   );
 };
