@@ -1,7 +1,7 @@
 import { useIsFocused, useNavigation } from "@react-navigation/native";
 import { StatusBar } from "expo-status-bar";
 import React, { useContext, useEffect, useState } from "react";
-import { StyleSheet, TouchableOpacity, View } from "react-native";
+import { StyleSheet, View } from "react-native";
 import globalStyles from "../../styles/globalStyles";
 import { PostContext } from "../../contexts/PostsContext";
 import { AuthContext } from "../../contexts/AuthContext";
@@ -48,6 +48,7 @@ export const Home = ({ setChatWith }) => {
   }, [postsState]);
 
   useEffect(() => {
+    console.log(postsState);
     const newsNotiList = postsState.posts.flatMap((post) => {
       const notifications = [];
       if (

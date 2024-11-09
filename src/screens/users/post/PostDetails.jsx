@@ -63,6 +63,7 @@ export const PostDetails = ({ route }) => {
     if (userState.user.role === "transport" && data?.offers?.length > 0) {
       setMyActiveOffer(checkOffer());
     }
+    checkLastOffer();
   }, [data]);
 
   let fDate = "";
@@ -255,17 +256,24 @@ export const PostDetails = ({ route }) => {
   };
 
   const checkLastOffer = () => {
-    const now = new Date().getTime();
-    const expiredTimeLastOffer = offers[offers.length - 1].expiredTime;
-    if (new Date(expiredTimeLastOffer).getTime() < now) {
-      return true;
-    } else return false;
+    if (data?.offers) {
+      console.log(data);
+      const now = new Date().getTime();
+      if (data.offers.length === 0) {
+        return false;
+      }
+      const expiredTimeLastOffer =
+        data?.offers[data?.offers?.length - 1]?.expiredTime;
+      if (new Date(expiredTimeLastOffer).getTime() < now) {
+        return true;
+      } else return false;
+    }
   };
 
   return (
     <View style={[globalStyles.container, { alignItems: "flex-start" }]}>
       <ScrollView style={{ width: "100%" }}>
-        <Text style={globalStyles.generalText}>Title : {data?.title}</Text>
+        <Text style={globalStyles.generalText}>Title: {data?.title}</Text>
         {formatDate(data?.date?.date)}
         {userState.user.role === "transport" && (
           <Text style={globalStyles.generalText}>
@@ -466,7 +474,7 @@ export const PostDetails = ({ route }) => {
             )}
         {userState.user.role === "user" &&
           data?.status?.mainStatus === "pending" &&
-          checkLastOffer && (
+          checkLastOffer() && (
             <Text style={[globalStyles.generalInformationText, { margin: 10 }]}>
               Some of your offers have expired
             </Text>

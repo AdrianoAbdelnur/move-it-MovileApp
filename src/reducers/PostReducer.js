@@ -81,6 +81,8 @@ const PostReducer = (state={}, action) => {
                             owner: {
                               _id: action.payload.ownerId,
                               given_name: action.payload.ownerName,
+                              review: action.payload?.review,
+                              expoPushToken: action.payload?.expoPushToken
                             },
                           },
                         ],

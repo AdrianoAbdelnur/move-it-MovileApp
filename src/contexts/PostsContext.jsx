@@ -124,6 +124,13 @@ const PostsProvider = ({ children }) => {
     }
   };
 
+  const addOfferInPostUser = (offerInfo) => {
+    dispatch({
+      type: TYPES.ADDOFFERINPOST,
+      payload: offerInfo,
+    });
+  };
+
   const uptateStatus = async ({ postId, newStatus }) => {
     try {
       const { data } = await clientAxios.patch("/userPost/modifyStatus", {
@@ -256,6 +263,7 @@ const PostsProvider = ({ children }) => {
         checkExpiredPost,
         modifyOfferInPost,
         removeAllPosts,
+        addOfferInPostUser,
       }}
     >
       {children}
