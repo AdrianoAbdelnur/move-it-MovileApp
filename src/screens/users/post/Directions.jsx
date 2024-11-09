@@ -92,7 +92,6 @@ export const Directions = () => {
                 Where do you want to transport the load to?
               </Text>
             )}
-            <Text>{EXPO_PUBLIC_GOOGLE_MAP_KEY}</Text>
             <GooglePlacesAutocomplete
               ref={autocompleteRef}
               placeholder={
@@ -105,7 +104,7 @@ export const Directions = () => {
               fetchDetails
               onPress={(data, details = null) => handleSelection(data, details)}
               query={{
-                key: EXPO_PUBLIC_GOOGLE_MAP_KEY,
+                key: "AIzaSyDWAdSPRMoQxd-DIP__MbHPj2RvthFhBVE" /* EXPO_PUBLIC_GOOGLE_MAP_KEY */,
                 language: "en",
                 components: "country:au",
               }}
