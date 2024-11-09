@@ -20,7 +20,8 @@
         "backgroundColor": "#ffffff"
       },
       "package": "com.adna88.moveit",
-      "googleServicesFile": "./android/app/google-services.json"
+      "googleServicesFile": "./android/app/google-services.json",
+      "permissions": ["NOTIFICATIONS"]
     },
     "web": {
       "favicon": "./assets/favicon.png"

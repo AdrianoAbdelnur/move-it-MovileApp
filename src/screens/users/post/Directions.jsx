@@ -1,4 +1,4 @@
-import React, { useContext, useEffect, useRef, useState } from "react";
+import React, { useContext, useRef, useState } from "react";
 import {
   KeyboardAvoidingView,
   StyleSheet,
@@ -92,6 +92,7 @@ export const Directions = () => {
                 Where do you want to transport the load to?
               </Text>
             )}
+            <Text>{EXPO_PUBLIC_GOOGLE_MAP_KEY}</Text>
             <GooglePlacesAutocomplete
               ref={autocompleteRef}
               placeholder={

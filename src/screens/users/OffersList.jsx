@@ -22,7 +22,11 @@ export const OffersList = ({ route }) => {
   const { data } = route.params;
   const navigation = useNavigation();
   const { state: userState } = useContext(AuthContext);
-  const { postSelectOffer, uptateStatus } = useContext(PostContext);
+  const {
+    state: postState,
+    postSelectOffer,
+    uptateStatus,
+  } = useContext(PostContext);
   const { sendPushNotification } = usePushNotifications();
   const [showModal, setShowModal] = useState(false);
   const [itemSelected, setItemSelected] = useState();
@@ -40,6 +44,61 @@ export const OffersList = ({ route }) => {
 
     checkExpiredOffers();
   }, [data]);
+
+  useEffect(() => {
+    const updatedPost = postState.posts.find((post) => post._id === data._id);
+    if (updatedPost) {
+      const now = new Date().getTime();
+      const filteredOffers = updatedPost.offers.filter(
+        (offer) => new Date(offer.expiredTime).getTime() > now
+      );
+      setActiveOffers(filteredOffers);
+    }
+  }, [postState, data._id]);
+
+  const checkExpiredOffers = async () => {
+    const now = new Date().getTime();
+    const filteredOffers = data.offers.filter(
+      (offer) => new Date(offer.expiredTime).getTime() > now
+    );
+
+    if (filteredOffers.length !== activeOffers.length) {
+      setActiveOffers(filteredOffers);
+    }
+
+    const expiredOffers = data.offers.filter(
+      (offer) =>
+        new Date(offer.expiredTime).getTime() <= now &&
+        offer.status === "Pending"
+    );
+
+    if (expiredOffers.length > 0) {
+      const expiredOfferIds = expiredOffers.map((offer) => offer._id);
+      try {
+        await clientAxios.patch("/offer/modifyStatus", {
+          offerId: expiredOfferIds,
+          newStatus: "expired",
+        });
+      } catch (error) {
+        console.log(error);
+      }
+    }
+  };
+
+  const handleOfferExpired = async (item) => {
+    const filteredOffers = activeOffers.filter(
+      (offer) => offer._id !== item._id
+    );
+    setActiveOffers(filteredOffers);
+    try {
+      await clientAxios.patch("/offer/modifyStatus", {
+        offerId: item._id,
+        newStatus: "expired",
+      });
+    } catch (error) {
+      console.log(error);
+    }
+  };
 
   const aceptOffer = async (item) => {
     try {
@@ -107,45 +166,6 @@ export const OffersList = ({ route }) => {
     }
   };
 
-  const handleOfferExpired = async (item) => {
-    const filteredOffers = data.offers.filter(
-      (offer) => offer._id !== item._id
-    );
-    setActiveOffers(filteredOffers);
-    try {
-      await clientAxios.patch("/offer/modifyStatus", {
-        offerId: item._id,
-        newStatus: "expired",
-      });
-    } catch (error) {
-      console.log(error);
-    }
-  };
-
-  const checkExpiredOffers = async () => {
-    const now = new Date().getTime();
-    const filteredOffers = data.offers.filter(
-      (offer) => new Date(offer.expiredTime).getTime() > now
-    );
-    setActiveOffers(filteredOffers);
-    const expiredOffers = data.offers.filter(
-      (offer) =>
-        new Date(offer.expiredTime).getTime() <= now &&
-        offer.status === "Pending"
-    );
-    if (expiredOffers.length > 0) {
-      const expiredOfferIds = expiredOffers.map((offer) => offer._id);
-      try {
-        await clientAxios.patch("/offer/modifyStatus", {
-          offerId: expiredOfferIds,
-          newStatus: "expired",
-        });
-      } catch (error) {
-        console.log(error);
-      }
-    }
-  };
-
   return (
     <View style={globalStyles.container}>
       <StatusBar style="auto" backgroundColor="gray" translucent={false} />
@@ -153,7 +173,7 @@ export const OffersList = ({ route }) => {
         <Text style={styles.servicesTitle}>Your offers:</Text>
         <ScrollView style={styles.services}>
           <View>
-            {activeOffers &&
+            {activeOffers?.length > 0 ? (
               activeOffers.map((item, index) => (
                 <View key={item._id} style={styles.itemContainer}>
                   <Text style={globalStyles.generalText}>
@@ -189,7 +209,10 @@ export const OffersList = ({ route }) => {
                     <Text>Accept {item?.owner?.given_name}'s offer</Text>
                   </TouchableOpacity>
                 </View>
-              ))}
+              ))
+            ) : (
+              <Text style={{ margin: 10 }}>There are no offers to show</Text>
+            )}
           </View>
         </ScrollView>
       </View>

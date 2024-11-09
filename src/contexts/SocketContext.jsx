@@ -11,9 +11,12 @@ export const SocketProvider = ({ children }) => {
     state: postState,
     updateMessage,
     uptateMyStatus,
+    addOfferInPostUser,
   } = useContext(PostContext);
   const [socket, setSocket] = useState(null);
   const [newMessage, setNewMessage] = useState(null);
+  const [newOffer, setNewOffer] = useState(null);
+  const [newPost, setNewPost] = useState(null);
 
   const sendPrivateMessage = (message) => {
     if (socket) {
@@ -33,6 +36,14 @@ export const SocketProvider = ({ children }) => {
 
     socketInstance.on("privateMessage", (msg) => {
       setNewMessage(msg);
+    });
+
+    socketInstance.on("offerNotification", (newOffer) => {
+      setNewOffer(newOffer);
+    });
+
+    socketInstance.on("newPostNotification", (post) => {
+      setNewPost(post);
     });
 
     return () => {
@@ -73,6 +84,32 @@ export const SocketProvider = ({ children }) => {
       }
     }
   }, [newMessage]);
+
+  useEffect(() => {
+    if (newOffer) {
+      addOfferInPostUser({
+        postId: newOffer.post._id,
+        newOfferId: newOffer._id,
+        expiredTime: newOffer.expiredTime,
+        status: newOffer.status,
+        price: newOffer.price,
+        ownerId: newOffer.owner._id,
+        ownerName: newOffer.owner.given_name,
+        review: newOffer.owner.review,
+        expoPushToken: newOffer.owner.expoPushToken,
+      });
+      uptateMyStatus({
+        postId: newOffer.post._id,
+        newStatus: { ...newOffer.post.status, newOffers: true },
+      });
+    }
+  }, [newOffer]);
+
+  useEffect(() => {
+    if (userState.user.role === "transport") {
+      console.log("NEWPOST", newPost, userState);
+    }
+  }, [newPost]);
 
   return (
     <SocketContext.Provider

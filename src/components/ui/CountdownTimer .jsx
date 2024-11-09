@@ -4,6 +4,7 @@ import globalStyles from "../../styles/globalStyles";
 
 const CountdownTimer = ({ expiredTime, onExpire }) => {
   const [timeLeft, setTimeLeft] = useState(0);
+  const [hasExpired, setHasExpired] = useState(false);
 
   useEffect(() => {
     const targetTime = new Date(expiredTime).getTime();
@@ -12,9 +13,13 @@ const CountdownTimer = ({ expiredTime, onExpire }) => {
       const now = new Date().getTime();
       const distance = targetTime - now;
 
-      if (distance < 0) {
-        setTimeLeft(0);
-        if (onExpire) onExpire();
+      if (distance <= 0) {
+        // Evita cambiar el estado si ya ha expirado
+        if (!hasExpired) {
+          setTimeLeft(0);
+          setHasExpired(true);
+          if (onExpire) onExpire();
+        }
         clearInterval(timer);
       } else {
         setTimeLeft(distance);
@@ -23,10 +28,11 @@ const CountdownTimer = ({ expiredTime, onExpire }) => {
 
     const timer = setInterval(updateTimer, 1000);
 
+    // Llamada inicial para sincronizar el temporizador
     updateTimer();
 
     return () => clearInterval(timer);
-  }, [expiredTime]);
+  }, [expiredTime]); // Solo depende de expiredTime
 
   const hours = Math.floor(
     (timeLeft % (1000 * 60 * 60 * 24)) / (1000 * 60 * 60)
