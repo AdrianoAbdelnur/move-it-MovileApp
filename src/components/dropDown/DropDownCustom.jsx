@@ -118,6 +118,7 @@ const styles = StyleSheet.create({
     position: "relative",
     width: "96%",
     marginBottom: 10,
+    zIndex: 1,
   },
   button: {
     padding: 10,
