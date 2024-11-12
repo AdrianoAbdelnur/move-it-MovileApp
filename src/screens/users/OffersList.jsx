@@ -105,9 +105,11 @@ export const OffersList = ({ route }) => {
       const { data } = await clientAxios.patch(
         "/offer/selectOffer/" + item._id
       );
-
       if (data?.offerFound) {
-        postSelectOffer({ postId: item.post, offerSelected: item._id });
+        postSelectOffer({
+          postId: data.offerFound.post,
+          offerSelected: data.offerFound._id,
+        });
         setShowModal(false);
         sendPushNotification(
           item?.owner.expoPushToken,

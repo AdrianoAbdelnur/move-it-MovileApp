@@ -48,7 +48,6 @@ export const Home = ({ setChatWith }) => {
   }, [postsState]);
 
   useEffect(() => {
-    console.log(postsState);
     const newsNotiList = postsState.posts.flatMap((post) => {
       const notifications = [];
       if (

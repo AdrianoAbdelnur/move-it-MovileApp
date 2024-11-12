@@ -20,6 +20,8 @@ const statusOrder = {
 const items = [
   { label: "Pending", value: "pending" },
   { label: "Offer selected", value: "offerSelected" },
+  { label: "in progress", value: "inProgress" },
+  { label: "To confirm", value: "transportDone" },
   { label: "Expired", value: "expired" },
   { label: "Confirmed", value: "confirmed" },
   { label: "Cancelled", value: "cancelled" },

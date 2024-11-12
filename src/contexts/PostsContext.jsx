@@ -87,6 +87,13 @@ const PostsProvider = ({ children }) => {
     }
   };
 
+  const addNewPostTransport = (newPost) => {
+    dispatch({
+      type: TYPES.ADDNEWPOST,
+      payload: { alertMsg: "New Post added", newPost },
+    });
+  };
+
   const clearAlertMsg = () => {
     dispatch({
       type: TYPES.CLEARALERTMSG,
@@ -140,7 +147,10 @@ const PostsProvider = ({ children }) => {
       if (data.newPost) {
         dispatch({
           type: TYPES.UPDATEMYSTATUS,
-          payload: { postId: data.newPost._id, newStatus: data.newPost.status },
+          payload: {
+            postId: data?.newPost?._id,
+            newStatus: data.newPost.status,
+          },
         });
       }
     } catch (error) {
@@ -195,7 +205,7 @@ const PostsProvider = ({ children }) => {
       const postDate = new Date(post?.date?.date);
       if (postDate < endOfCurrentDay && post.status.mainStatus === "pending") {
         uptateStatus({
-          postId: post._id,
+          postId: post?._id,
           newStatus: {
             ...post.status,
             mainStatus: "expired",
@@ -249,6 +259,7 @@ const PostsProvider = ({ children }) => {
       value={{
         state,
         addPost,
+        addNewPostTransport,
         getAllPosts,
         getMyPosts,
         getPendingPosts,
