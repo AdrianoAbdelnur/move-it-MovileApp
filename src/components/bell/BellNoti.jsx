@@ -39,6 +39,7 @@ const styles = StyleSheet.create({
     flexDirection: "row",
     right: 16,
     top: 15,
+    zIndex: 100,
   },
   notificationBadge: {
     position: "absolute",

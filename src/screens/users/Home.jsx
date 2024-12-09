@@ -1,7 +1,7 @@
 import { useIsFocused, useNavigation } from "@react-navigation/native";
 import { StatusBar } from "expo-status-bar";
 import React, { useContext, useEffect, useState } from "react";
-import { StyleSheet, View } from "react-native";
+import { Image, StyleSheet, View } from "react-native";
 import globalStyles from "../../styles/globalStyles";
 import { PostContext } from "../../contexts/PostsContext";
 import { AuthContext } from "../../contexts/AuthContext";
@@ -10,6 +10,7 @@ import { GeneralButton } from "../../components/ui/GeneralButton";
 import { BellNoti } from "../../components/bell/BellNoti";
 import { NotiModal } from "../../components/ui/NotiModal";
 import { FormContext } from "../../contexts/FormContext";
+import { BackgroundImage } from "../../components/ui/BackgroundImage";
 
 export const Home = ({ setChatWith }) => {
   const navigation = useNavigation();
@@ -97,9 +98,10 @@ export const Home = ({ setChatWith }) => {
     } else return false;
   };
   return (
-    <View style={globalStyles.container}>
+    <View style={[globalStyles.container, { justifyContent: "flex-end" }]}>
       <StatusBar style="auto" backgroundColor="gray" translucent={false} />
       <BellNoti openModal={toggleModal} notificationCount={notificationCount} />
+      <BackgroundImage />
       <GeneralButton
         text={"Post a transport"}
         onPressFunction={() => navigation.navigate("Title")}

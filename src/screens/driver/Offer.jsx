@@ -132,7 +132,7 @@ export const Offer = ({ route }) => {
           new Date().toDateString() && (
           <View style={{ width: "100%" }}>
             <Text style={globalStyles.generalText}>Duration of the offer.</Text>
-            <View style={{ width: "70%", alignSelf: "center" }}>
+            <View style={{ width: "70%", alignSelf: "center", zIndex: 2 }}>
               <DropDownCustom
                 items={items}
                 placeholder="3 hours"
@@ -146,7 +146,7 @@ export const Offer = ({ route }) => {
             )}
           </View>
         )}
-        <View style={globalStyles.nextButtonContainer}>
+        <View style={[globalStyles.nextButtonContainer, { zIndex: 0 }]}>
           <GeneralButton text={"Confirm"} onPressFunction={onsubmit} />
         </View>
       </View>

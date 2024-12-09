@@ -117,7 +117,7 @@ export const DriverHome = ({ setChatWith }) => {
     <View style={globalStyles.container}>
       <StatusBar style="auto" backgroundColor="gray" translucent={false} />
       <BellNoti openModal={toggleModal} notificationCount={notificationCount} />
-      <View style={{ marginTop: 25 }}>
+      <View style={{ marginTop: 40, maxWidth: "85%" }}>
         <GeneralButton
           text="My accepted offers"
           onPressFunction={() => navigation.navigate("MyOffers")}
@@ -201,7 +201,7 @@ const styles = StyleSheet.create({
   },
   services: {
     width: "85%",
-    height: "60%",
+    height: "50%",
     borderWidth: 2,
     borderColor: "#000",
     borderRadius: 10,

@@ -104,7 +104,7 @@ export const DetailsSelector = () => {
           style={[globalStyles.generalInformationText, { alignSelf: "center" }]}
         >
           from:{" "}
-          {formData?.directions?.[currentIndex]?.description.split(",")[0]} to:
+          {formData?.directions?.[currentIndex]?.description.split(",")[0]} to:{" "}
           {formData?.directions?.[currentIndex + 1]?.description.split(",")[0]}
         </Text>
         {formData?.itemsDetails?.leg1 && <Type leg={currentIndex} />}

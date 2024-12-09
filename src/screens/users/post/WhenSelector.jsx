@@ -5,6 +5,7 @@ import { useNavigation } from "@react-navigation/native";
 import { useUpdateObj } from "../../../hooks/useUpdateObj";
 import { FormContext } from "../../../contexts/FormContext";
 import globalStyles from "../../../styles/globalStyles";
+import { BackgroundImage } from "../../../components/ui/BackgroundImage";
 
 export const WhenSelector = () => {
   const navigation = useNavigation();
@@ -20,6 +21,7 @@ export const WhenSelector = () => {
   return (
     <KeyboardAvoidingView style={globalStyles.KeyboardAvoidingView}>
       <View style={globalStyles.container}>
+        <BackgroundImage customStyle={{ height: "100%" }} />
         <Text style={globalStyles.generalText}>
           Select when you want to make your move:
         </Text>

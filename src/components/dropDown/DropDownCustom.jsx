@@ -141,7 +141,7 @@ const styles = StyleSheet.create({
     backgroundColor: "rgba(255, 255, 255, 0.95)",
     borderRadius: 5,
     elevation: 3,
-    zIndex: 1,
+    zIndex: 999,
     maxHeight: 220,
   },
   item: {

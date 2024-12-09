@@ -149,6 +149,18 @@ export const PostConfirm = () => {
                       description:{" "}
                       {formData.itemsDetails?.[currentLeg]?.description}
                     </Text>
+                    {formData.itemsDetails?.[currentLeg]?.difficultAccess !=
+                      "" && (
+                      <Text
+                        style={[
+                          globalStyles.generalInformationText,
+                          { marginLeft: 20 },
+                        ]}
+                      >
+                        Difficult Access:{" "}
+                        {formData.itemsDetails?.[currentLeg]?.difficultAccess}
+                      </Text>
+                    )}
                     {formData?.itemsDetails?.[currentLeg]?.itemsList?.length >
                       0 && (
                       <View style={{ marginLeft: 20 }}>

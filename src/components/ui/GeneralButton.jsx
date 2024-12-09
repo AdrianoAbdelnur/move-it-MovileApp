@@ -14,7 +14,7 @@ export const GeneralButton = ({
       <View style={styles.infoContainer}>
         {icon && (
           <View style={styles.iconContainer}>
-            <Entypo name={icon} size={28} color={"#f1f1f1"} />
+            <Entypo name={icon} size={28} color={"#000000"} />
           </View>
         )}
         <View style={styles.textContainer}>
@@ -39,11 +39,12 @@ const styles = StyleSheet.create({
     marginBottom: 10,
   },
   buttonText: {
-    color: "white",
+    color: "#000000",
+    fontWeight: "bold",
     fontSize: 16,
   },
   secondaryButtonText: {
-    color: "white",
+    color: "#000000",
     fontSize: 12,
   },
   infoContainer: {
@@ -54,6 +55,9 @@ const styles = StyleSheet.create({
     flex: 2,
     justifyContent: "center",
     alignItems: "center",
+    backgroundColor: "#F1F1F1",
+    height: "100%",
+    borderRadius: 20,
   },
   textContainer: {
     flex: 6,

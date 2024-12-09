@@ -5,10 +5,10 @@ import {
   Text,
   TouchableOpacity,
   View,
+  Platform,
 } from "react-native";
 import globalStyles from "../../../styles/globalStyles";
 import { useNavigation } from "@react-navigation/native";
-import { EXPO_PUBLIC_GOOGLE_MAP_KEY } from "@env";
 import { GooglePlacesAutocomplete } from "react-native-google-places-autocomplete";
 import colors from "../../../styles/colors";
 import { NextButton } from "../../../components/ui/NextButton";
@@ -79,7 +79,10 @@ export const Directions = () => {
   };
 
   return (
-    <KeyboardAvoidingView style={globalStyles.KeyboardAvoidingView}>
+    <KeyboardAvoidingView
+      style={globalStyles.KeyboardAvoidingView}
+      behavior={Platform.OS === "ios" ? "padding" : "height"}
+    >
       <View style={styles.container}>
         <View style={{ flex: 1 }}>
           <View style={styles.searchContainer}>
@@ -104,14 +107,17 @@ export const Directions = () => {
               fetchDetails
               onPress={(data, details = null) => handleSelection(data, details)}
               query={{
-                key: "AIzaSyDWAdSPRMoQxd-DIP__MbHPj2RvthFhBVE" /* EXPO_PUBLIC_GOOGLE_MAP_KEY */,
+                key: "AIzaSyDWAdSPRMoQxd-DIP__MbHPj2RvthFhBVE", // EXPO_PUBLIC_GOOGLE_MAP_KEY
                 language: "en",
                 components: "country:au",
               }}
             />
           </View>
         </View>
-        <ScrollView style={styles.directionsList}>
+        <ScrollView
+          style={styles.directionsList}
+          contentContainerStyle={{ paddingBottom: 20 }}
+        >
           {formData?.directions?.map((dir, index) => {
             const splitedDir = dir.description.split(",");
             return (
@@ -125,11 +131,18 @@ export const Directions = () => {
                   marginHorizontal: 10,
                   marginVertical: 8,
                   padding: 4,
-                  backgroundColor: "#260026",
+                  backgroundColor: colors.secondary,
                 }}
               >
                 {index == 0 ? (
-                  <Text style={globalStyles.generalText}>Start From</Text>
+                  <Text
+                    style={[
+                      globalStyles.generalText,
+                      { textDecorationLine: "underline" },
+                    ]}
+                  >
+                    Start From
+                  </Text>
                 ) : index == formData?.directions?.length - 1 ? (
                   <Text style={globalStyles.generalText}>End of the Route</Text>
                 ) : (
@@ -149,7 +162,7 @@ export const Directions = () => {
                       <Text
                         style={[
                           globalStyles.generalInformationText,
-                          { marginLeft: 20 },
+                          { color: "white" },
                         ]}
                       >
                         {splitedDir.slice(1).join(", ")}
@@ -219,18 +232,12 @@ const styles = StyleSheet.create({
     fontSize: 55,
   },
   directionsList: {
-    position: "absolute",
     width: "100%",
     height: "50%",
-    top: 150,
-    left: 0,
-    right: 0,
-    bottom: 0,
-    margin: 20,
     borderColor: "white",
     borderWidth: 1,
     borderRadius: 12,
-    zIndex: -1,
+    marginTop: 90,
   },
   directionContainer: {
     flexDirection: "row",

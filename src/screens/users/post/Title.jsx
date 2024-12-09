@@ -1,6 +1,7 @@
 import React, { useContext, useEffect } from "react";
 import {
   KeyboardAvoidingView,
+  Platform,
   ScrollView,
   StyleSheet,
   Text,
@@ -13,6 +14,7 @@ import colors from "../../../styles/colors";
 import { FormContext } from "../../../contexts/FormContext";
 import { AuthContext } from "../../../contexts/AuthContext";
 import { useNavigation } from "@react-navigation/native";
+import { BackgroundImage } from "../../../components/ui/BackgroundImage";
 
 export const Title = () => {
   const { formData, setFormData } = useContext(FormContext);
@@ -36,8 +38,13 @@ export const Title = () => {
   };
 
   return (
-    <KeyboardAvoidingView style={globalStyles.KeyboardAvoidingView}>
+    <KeyboardAvoidingView
+      behavior={Platform.OS === "ios" ? "padding" : "height"}
+      keyboardVerticalOffset={Platform.OS === "ios" ? 60 : 0}
+      style={globalStyles.KeyboardAvoidingView}
+    >
       <View style={globalStyles.container}>
+        <BackgroundImage customStyle={{ opacity: 0.05, height: "100%" }} />
         <Text style={globalStyles.generalText}>Add a title for your move:</Text>
         <Text style={[globalStyles.generalInformationText]}>
           (e.g., "Move TV to New Apartment," "Full House Move," "Office

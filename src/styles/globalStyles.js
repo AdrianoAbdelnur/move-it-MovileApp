@@ -13,12 +13,12 @@ const globalStyles = StyleSheet.create({
     padding: 5,
   },
   textButtons: {
-    color: "white",
+    color: colors.buttonText,
     fontSize: 25,
   },
   generalInformationText: {
-    color: "white",
-    fontSize: 11,
+    color: colors.generalInfoColor,
+    fontSize: 12,
     marginBottom: 3,
     alignSelf: "flex-start"
   },

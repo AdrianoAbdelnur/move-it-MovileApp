@@ -6,6 +6,7 @@ import {
   Text,
   TouchableOpacity,
   View,
+  Platform,
 } from "react-native";
 import { TextInput } from "react-native-gesture-handler";
 import globalStyles from "../../styles/globalStyles";
@@ -30,11 +31,16 @@ export const Login = () => {
   };
 
   return (
-    <KeyboardAvoidingView style={globalStyles.KeyboardAvoidingView}>
+    <KeyboardAvoidingView
+      behavior={Platform.OS === "ios" ? "padding" : "height"}
+      keyboardVerticalOffset={Platform.OS === "ios" ? 60 : 0}
+      style={globalStyles.KeyboardAvoidingView}
+    >
       <View style={globalStyles.container}>
         <Image
           source={require("./../../assetsApp/callacar.jpeg")}
           style={styles.image}
+          resizeMode="contain"
         />
         <TextInput
           autoCapitalize="none"
@@ -155,8 +161,10 @@ const styles = StyleSheet.create({
     top: 15,
   },
   image: {
-    width: 150,
-    height: 180,
-    marginBottom: 20,
+    position: "absolute",
+    opacity: 0.25,
+    width: "100%",
+    height: "100%",
+    alignSelf: "center",
   },
 });
